@@ -207,18 +207,18 @@ export default ListFormController.extend({
   records: [],
 
   /**
-    Configurate rows 'flexberry-objectlistview' component by address.
+    Configure rows 'flexberry-objectlistview' component by address.
 
-    @property configurateRowByAddress
+    @property configureRowByAddress
     @type String
    */
-  configurateRowByAddress: 'Street, 20',
+  configureRowByAddress: 'Street, 20',
 
-  _configurateRowByAddress: Ember.observer('configurateRowByAddress', function() {
+  _configureRowByAddress: Ember.observer('configureRowByAddress', function() {
     let rowConfig = { customClass: '' };
 
     this.get('records').forEach((record, index, records) => {
-      this.send('configurateRow', rowConfig, record);
+      this.send('configureRow', rowConfig, record);
     });
   }),
 
@@ -262,7 +262,7 @@ export default ListFormController.extend({
     '  previousPage=(action \"previousPage\")<br>' +
     '  gotoPage=(action \"gotoPage\")<br>' +
     '  nextPage=(action \"nextPage\")<br>' +
-    '  configurateRow=(action \"configurateRow\")<br>' +
+    '  configureRow=(action \"configureRow\")<br>' +
     '}}'),
 
   /**
@@ -407,10 +407,10 @@ export default ListFormController.extend({
       bindedControllerPropertieName: 'singleColumnHeaderTitle'
     });
     componentSettingsMetadata.pushObject({
-      settingName: 'configurateRowByAddress',
+      settingName: 'configureRowByAddress',
       settingType: 'string',
       settingDefaultValue: 'Street, 20',
-      bindedControllerPropertieName: 'configurateRowByAddress'
+      bindedControllerPropertieName: 'configureRowByAddress'
     });
 
     return componentSettingsMetadata;
@@ -418,14 +418,14 @@ export default ListFormController.extend({
 
   actions: {
     /**
-      Configurate rows on the condition.
+      Configure rows on the condition.
     */
-    configurateRow(rowConfig, record) {
+    configureRow(rowConfig, record) {
       if (record) {
         this.get('records').push(record);
       }
 
-      if (record.get('address') === this.get('configurateRowByAddress')) {
+      if (record.get('address') === this.get('configureRowByAddress')) {
         rowConfig.customClass += 'positive ';
       }
     }

@@ -43,7 +43,7 @@ export default FlexberryBaseComponent.extend({
     <!-- app/templates/menu.hbs -->
     {{flexberry-menu
       ...
-      configurateItems=(action 'configurateItems')
+      configureItems=(action 'configureItems')
       ...
     }}
     ```
@@ -53,7 +53,7 @@ export default FlexberryBaseComponent.extend({
 
     export default Ember.Controller.extend({
       actions: {
-        configurateItems: function(menuItems) {
+        configureItems: function(menuItems) {
           menuItems.push({
             icon: 'edit icon',
             title: 'Edit'
@@ -65,10 +65,10 @@ export default FlexberryBaseComponent.extend({
       }
     });
     ```
-   * @method configurateItems
+   * @method configureItems
    * @param {Array} items Menu items array.
    */
-  configurateItems: undefined,
+  configureItems: undefined,
 
   /**
    * Flag: indicates whether to call 'items.[].onClick' callbacks or not.
@@ -93,19 +93,19 @@ export default FlexberryBaseComponent.extend({
       items = [];
     }
 
-    // Call to 'configurateItems' hook.
-    let configurateItems = this.get('configurateItems');
+    // Call to 'configureItems' hook.
+    let configureItems = this.get('configureItems');
 
-    if (configurateItems) {
-      let configurateItemsType = Ember.typeOf(configurateItems);
+    if (configureItems) {
+      let configureItemsType = Ember.typeOf(configureItems);
 
-      if (configurateItemsType === 'function') {
-        configurateItems(items);
+      if (configureItemsType === 'function') {
+        configureItems(items);
       } else {
         Ember.Logger.error(
-          'Wrong type of flexberry-menu \'configurateItems\' propery: ' +
+          'Wrong type of flexberry-menu \'configureItems\' propery: ' +
           'actual type is \'' +
-          configurateItemsType +
+          configureItemsType +
           '\', but \'function\' is expected.');
       }
     }

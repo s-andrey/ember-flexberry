@@ -87,7 +87,7 @@ export default FlexberryBaseComponent.extend(FlexberryLookupCompatibleComponentM
       this.get('objectlistviewEventsService').rowSelectedTrigger(componentName, recordWithKey.data, selectedRecords.length, e.checked);
     },
 
-    menuInRowConfigurateItems: function(recordWithKey, menuItems) {
+    menuInRowConfigureItems: function(recordWithKey, menuItems) {
       var menuInRowSubItems = [];
       if (this.get('showEditMenuItemInRow') && recordWithKey.config.canBeSelected) {
         menuInRowSubItems.push({
@@ -648,14 +648,14 @@ export default FlexberryBaseComponent.extend(FlexberryLookupCompatibleComponentM
   filterByAnyMatch: 'filterByAnyMatch',
 
   /**
-   * Hook for configurate rows.
+   * Hook for configure rows.
    *
     Example:
     ```handlebars
     <!-- app/templates/employees.hbs -->
     {{flexberry-objectlistview
       ...
-      configurateRow=(action 'configurateRow')
+      configureRow=(action 'configureRow')
       ...
     }}
     ```
@@ -666,7 +666,7 @@ export default FlexberryBaseComponent.extend(FlexberryLookupCompatibleComponentM
 
     export default ListFormController.extend({
       actions: {
-        configurateRow: function(rowConfig, record) {
+        configureRow: function(rowConfig, record) {
           rowConfig.canBeDeleted = false;
           if (record.get('isMyFavoriteRecord')) {
             rowConfig.customClass += 'my-fav-record';
@@ -675,13 +675,13 @@ export default FlexberryBaseComponent.extend(FlexberryLookupCompatibleComponentM
       }
     });
     ```
-   * @method configurateRow
+   * @method configureRow
    * @param {Object} config Settings for row.
                             See {{#crossLink "ObjectListView/defaultRowConfig:property"}}{{/crossLink}}
                             property for details.
    * @param {DS.Model} record The record in row.
    */
-  configurateRow: undefined,
+  configureRow: undefined,
 
   /**
    * Default settings for rows.
@@ -1198,10 +1198,10 @@ export default FlexberryBaseComponent.extend(FlexberryLookupCompatibleComponentM
     let rowConfig = Ember.copy(this.get('defaultRowConfig'));
     modelWithKey.set('config', rowConfig);
 
-    let configurateRow = this.get('configurateRow');
-    if (configurateRow) {
-      Ember.assert('configurateRow must be a function', typeof configurateRow === 'function');
-      configurateRow(rowConfig, record);
+    let configureRow = this.get('configureRow');
+    if (configureRow) {
+      Ember.assert('configureRow must be a function', typeof configureRow === 'function');
+      configureRow(rowConfig, record);
     }
 
     this.get('contentWithKeys').pushObject(modelWithKey);
