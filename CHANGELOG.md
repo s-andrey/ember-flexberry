@@ -5,6 +5,8 @@
 ### Added
 FlexberryCheckboxComponent:
 * Add class property for wrapper component.
+### Fixed
+PropertyNames corrections: configurate... -> configure, Configurate... -> Configure
 
 ## 2016-06-14
 ### Fixed
