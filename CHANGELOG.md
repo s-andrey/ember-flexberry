@@ -4,15 +4,30 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
+
+### Added
+* Blueprints:
+    * Add support generation into ember addon.
+* It is possible now to specify resources that should be resolved with origin resolving path (without considering device type detection).
+* `flexberry-textarea` component:
+    * Added support of HTML attributes.
+
+### Fixed
+* `log` service will write error messages to console along with sending it to server if error would be handled in `Ember.onerror` or `Ember.RSVP.on('error')` events.
+
+
+## [0.4.0] - 2016-08-15
+### Changed
 * Transforms:
     * Moved transforms to [`ember-flexberry-data`](https://github.com/Flexberry/ember-flexberry-data) addon.
 * Enums:
-    * Moved enum initializers to [`ember-flexberry-data`](https://github.com/Flexberry/ember-flexberry-data) addon.
+    * Moved enum initializer to [`ember-flexberry-data`](https://github.com/Flexberry/ember-flexberry-data) addon.
     * Renamed `enum-captions` helper to `flexberry-enum`.
 
 ### Added
 * Blueprints:
     * Add localization support for generated ember entities.
+    * Add generation of explicit inflection rules. Rules for inflector are declared in `custom-inflector-rules.js` file inside `models` folder.
 * `flexberry-dropdown` component:
     * Add support object type for `items` property.
     * Add support empty values for generated enums.
