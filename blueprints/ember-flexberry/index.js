@@ -19,8 +19,7 @@ module.exports = {
           { name: 'semantic-ui-ember', target: '0.9.3' },
           { name: 'ember-moment', target: '6.0.0' },
           { name: 'ember-link-action', target: '0.0.34' },
-          { name: 'broccoli-jscs', target: '1.2.2' },
-          { name: 'ember-flexberry-data', target: 'https://github.com/Flexberry/ember-flexberry-data.git#develop' }
+          { name: 'broccoli-jscs', target: '1.2.2' }
         ]
       });
     });
