@@ -6828,14 +6828,28 @@ define('dummy/tests/integration/components/flexberry-lookup-test.jshint', ['expo
     assert.ok(true, 'integration/components/flexberry-lookup-test.js should pass jshint.');
   });
 });
-define('dummy/tests/integration/components/flexberry-simpledatetime-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+define('dummy/tests/integration/components/flexberry-simpledatetime-test', ['exports', 'ember-qunit', 'ember', 'ember-i18n/services/i18n', 'ember-flexberry/locales/ru/translations', 'ember-flexberry/locales/en/translations'], function (exports, _emberQunit, _ember, _emberI18nServicesI18n, _emberFlexberryLocalesRuTranslations, _emberFlexberryLocalesEnTranslations) {
 
   (0, _emberQunit.moduleForComponent)('flexberry-simpledatetime', 'Integration | Component | flexberry simpledatetime', {
-    integration: true
+    integration: true,
+
+    beforeEach: function beforeEach() {
+      this.register('locale:ru/translations', _emberFlexberryLocalesRuTranslations['default']);
+      this.register('locale:en/translations', _emberFlexberryLocalesEnTranslations['default']);
+      this.register('service:i18n', _emberI18nServicesI18n['default']);
+
+      this.inject.service('i18n', { as: 'i18n' });
+      _ember['default'].Component.reopen({
+        i18n: _ember['default'].inject.service('i18n')
+      });
+
+      // Set 'ru' as initial locale.
+      this.set('i18n.locale', 'ru');
+    }
   });
 
   (0, _emberQunit.test)('it renders', function (assert) {
-    this.render(Ember.HTMLBars.template((function () {
+    this.render(_ember['default'].HTMLBars.template((function () {
       return {
         meta: {
           'fragmentReason': {
@@ -6878,6 +6892,130 @@ define('dummy/tests/integration/components/flexberry-simpledatetime-test', ['exp
       };
     })()));
     assert.ok(true);
+  });
+
+  (0, _emberQunit.test)('render with type before value', function (assert) {
+    assert.expect(1);
+    var typeName = 'date';
+    this.set('type', typeName);
+
+    // Render component.
+    this.render(_ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.4.6',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 4,
+              'column': 6
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['inline', 'flexberry-simpledatetime', [], ['type', ['subexpr', '@mut', [['get', 'type', ['loc', [null, [2, 11], [2, 15]]]]], [], []], 'value', ['subexpr', '@mut', [['get', 'value', ['loc', [null, [3, 12], [3, 17]]]]], [], []]], ['loc', [null, [1, 0], [4, 6]]]]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    // Retrieve component.
+    var $component = this.$();
+    var $componentInput = _ember['default'].$('.flatpickr-input.custom-flatpickr', $component);
+
+    // Click on component to open calendar.
+    $componentInput.click();
+
+    var $calendar = _ember['default'].$('.flatpickr-calendar');
+
+    // Check calendar.
+    assert.strictEqual($calendar.hasClass('flatpickr-calendar'), true, 'Component\'s wrapper has \' flatpickr-calendar\' css-class');
+  });
+
+  (0, _emberQunit.test)('render with type afther value', function (assert) {
+    assert.expect(1);
+    var typeName = 'date';
+    this.set('type', typeName);
+
+    // Render component.
+    this.render(_ember['default'].HTMLBars.template((function () {
+      return {
+        meta: {
+          'fragmentReason': {
+            'name': 'missing-wrapper',
+            'problems': ['wrong-type']
+          },
+          'revision': 'Ember@2.4.6',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 4,
+              'column': 6
+            }
+          }
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['inline', 'flexberry-simpledatetime', [], ['value', ['subexpr', '@mut', [['get', 'value', ['loc', [null, [2, 12], [2, 17]]]]], [], []], 'type', ['subexpr', '@mut', [['get', 'type', ['loc', [null, [3, 11], [3, 15]]]]], [], []]], ['loc', [null, [1, 0], [4, 6]]]]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    // Retrieve component.
+    var $component = this.$();
+    var $componentInput = _ember['default'].$('.flatpickr-input.custom-flatpickr', $component);
+
+    // Click on component to open calendar.
+    $componentInput.click();
+
+    var $calendar = _ember['default'].$('.flatpickr-calendar');
+
+    // Check calendar.
+    assert.strictEqual($calendar.hasClass('flatpickr-calendar'), true, 'Component\'s wrapper has \' flatpickr-calendar\' css-class');
   });
 });
 define('dummy/tests/integration/components/flexberry-simpledatetime-test.jscs-test', ['exports'], function (exports) {
