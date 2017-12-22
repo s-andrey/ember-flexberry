@@ -4112,7 +4112,60 @@ define('dummy/controllers/components-examples/flexberry-objectlistview/inheritan
   });
 });
 define('dummy/controllers/components-examples/flexberry-objectlistview/limit-function-example', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
-  exports['default'] = _emberFlexberryControllersListForm['default'].extend({});
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend({
+    /**
+      Current predicate to limit accessible values for olv.
+      @property firstLimitType
+      @type BasePredicate
+      @default undefined
+     */
+    firstLimitType: undefined,
+
+    /**
+      Current predicate to limit accessible values for olv.
+      @property secondLimitType
+      @type BasePredicate
+      @default undefined
+     */
+    secondLimitType: undefined,
+
+    /**
+      Current predicate to limit accessible values for olv.
+      @property secondLimitType
+      @type BasePredicate
+      @default undefined
+     */
+    limitFunction: undefined,
+
+    actions: {
+      /**
+        This method set controller.limitFunction for olv window.
+        @method firstLimitFunction
+       */
+      firstLimitFunction: function firstLimitFunction() {
+        this.set('limitFunction', this.get('firstLimitType'));
+        this.send('refreshModel');
+      },
+
+      /**
+        This method set controller.limitFunction for olv window.
+        @method secondLimitFunction
+       */
+      secondLimitFunction: function secondLimitFunction() {
+        this.set('limitFunction', this.get('secondLimitType'));
+        this.send('refreshModel');
+      },
+
+      /**
+        This method set controller.limitFunction for olv window.
+        @method clearLimitFunction
+       */
+      clearLimitFunction: function clearLimitFunction() {
+        this.set('limitFunction', undefined);
+        this.send('refreshModel');
+      }
+    }
+  });
 });
 define('dummy/controllers/components-examples/flexberry-objectlistview/object-list-view-resize', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
   exports['default'] = _emberFlexberryControllersListForm['default'].extend({
@@ -10752,7 +10805,10 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
         },
         'flexberry-objectlistview': {
           'limit-function-example': {
-            'caption': 'Flexberry-objectlistview. Limit function example'
+            'caption': 'Flexberry-objectlistview. Limit function example',
+            'captionFirstLimitFunction': 'Limit function №1',
+            'captionSecondLimitFunction': 'Limit function №2',
+            'captionClearLimitFunction': 'Clear limit function'
           },
           'inheritance-models': {
             'caption': 'Flexberry-objectlistview. Inheritance models example',
@@ -11726,7 +11782,10 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
         },
         'flexberry-objectlistview': {
           'limit-function-example': {
-            'caption': 'Flexberry-objectlistview. Функция ограничения'
+            'caption': 'Flexberry-objectlistview. Функция ограничения',
+            'captionFirstLimitFunction': 'Функция ограничения №1',
+            'captionSecondLimitFunction': 'Функция ограничения №2',
+            'captionClearLimitFunction': 'Очистить функцию ограничения'
           },
           'inheritance-models': {
             'caption': 'Flexberry-objectlistview. Пример наследуемых моделей',
@@ -15006,13 +15065,30 @@ define('dummy/routes/components-examples/flexberry-objectlistview/inheritance-mo
 define('dummy/routes/components-examples/flexberry-objectlistview/limit-function-example', ['exports', 'ember', 'ember-flexberry/routes/list-form', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryRoutesListForm, _emberFlexberryData) {
   var StringPredicate = _emberFlexberryData.Query.StringPredicate;
   exports['default'] = _emberFlexberryRoutesListForm['default'].extend({
+
+    /**
+      Current predicate to limit accessible values for lookup.
+       @property firstLimitType
+      @type BasePredicate
+      @default undefined
+     */
+    firstLimitType: undefined,
+
+    /**
+      Current predicate to limit accessible values for lookup.
+       @property secondLimitType
+      @type BasePredicate
+      @default undefined
+     */
+    secondLimitType: undefined,
+
     /**
       Name of model projection to be used as record's properties limitation.
        @property modelProjection
       @type String
-      @default 'FolvWithLimitFunctionExampleView'
+      @default 'SuggestionE'
      */
-    modelProjection: 'FolvWithLimitFunctionExampleView',
+    modelProjection: 'SuggestionE',
 
     /**
     developerUserSettings.
@@ -15056,6 +15132,7 @@ define('dummy/routes/components-examples/flexberry-objectlistview/limit-function
       @return {BasePredicate} The predicate to limit loaded data.
      */
     objectListViewLimitPredicate: function objectListViewLimitPredicate(options) {
+
       var methodOptions = _ember['default'].merge({
         modelName: undefined,
         projectionName: undefined,
@@ -15063,12 +15140,55 @@ define('dummy/routes/components-examples/flexberry-objectlistview/limit-function
       }, options);
 
       if (methodOptions.modelName === this.get('modelName') && methodOptions.projectionName === this.get('modelProjection')) {
-        var currentPerPageValue = methodOptions.params ? methodOptions.params.perPage : undefined;
-        var limitFunction = currentPerPageValue && currentPerPageValue % 2 === 0 ? new StringPredicate('address').contains('S') : new StringPredicate('address').contains('п');
-        return limitFunction;
+
+        var limitFunctionText = this.get('controller.limitFunction');
+
+        if (limitFunctionText) {
+          var limitFunction = new StringPredicate('address').contains(limitFunctionText);
+
+          return limitFunction;
+        }
       }
 
       return undefined;
+    },
+
+    /**
+      Returns model related to current route.
+      @method model
+     */
+    model: function model(params) {
+      var _this = this;
+
+      var store = this.get('store');
+
+      var query = new _emberFlexberryData.Query.Builder(store).from(this.get('modelName')).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '');
+
+      store.query('ember-flexberry-dummy-suggestion', query.build()).then(function (limitdata) {
+        var limitTypesArr = limitdata.toArray();
+        _this.set('firstLimitType', limitTypesArr.objectAt(0).get('address'));
+        _this.set('secondLimitType', limitTypesArr.objectAt(1).get('address'));
+      });
+
+      return this._super.apply(this, arguments);
+    },
+
+    actions: {
+      refreshModel: function refreshModel() {
+        this.refresh();
+      }
+    },
+
+    /**
+      Load limit accessible values for lookup.
+      @method setupController
+     */
+    setupController: function setupController() {
+      this._super.apply(this, arguments);
+
+      this.set('controller.firstLimitType', this.get('firstLimitType'));
+
+      this.set('controller.secondLimitType', this.get('secondLimitType'));
     }
   });
 });
@@ -23662,7 +23782,7 @@ define("dummy/templates/components-examples/flexberry-objectlistview/limit-funct
             "column": 0
           },
           "end": {
-            "line": 36,
+            "line": 46,
             "column": 0
           }
         },
@@ -23692,15 +23812,61 @@ define("dummy/templates/components-examples/flexberry-objectlistview/limit-funct
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
+        var el1 = dom.createElement("br");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("button");
+        dom.setAttribute(el1, "class", "ui button");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("button");
+        dom.setAttribute(el1, "class", "ui button");
+        var el2 = dom.createTextNode("  \n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("button");
+        dom.setAttribute(el1, "class", "ui button");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(2);
+        var element0 = dom.childAt(fragment, [6]);
+        var element1 = dom.childAt(fragment, [8]);
+        var element2 = dom.childAt(fragment, [10]);
+        var morphs = new Array(8);
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 0, 0);
         morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 1, 1);
+        morphs[2] = dom.createElementMorph(element0);
+        morphs[3] = dom.createMorphAt(element0, 1, 1);
+        morphs[4] = dom.createElementMorph(element1);
+        morphs[5] = dom.createMorphAt(element1, 1, 1);
+        morphs[6] = dom.createElementMorph(element2);
+        morphs[7] = dom.createMorphAt(element2, 1, 1);
         return morphs;
       },
-      statements: [["inline", "t", ["forms.components-examples.flexberry-objectlistview.limit-function-example.caption"], [], ["loc", [null, [1, 22], [1, 111]]]], ["inline", "flexberry-objectlistview", [], ["modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [5, 18], [5, 33]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [6, 10], [6, 15]]]]], [], []], "createNewButton", false, "showCheckBoxInRow", false, "showDeleteButtonInRow", false, "showEditMenuItemInRow", false, "showDeleteMenuItemInRow", false, "rowClickable", false, "filterByAnyMatch", ["subexpr", "action", ["filterByAnyMatch"], [], ["loc", [null, [15, 19], [15, 46]]]], "filterText", ["subexpr", "@mut", [["get", "filter", ["loc", [null, [16, 13], [16, 19]]]]], [], []], "filterButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [20, 10], [20, 25]]]]], [], []], "orderable", true, "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [22, 15], [22, 38]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [23, 21], [23, 50]]]], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [24, 8], [24, 13]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [25, 15], [25, 27]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [26, 16], [26, 29]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [27, 20], [27, 37]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [28, 18], [28, 33]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [29, 14], [29, 25]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [30, 15], [30, 38]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [31, 11], [31, 30]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [32, 11], [32, 30]]]], "componentName", "FOLVLimitFunctionExampleObjectListView"], ["loc", [null, [3, 0], [34, 2]]]]],
+      statements: [["inline", "t", ["forms.components-examples.flexberry-objectlistview.limit-function-example.caption"], [], ["loc", [null, [1, 22], [1, 111]]]], ["inline", "flexberry-objectlistview", [], ["modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [5, 18], [5, 33]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [6, 10], [6, 15]]]]], [], []], "createNewButton", false, "showCheckBoxInRow", false, "showDeleteButtonInRow", false, "showEditMenuItemInRow", false, "showDeleteMenuItemInRow", false, "rowClickable", false, "filterByAnyMatch", ["subexpr", "action", ["filterByAnyMatch"], [], ["loc", [null, [15, 19], [15, 46]]]], "filterText", ["subexpr", "@mut", [["get", "filter", ["loc", [null, [16, 13], [16, 19]]]]], [], []], "filterButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [20, 10], [20, 25]]]]], [], []], "orderable", true, "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [22, 15], [22, 38]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [23, 21], [23, 50]]]], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [24, 8], [24, 13]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [25, 15], [25, 27]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [26, 16], [26, 29]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [27, 20], [27, 37]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [28, 18], [28, 33]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [29, 14], [29, 25]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [30, 15], [30, 38]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [31, 11], [31, 30]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [32, 11], [32, 30]]]], "componentName", "FOLVLimitFunctionExampleObjectListView"], ["loc", [null, [3, 0], [34, 2]]]], ["element", "action", ["firstLimitFunction"], ["on", "click"], ["loc", [null, [37, 26], [37, 68]]]], ["inline", "concat", [["subexpr", "t", ["forms.components-examples.flexberry-objectlistview.limit-function-example.captionFirstLimitFunction"], [], ["loc", [null, [38, 11], [38, 116]]]], ": ", ["get", "firstLimitType", ["loc", [null, [38, 122], [38, 136]]]]], [], ["loc", [null, [38, 2], [38, 138]]]], ["element", "action", ["secondLimitFunction"], ["on", "click"], ["loc", [null, [40, 26], [40, 69]]]], ["inline", "concat", [["subexpr", "t", ["forms.components-examples.flexberry-objectlistview.limit-function-example.captionSecondLimitFunction"], [], ["loc", [null, [41, 11], [41, 117]]]], ": ", ["get", "secondLimitType", ["loc", [null, [41, 123], [41, 138]]]]], [], ["loc", [null, [41, 2], [41, 140]]]], ["element", "action", ["clearLimitFunction"], ["on", "click"], ["loc", [null, [43, 26], [43, 68]]]], ["inline", "t", ["forms.components-examples.flexberry-objectlistview.limit-function-example.captionClearLimitFunction"], [], ["loc", [null, [44, 2], [44, 109]]]]],
       locals: [],
       templates: []
     };
@@ -50320,7 +50486,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+9fb24899"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+2fb9ed2c"});
 }
 
 /* jshint ignore:end */
