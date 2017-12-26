@@ -1329,6 +1329,9 @@ input::selection {
 .bgw-fix {
   position: relative;
 }
+.bgw-fix.mobile {
+  height: 50px;
+}
 .background-logo {
   height: 80px;
   position: fixed;
@@ -39154,7 +39157,7 @@ img.item-minus {
   transition: width 0.3s ease-in-out 0s;
 }
 #example-mobile .flexberry-content {
-  padding: 4em 10px 2em 10px;
+  padding: 0px 10px 2em 10px;
   border-bottom: none;
 }
 .flexberry-word-break {
