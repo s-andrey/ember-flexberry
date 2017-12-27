@@ -3841,10 +3841,16 @@ define('dummy/controllers/components-examples/flexberry-objectlistview/custom-fi
     actions: {
       toggleFilterByAnyWord: function toggleFilterByAnyWord() {
         this.toggleProperty('filterByAnyWord');
+        if (this.get('filterByAnyWord')) {
+          this.set('filterByAllWords', false);
+        }
       },
 
       toggleFilterByAllWords: function toggleFilterByAllWords() {
         this.toggleProperty('filterByAllWords');
+        if (this.get('filterByAllWords')) {
+          this.set('filterByAnyWord', false);
+        }
       },
 
       componentForFilter: function componentForFilter(type, relation) {
@@ -5128,10 +5134,16 @@ define('dummy/controllers/components-examples/flexberry-simpleolv/custom-filter'
     actions: {
       toggleFilterByAnyWord: function toggleFilterByAnyWord() {
         this.toggleProperty('filterByAnyWord');
+        if (this.get('filterByAnyWord')) {
+          this.set('filterByAllWords', false);
+        }
       },
 
       toggleFilterByAllWords: function toggleFilterByAllWords() {
         this.toggleProperty('filterByAllWords');
+        if (this.get('filterByAllWords')) {
+          this.set('filterByAnyWord', false);
+        }
       },
 
       componentForFilter: function componentForFilter(type, relation) {
@@ -37836,7 +37848,7 @@ define("dummy/templates/components/olv-toolbar", ["exports"], function (exports)
           morphs[6] = dom.createElementMorph(element7);
           return morphs;
         },
-        statements: [["inline", "input", [], ["type", "text", "placeholder", ["subexpr", "t", ["components.olv-toolbar.filter-by-any-match-placeholder"], [], ["loc", [null, [66, 18], [66, 78]]]], "value", ["subexpr", "@mut", [["get", "filterByAnyMatchText", ["loc", [null, [67, 12], [67, 32]]]]], [], []], "enter", "filterByAnyMatch"], ["loc", [null, [64, 36], [68, 6]]]], ["attribute", "class", ["concat", ["ui ", ["get", "buttonClass", ["loc", [null, [70, 18], [70, 29]]]], " icon button search-button"]]], ["attribute", "title", ["subexpr", "t", ["components.olv-toolbar.search-button-text"], [], ["loc", [null, [71, 12], [71, 61]]]]], ["element", "action", ["filterByAnyMatch"], [], ["loc", [null, [72, 6], [72, 35]]]], ["attribute", "class", ["concat", ["ui ", ["get", "buttonClass", ["loc", [null, [76, 18], [76, 29]]]], " icon button clear-search-button"]]], ["attribute", "title", ["subexpr", "t", ["components.olv-toolbar.clear-search-button-text"], [], ["loc", [null, [77, 12], [77, 67]]]]], ["element", "action", ["removeFilter"], [], ["loc", [null, [78, 6], [78, 31]]]]],
+        statements: [["inline", "input", [], ["type", "text", "placeholder", ["subexpr", "t", ["components.olv-toolbar.filter-by-any-match-placeholder"], [], ["loc", [null, [66, 18], [66, 78]]]], "value", ["subexpr", "@mut", [["get", "filterByAnyMatchText", ["loc", [null, [67, 12], [67, 32]]]]], [], []], "key-down", "keyDownFilterAction"], ["loc", [null, [64, 36], [68, 6]]]], ["attribute", "class", ["concat", ["ui ", ["get", "buttonClass", ["loc", [null, [70, 18], [70, 29]]]], " icon button search-button"]]], ["attribute", "title", ["subexpr", "t", ["components.olv-toolbar.search-button-text"], [], ["loc", [null, [71, 12], [71, 61]]]]], ["element", "action", ["filterByAnyMatch"], [], ["loc", [null, [72, 6], [72, 35]]]], ["attribute", "class", ["concat", ["ui ", ["get", "buttonClass", ["loc", [null, [76, 18], [76, 29]]]], " icon button clear-search-button"]]], ["attribute", "title", ["subexpr", "t", ["components.olv-toolbar.clear-search-button-text"], [], ["loc", [null, [77, 12], [77, 67]]]]], ["element", "action", ["removeFilter"], [], ["loc", [null, [78, 6], [78, 31]]]]],
         locals: [],
         templates: []
       };
@@ -50361,7 +50373,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+2c66131e"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+2950bbb6"});
 }
 
 /* jshint ignore:end */
