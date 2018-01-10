@@ -7821,7 +7821,7 @@
         },
         {
             "file": "addon/components/flexberry-lookup.js",
-            "line": 918,
+            "line": 920,
             "description": "Builds display text by selected model.",
             "itemtype": "method",
             "name": "_buildDisplayValue",
@@ -7836,7 +7836,7 @@
         },
         {
             "file": "addon/components/flexberry-lookup.js",
-            "line": 940,
+            "line": 942,
             "description": "Concatenates predicates.",
             "itemtype": "method",
             "name": "_conjuctPredicates",
@@ -7865,7 +7865,7 @@
         },
         {
             "file": "addon/components/flexberry-lookup.js",
-            "line": 968,
+            "line": 970,
             "description": "Handles changing current locale.\nIt reinits autocomplete or dropdown mode (depending on flag) in order to localize messages.",
             "itemtype": "method",
             "name": "_languageReinit",
@@ -22577,7 +22577,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " addon/components/flexberry-lookup.js:918"
+            "line": " addon/components/flexberry-lookup.js:920"
         },
         {
             "message": "replacing incorrect tag: returns with return",
