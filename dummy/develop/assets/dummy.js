@@ -6472,8 +6472,8 @@ define('dummy/controllers/ember-flexberry-dummy-application-user-edit/new', ['ex
     }
   });
 });
-define('dummy/controllers/ember-flexberry-dummy-application-user-list', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
-  exports['default'] = _emberFlexberryControllersListForm['default'].extend({
+define('dummy/controllers/ember-flexberry-dummy-application-user-list', ['exports', 'ember-flexberry/controllers/list-form', 'dummy/mixins/list-form-controller-operations-indication'], function (exports, _emberFlexberryControllersListForm, _dummyMixinsListFormControllerOperationsIndication) {
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend(_dummyMixinsListFormControllerOperationsIndication['default'], {
     /**
       Name of related edit form route.
        @property editFormRoute
@@ -6558,8 +6558,8 @@ define('dummy/controllers/ember-flexberry-dummy-localization-edit/new', ['export
     }
   });
 });
-define('dummy/controllers/ember-flexberry-dummy-localization-list', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
-  exports['default'] = _emberFlexberryControllersListForm['default'].extend({
+define('dummy/controllers/ember-flexberry-dummy-localization-list', ['exports', 'ember-flexberry/controllers/list-form', 'dummy/mixins/list-form-controller-operations-indication'], function (exports, _emberFlexberryControllersListForm, _dummyMixinsListFormControllerOperationsIndication) {
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend(_dummyMixinsListFormControllerOperationsIndication['default'], {
     /**
       Name of related edit form route.
        @property editFormRoute
@@ -6665,8 +6665,8 @@ define('dummy/controllers/ember-flexberry-dummy-suggestion-edit/new', ['exports'
     }
   });
 });
-define('dummy/controllers/ember-flexberry-dummy-suggestion-list', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
-  exports['default'] = _emberFlexberryControllersListForm['default'].extend({
+define('dummy/controllers/ember-flexberry-dummy-suggestion-list', ['exports', 'ember-flexberry/controllers/list-form', 'dummy/mixins/list-form-controller-operations-indication'], function (exports, _emberFlexberryControllersListForm, _dummyMixinsListFormControllerOperationsIndication) {
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend(_dummyMixinsListFormControllerOperationsIndication['default'], {
     /**
       Name of related edit form route.
        @property editFormRoute
@@ -10615,6 +10615,15 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
         'delete-error-message-caption': 'Delete operation failed'
       },
 
+      'list-form': {
+        'delete-success-message-caption': 'Delete operation succeed',
+        'delete-success-message': 'Object deleted',
+        'delete-error-message-caption': 'Delete operation failed',
+        'load-success-message-caption': 'Load operation succeed',
+        'load-success-message': 'Object loaded',
+        'load-error-message-caption': 'Load operation failed'
+      },
+
       'ember-flexberry-dummy-application-user-edit': {
         'caption': 'Application user',
         'name-caption': 'Name',
@@ -11595,6 +11604,15 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
         'delete-error-message-caption': 'Ошибка удаления'
       },
 
+      'list-form': {
+        'delete-success-message-caption': 'Удаление завершилось успешно',
+        'delete-success-message': 'Объект удален',
+        'delete-error-message-caption': 'Ошибка удаления',
+        'load-success-message-caption': 'Загрузка данных завершилась успешно',
+        'load-success-message': 'Объект загружен',
+        'load-error-message-caption': 'Ошибка загрузки данных'
+      },
+
       'ember-flexberry-dummy-application-user-edit': {
         'caption': 'Пользователь приложения',
         'name-caption': 'Имя',
@@ -12029,6 +12047,248 @@ define('dummy/mixins/link-action', ['exports', 'ember-link-action/mixins/link-ac
     }
   });
 });
+define('dummy/mixins/list-form-controller-operations-indication', ['exports', 'ember'], function (exports, _ember) {
+
+  /**
+    List forms controllers mixin which handles delete operations indication.
+  
+    @class ListFormControllerOperationsIndicationMixin
+  */
+  exports['default'] = _ember['default'].Mixin.create({
+    actions: {
+      /**
+        Handler for success ui-message component 'onShow' action.
+         @method actions.onSuccessMessageShow
+       */
+      onSuccessMessageShow: function onSuccessMessageShow() {},
+
+      /**
+        Handler for success ui-message component 'onHide' action.
+         @method actions.onSuccessMessageHide
+       */
+      onSuccessMessageHide: function onSuccessMessageHide() {
+        this.set('showFormSuccessMessage', undefined);
+      },
+
+      /**
+        Handler for error ui-message component 'onShow' action.
+         @method actions.onErrorMessageShow
+       */
+      onErrorMessageShow: function onErrorMessageShow() {},
+
+      /**
+        Handler for error ui-message component 'onHide' action.
+         @method actions.onErrorMessageHide
+       */
+      onErrorMessageHide: function onErrorMessageHide() {
+        this.set('showFormErrorMessage', undefined);
+      }
+    },
+
+    /**
+      Latest operation type ('save' or 'delete').
+       @property latestOperationType.
+      @type String
+     */
+    latestOperationType: undefined,
+
+    /**
+      Flag: indicates whether asynchronous operation succeed or not.
+       @property showFormSuccessMessage.
+      @type Boolean
+     */
+    showFormSuccessMessage: undefined,
+
+    /**
+      Success message caption related to current locale and operation type.
+       @property formSuccessMessageCaption.
+      @type String
+     */
+    formSuccessMessageCaption: _ember['default'].computed('i18n.locale', 'latestOperationType', function () {
+      var i18n = this.get('i18n');
+      if (this.get('latestOperationType') === 'delete') {
+        return i18n.t('forms.list-form.delete-success-message-caption');
+      }
+
+      return i18n.t('forms.list-form.load-success-message-caption');
+    }),
+
+    /**
+      Success message related to current locale and operation type.
+       @property formSuccessMessage.
+      @type String
+     */
+    formSuccessMessage: _ember['default'].computed('i18n.locale', 'latestOperationType', function () {
+      var i18n = this.get('i18n');
+      var message = null;
+      if (this.get('latestOperationType') === 'delete') {
+        message = i18n.t('forms.list-form.delete-success-message');
+      } else {
+        message = i18n.t('forms.list-form.load-success-message');
+      }
+
+      return new _ember['default'].Handlebars.SafeString('<ul><li>' + message + '</li></ul>');
+    }),
+
+    /**
+      Flag: indicates whether asynchronous operation failed or not.
+       @property showFormErrorMessage.
+      @type Boolean
+     */
+    showFormErrorMessage: undefined,
+
+    /**
+      Error message caption related to current locale and operation type.
+       @property formErrorMessageCaption.
+      @type String
+     */
+    formErrorMessageCaption: _ember['default'].computed('i18n.locale', 'latestOperationType', function () {
+      var i18n = this.get('i18n');
+      if (this.get('latestOperationType') === 'delete') {
+        return i18n.t('forms.list-form.delete-error-message-caption');
+      }
+
+      return i18n.t('forms.list-form.load-error-message-caption');
+    }),
+
+    /**
+      Success message related to current locale and operation type.
+       @property formErrorMessage
+      @type String
+     */
+    formErrorMessage: _ember['default'].computed('errorMessages.[]', function () {
+      var message = '';
+      var errorMessages = this.get('errorMessages');
+      if (_ember['default'].isArray(errorMessages)) {
+        errorMessages.forEach(function (currentErrorMessage) {
+          message += '<li>' + currentErrorMessage + '</li>';
+        });
+      }
+
+      return new _ember['default'].Handlebars.SafeString('<ul>' + message + '</ul>');
+    }),
+
+    /**
+      This method will be invoked before delete operation will be called.
+       @method onDeleteActionStarted.
+     */
+    onDeleteActionStarted: function onDeleteActionStarted() {
+      this._super.apply(this, arguments);
+
+      this.set('latestOperationType', 'delete');
+    },
+
+    /**
+      This method will be invoked when delete operation successfully completed.
+       @method onDeleteActionFulfilled.
+     */
+    onDeleteActionFulfilled: function onDeleteActionFulfilled() {
+      this._super.apply(this, arguments);
+
+      this.set('showFormSuccessMessage', true);
+      this.set('showFormErrorMessage', false);
+    },
+
+    /**
+      This method will be invoked when delete operation completed, but failed.
+       @method onDeleteActionRejected.
+      @param {Object} errorData Data about delete operation fail.
+     */
+    onDeleteActionRejected: function onDeleteActionRejected(errorData, record) {
+      this._super.apply(this, arguments);
+
+      this.set('showFormSuccessMessage', false);
+      this.set('showFormErrorMessage', true);
+    },
+
+    /**
+      This method will be invoked always when delete operation completed,
+      regardless of delete promise's state (was it fulfilled or rejected).
+       @method onDeleteActionAlways.
+      @param {Object} data Data about completed delete operation.
+     */
+    onDeleteActionAlways: function onDeleteActionAlways(data) {
+      this._super.apply(this, arguments);
+    }
+  });
+});
+/**
+  @module ember-flexberry-dummy
+*/
+define('dummy/mixins/list-form-route-operations-indication', ['exports', 'ember'], function (exports, _ember) {
+
+  /**
+    Edit forms routes mixin which handles load/delete operations indication.
+  
+    @class ListFormRouteOperationsIndicationMixin
+  */
+  exports['default'] = _ember['default'].Mixin.create({
+
+    setupController: function setupController(controller, model) {
+      this._super.apply(this, arguments);
+
+      this.set('copyController', controller);
+      controller.set('showFormSuccessMessage', false);
+      controller.set('showFormErrorMessage', false);
+    },
+
+    /**
+      @property copyController.
+     */
+    copyController: undefined,
+
+    /**
+      This method will be invoked before load operation will be called.
+       @method onModelLoadingStarted.
+      @param {Object} queryParameters
+     */
+    onModelLoadingStarted: function onModelLoadingStarted(queryParameters) {
+      this._super.apply(this, arguments);
+
+      var controller = this.get('copyController');
+      controller.set('latestOperationType', 'load');
+    },
+
+    /**
+      This method will be invoked when load operation successfully completed.
+       @method onModelLoadingFulfilled.
+      @param {Object} records
+     */
+    onModelLoadingFulfilled: function onModelLoadingFulfilled(records) {
+      this._super.apply(this, arguments);
+
+      var controller = this.get('copyController');
+      controller.set('showFormSuccessMessage', true);
+      controller.set('showFormErrorMessage', false);
+    },
+
+    /**
+      This method will be invoked when load operation completed, but failed.
+       @method onModelLoadingRejected.
+      @param {Object} errorData Data about load operation fail.
+     */
+    onModelLoadingRejected: function onModelLoadingRejected(errorData) {
+      this._super.apply(this, arguments);
+
+      var controller = this.get('copyController');
+      controller.set('showFormSuccessMessage', false);
+      controller.set('showFormErrorMessage', true);
+    },
+
+    /**
+      This method will be invoked always when load operation completed,
+      regardless of load promise's state (was it fulfilled or rejected).
+       @method onModelLoadingAlways.
+      @param {Object} data Data about completed load operation.
+     */
+    onModelLoadingAlways: function onModelLoadingAlways(data) {
+      this._super.apply(this, arguments);
+    }
+  });
+});
+/**
+  @module ember-flexberry-dummy
+*/
 define('dummy/models/components-examples/flexberry-checkbox/settings-example/base', ['exports', 'ember-data', 'ember-flexberry-data'], function (exports, _emberData, _emberFlexberryData) {
 
   var Model = _emberFlexberryData.Projection.Model.extend({
@@ -16043,8 +16303,8 @@ define('dummy/routes/ember-flexberry-dummy-application-user-edit/new', ['exports
     templateName: 'ember-flexberry-dummy-application-user-edit'
   });
 });
-define('dummy/routes/ember-flexberry-dummy-application-user-list', ['exports', 'ember-flexberry/routes/list-form'], function (exports, _emberFlexberryRoutesListForm) {
-  exports['default'] = _emberFlexberryRoutesListForm['default'].extend({
+define('dummy/routes/ember-flexberry-dummy-application-user-list', ['exports', 'ember-flexberry/routes/list-form', 'dummy/mixins/list-form-route-operations-indication'], function (exports, _emberFlexberryRoutesListForm, _dummyMixinsListFormRouteOperationsIndication) {
+  exports['default'] = _emberFlexberryRoutesListForm['default'].extend(_dummyMixinsListFormRouteOperationsIndication['default'], {
     /**
       Name of model projection to be used as record's properties limitation.
        @property modelProjection
@@ -16222,8 +16482,8 @@ define('dummy/routes/ember-flexberry-dummy-localization-edit/new', ['exports', '
     templateName: 'ember-flexberry-dummy-localization-edit'
   });
 });
-define('dummy/routes/ember-flexberry-dummy-localization-list', ['exports', 'ember-flexberry/routes/list-form'], function (exports, _emberFlexberryRoutesListForm) {
-  exports['default'] = _emberFlexberryRoutesListForm['default'].extend({
+define('dummy/routes/ember-flexberry-dummy-localization-list', ['exports', 'ember-flexberry/routes/list-form', 'dummy/mixins/list-form-route-operations-indication'], function (exports, _emberFlexberryRoutesListForm, _dummyMixinsListFormRouteOperationsIndication) {
+  exports['default'] = _emberFlexberryRoutesListForm['default'].extend(_dummyMixinsListFormRouteOperationsIndication['default'], {
     /**
       Name of model projection to be used as record's properties limitation.
        @property modelProjection
@@ -16350,8 +16610,8 @@ define('dummy/routes/ember-flexberry-dummy-suggestion-edit/new', ['exports', 'em
     templateName: 'ember-flexberry-dummy-suggestion-edit'
   });
 });
-define('dummy/routes/ember-flexberry-dummy-suggestion-list', ['exports', 'ember-flexberry/routes/list-form'], function (exports, _emberFlexberryRoutesListForm) {
-  exports['default'] = _emberFlexberryRoutesListForm['default'].extend({
+define('dummy/routes/ember-flexberry-dummy-suggestion-list', ['exports', 'ember-flexberry/routes/list-form', 'dummy/mixins/list-form-route-operations-indication'], function (exports, _emberFlexberryRoutesListForm, _dummyMixinsListFormRouteOperationsIndication) {
+  exports['default'] = _emberFlexberryRoutesListForm['default'].extend(_dummyMixinsListFormRouteOperationsIndication['default'], {
     /**
      Name of model projection to be used as record's properties limitation.
       @property modelProjection
@@ -40682,7 +40942,7 @@ define("dummy/templates/ember-flexberry-dummy-application-user-list", ["exports"
             "column": 0
           },
           "end": {
-            "line": 27,
+            "line": 49,
             "column": 0
           }
         },
@@ -40704,11 +40964,27 @@ define("dummy/templates/ember-flexberry-dummy-application-user-list", ["exports"
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "row");
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
@@ -40718,14 +40994,17 @@ define("dummy/templates/ember-flexberry-dummy-application-user-list", ["exports"
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(3);
+        var element0 = dom.childAt(fragment, [4]);
+        var morphs = new Array(5);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
         morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
-        morphs[2] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        morphs[2] = dom.createMorphAt(element0, 1, 1);
+        morphs[3] = dom.createMorphAt(element0, 3, 3);
+        morphs[4] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-application-user-list.caption"], [], ["loc", [null, [2, 4], [2, 69]]]], ["inline", "flexberry-objectlistview", [], ["content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [5, 12], [5, 17]]]]], [], []], "modelName", "ember-flexberry-dummy-application-user", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [7, 20], [7, 35]]]]], [], []], "editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [8, 18], [8, 31]]]]], [], []], "createNewButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [11, 12], [11, 27]]]]], [], []], "orderable", true, "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [13, 10], [13, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [14, 17], [14, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [15, 18], [15, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [16, 22], [16, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [17, 20], [17, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [18, 16], [18, 27]]]]], [], []], "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [19, 17], [19, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [20, 23], [20, 52]]]], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [21, 17], [21, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [22, 13], [22, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [23, 13], [23, 32]]]], "componentName", "applicationUserObjectListView"], ["loc", [null, [4, 2], [25, 4]]]]],
+      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-application-user-list.caption"], [], ["loc", [null, [2, 4], [2, 69]]]], ["inline", "ui-message", [], ["type", "success", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormSuccessMessage", ["loc", [null, [7, 12], [7, 34]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formSuccessMessageCaption", ["loc", [null, [8, 12], [8, 37]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formSuccessMessage", ["loc", [null, [9, 12], [9, 30]]]]], [], []], "onShow", ["subexpr", "action", ["onSuccessMessageShow"], [], ["loc", [null, [10, 11], [10, 42]]]], "onHide", ["subexpr", "action", ["onSuccessMessageHide"], [], ["loc", [null, [11, 11], [11, 42]]]]], ["loc", [null, [4, 2], [12, 4]]]], ["inline", "ui-message", [], ["type", "error", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormErrorMessage", ["loc", [null, [16, 12], [16, 32]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formErrorMessageCaption", ["loc", [null, [17, 12], [17, 35]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formErrorMessage", ["loc", [null, [18, 12], [18, 28]]]]], [], []], "onShow", ["subexpr", "action", ["onErrorMessageShow"], [], ["loc", [null, [19, 11], [19, 40]]]], "onHide", ["subexpr", "action", ["onErrorMessageHide"], [], ["loc", [null, [20, 11], [20, 40]]]]], ["loc", [null, [13, 2], [21, 4]]]], ["inline", "flexberry-objectlistview", [], ["content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [24, 12], [24, 17]]]]], [], []], "modelName", "ember-flexberry-dummy-application-user", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [26, 20], [26, 35]]]]], [], []], "editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [27, 18], [27, 31]]]]], [], []], "createNewButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [30, 12], [30, 27]]]]], [], []], "orderable", true, "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [32, 10], [32, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [33, 17], [33, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [34, 18], [34, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [35, 22], [35, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [36, 20], [36, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [37, 16], [37, 27]]]]], [], []], "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [38, 17], [38, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [39, 23], [39, 52]]]], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [40, 17], [40, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [41, 13], [41, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [42, 13], [42, 32]]]], "componentName", "applicationUserObjectListView", "deleteButton", true, "showCheckBoxInRow", true], ["loc", [null, [23, 2], [46, 4]]]]],
       locals: [],
       templates: []
     };
@@ -41898,7 +42177,7 @@ define("dummy/templates/ember-flexberry-dummy-localization-list", ["exports"], f
             "column": 0
           },
           "end": {
-            "line": 27,
+            "line": 47,
             "column": 0
           }
         },
@@ -41920,11 +42199,27 @@ define("dummy/templates/ember-flexberry-dummy-localization-list", ["exports"], f
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "row");
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
@@ -41934,14 +42229,17 @@ define("dummy/templates/ember-flexberry-dummy-localization-list", ["exports"], f
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(3);
+        var element0 = dom.childAt(fragment, [4]);
+        var morphs = new Array(5);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
         morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
-        morphs[2] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        morphs[2] = dom.createMorphAt(element0, 1, 1);
+        morphs[3] = dom.createMorphAt(element0, 3, 3);
+        morphs[4] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-localization-list.caption"], [], ["loc", [null, [2, 4], [2, 65]]]], ["inline", "flexberry-objectlistview", [], ["content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [5, 12], [5, 17]]]]], [], []], "modelName", "ember-flexberry-dummy-localization", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [7, 20], [7, 35]]]]], [], []], "editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [8, 18], [8, 31]]]]], [], []], "createNewButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [11, 12], [11, 27]]]]], [], []], "orderable", true, "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [13, 10], [13, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [14, 17], [14, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [15, 18], [15, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [16, 22], [16, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [17, 20], [17, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [18, 16], [18, 27]]]]], [], []], "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [19, 17], [19, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [20, 23], [20, 52]]]], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [21, 17], [21, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [22, 13], [22, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [23, 13], [23, 32]]]], "componentName", "localizationObjectListView"], ["loc", [null, [4, 2], [25, 6]]]]],
+      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-localization-list.caption"], [], ["loc", [null, [2, 4], [2, 65]]]], ["inline", "ui-message", [], ["type", "success", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormSuccessMessage", ["loc", [null, [7, 12], [7, 34]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formSuccessMessageCaption", ["loc", [null, [8, 12], [8, 37]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formSuccessMessage", ["loc", [null, [9, 12], [9, 30]]]]], [], []], "onShow", ["subexpr", "action", ["onSuccessMessageShow"], [], ["loc", [null, [10, 11], [10, 42]]]], "onHide", ["subexpr", "action", ["onSuccessMessageHide"], [], ["loc", [null, [11, 11], [11, 42]]]]], ["loc", [null, [4, 2], [12, 4]]]], ["inline", "ui-message", [], ["type", "error", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormErrorMessage", ["loc", [null, [16, 12], [16, 32]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formErrorMessageCaption", ["loc", [null, [17, 12], [17, 35]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formErrorMessage", ["loc", [null, [18, 12], [18, 28]]]]], [], []], "onShow", ["subexpr", "action", ["onErrorMessageShow"], [], ["loc", [null, [19, 11], [19, 40]]]], "onHide", ["subexpr", "action", ["onErrorMessageHide"], [], ["loc", [null, [20, 11], [20, 40]]]]], ["loc", [null, [13, 2], [21, 4]]]], ["inline", "flexberry-objectlistview", [], ["content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [24, 12], [24, 17]]]]], [], []], "modelName", "ember-flexberry-dummy-localization", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [26, 20], [26, 35]]]]], [], []], "editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [27, 18], [27, 31]]]]], [], []], "createNewButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [30, 12], [30, 27]]]]], [], []], "orderable", true, "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [32, 10], [32, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [33, 17], [33, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [34, 18], [34, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [35, 22], [35, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [36, 20], [36, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [37, 16], [37, 27]]]]], [], []], "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [38, 17], [38, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [39, 23], [39, 52]]]], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [40, 17], [40, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [41, 13], [41, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [42, 13], [42, 32]]]], "componentName", "localizationObjectListView"], ["loc", [null, [23, 2], [44, 6]]]]],
       locals: [],
       templates: []
     };
@@ -42586,7 +42884,7 @@ define("dummy/templates/ember-flexberry-dummy-suggestion-list", ["exports"], fun
             "column": 0
           },
           "end": {
-            "line": 31,
+            "line": 51,
             "column": 0
           }
         },
@@ -42608,11 +42906,27 @@ define("dummy/templates/ember-flexberry-dummy-suggestion-list", ["exports"], fun
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "row");
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
@@ -42622,14 +42936,17 @@ define("dummy/templates/ember-flexberry-dummy-suggestion-list", ["exports"], fun
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(3);
+        var element0 = dom.childAt(fragment, [4]);
+        var morphs = new Array(5);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
         morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
-        morphs[2] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        morphs[2] = dom.createMorphAt(element0, 1, 1);
+        morphs[3] = dom.createMorphAt(element0, 3, 3);
+        morphs[4] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-list.caption"], [], ["loc", [null, [2, 4], [2, 63]]]], ["inline", "flexberry-objectlistview", [], ["editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [5, 18], [5, 31]]]]], [], []], "showCheckBoxInRow", true, "modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [8, 20], [8, 35]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [9, 12], [9, 17]]]]], [], []], "createNewButton", true, "refreshButton", true, "exportExcelButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [13, 12], [13, 27]]]]], [], []], "orderable", true, "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [15, 17], [15, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [16, 23], [16, 52]]]], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [17, 10], [17, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [18, 17], [18, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [19, 18], [19, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [20, 22], [20, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [21, 20], [21, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [22, 16], [22, 27]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [23, 17], [23, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [24, 13], [24, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [25, 13], [25, 32]]]], "componentName", "SuggestionObjectListView", "showDeleteMenuItemInRow", true, "deleteButton", true], ["loc", [null, [4, 2], [29, 4]]]]],
+      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-list.caption"], [], ["loc", [null, [2, 4], [2, 63]]]], ["inline", "ui-message", [], ["type", "success", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormSuccessMessage", ["loc", [null, [7, 12], [7, 34]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formSuccessMessageCaption", ["loc", [null, [8, 12], [8, 37]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formSuccessMessage", ["loc", [null, [9, 12], [9, 30]]]]], [], []], "onShow", ["subexpr", "action", ["onSuccessMessageShow"], [], ["loc", [null, [10, 11], [10, 42]]]], "onHide", ["subexpr", "action", ["onSuccessMessageHide"], [], ["loc", [null, [11, 11], [11, 42]]]]], ["loc", [null, [4, 2], [12, 4]]]], ["inline", "ui-message", [], ["type", "error", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormErrorMessage", ["loc", [null, [16, 12], [16, 32]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formErrorMessageCaption", ["loc", [null, [17, 12], [17, 35]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formErrorMessage", ["loc", [null, [18, 12], [18, 28]]]]], [], []], "onShow", ["subexpr", "action", ["onErrorMessageShow"], [], ["loc", [null, [19, 11], [19, 40]]]], "onHide", ["subexpr", "action", ["onErrorMessageHide"], [], ["loc", [null, [20, 11], [20, 40]]]]], ["loc", [null, [13, 2], [21, 4]]]], ["inline", "flexberry-objectlistview", [], ["editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [24, 18], [24, 31]]]]], [], []], "showCheckBoxInRow", true, "modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [27, 20], [27, 35]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [28, 12], [28, 17]]]]], [], []], "createNewButton", true, "refreshButton", true, "exportExcelButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [32, 12], [32, 27]]]]], [], []], "orderable", true, "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [34, 17], [34, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [35, 23], [35, 52]]]], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [36, 10], [36, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [37, 17], [37, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [38, 18], [38, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [39, 22], [39, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [40, 20], [40, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [41, 16], [41, 27]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [42, 17], [42, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [43, 13], [43, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [44, 13], [44, 32]]]], "componentName", "SuggestionObjectListView", "showDeleteMenuItemInRow", true, "deleteButton", true], ["loc", [null, [23, 2], [48, 4]]]]],
       locals: [],
       templates: []
     };
@@ -50650,7 +50967,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+b1609c77"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+40f9ab66"});
 }
 
 /* jshint ignore:end */

@@ -11832,6 +11832,40 @@ define('dummy/tests/locales/ru/translations.jshint', ['exports'], function (expo
     assert.ok(true, 'locales/ru/translations.js should pass jshint.');
   });
 });
+define('dummy/tests/mixins/list-form-controller-operations-indication.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - mixins');
+  test('mixins/list-form-controller-operations-indication.js should pass jscs', function () {
+    ok(true, 'mixins/list-form-controller-operations-indication.js should pass jscs.');
+  });
+});
+define('dummy/tests/mixins/list-form-controller-operations-indication.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - mixins/list-form-controller-operations-indication.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'mixins/list-form-controller-operations-indication.js should pass jshint.');
+  });
+});
+define('dummy/tests/mixins/list-form-route-operations-indication.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - mixins');
+  test('mixins/list-form-route-operations-indication.js should pass jscs', function () {
+    ok(true, 'mixins/list-form-route-operations-indication.js should pass jscs.');
+  });
+});
+define('dummy/tests/mixins/list-form-route-operations-indication.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - mixins/list-form-route-operations-indication.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'mixins/list-form-route-operations-indication.js should pass jshint.');
+  });
+});
 define('dummy/tests/models/components-examples/flexberry-checkbox/settings-example/base.jscs-test', ['exports'], function (exports) {
   'use strict';
 
