@@ -47972,11 +47972,11 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
           "loc": {
             "source": null,
             "start": {
-              "line": 38,
+              "line": 40,
               "column": 6
             },
             "end": {
-              "line": 42,
+              "line": 44,
               "column": 6
             }
           },
@@ -48011,7 +48011,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
           morphs[2] = dom.createAttrMorph(element4, 'class');
           return morphs;
         },
-        statements: [["attribute", "class", ["concat", ["ui button icon mini ", ["get", "buttonClass", ["loc", [null, [39, 45], [39, 56]]]]]]], ["element", "action", ["expand"], ["bubbles", false], ["loc", [null, [39, 60], [39, 93]]]], ["attribute", "class", ["concat", [["subexpr", "if", [["get", "_expanded", ["loc", [null, [40, 25], [40, 34]]]], "minus", "plus"], [], ["loc", [null, [40, 20], [40, 51]]]], " icon"]]]],
+        statements: [["attribute", "class", ["concat", ["ui button icon mini ", ["get", "buttonClass", ["loc", [null, [41, 45], [41, 56]]]]]]], ["element", "action", ["expand"], ["bubbles", false], ["loc", [null, [41, 60], [41, 93]]]], ["attribute", "class", ["concat", [["subexpr", "if", [["get", "_expanded", ["loc", [null, [42, 25], [42, 34]]]], "minus", "plus"], [], ["loc", [null, [42, 20], [42, 51]]]], " icon"]]]],
         locals: [],
         templates: []
       };
@@ -48025,11 +48025,11 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             "loc": {
               "source": null,
               "start": {
-                "line": 49,
+                "line": 51,
                 "column": 10
               },
               "end": {
-                "line": 54,
+                "line": 56,
                 "column": 10
               }
             },
@@ -48070,7 +48070,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             morphs[1] = dom.createMorphAt(dom.childAt(element1, [3]), 0, 0);
             return morphs;
           },
-          statements: [["element", "action", [["get", "rowClick", ["loc", [null, [50, 40], [50, 48]]]], ["get", "record", ["loc", [null, [50, 49], [50, 55]]]]], [], ["loc", [null, [50, 30], [50, 58]]]], ["inline", "t", ["components.object-list-view.menu-in-row.edit-menu-item-title"], [], ["loc", [null, [52, 20], [52, 88]]]]],
+          statements: [["element", "action", [["get", "rowClick", ["loc", [null, [52, 40], [52, 48]]]], ["get", "record", ["loc", [null, [52, 49], [52, 55]]]]], [], ["loc", [null, [52, 30], [52, 58]]]], ["inline", "t", ["components.object-list-view.menu-in-row.edit-menu-item-title"], [], ["loc", [null, [54, 20], [54, 88]]]]],
           locals: [],
           templates: []
         };
@@ -48083,11 +48083,11 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             "loc": {
               "source": null,
               "start": {
-                "line": 55,
+                "line": 57,
                 "column": 10
               },
               "end": {
-                "line": 60,
+                "line": 62,
                 "column": 10
               }
             },
@@ -48128,7 +48128,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
             return morphs;
           },
-          statements: [["element", "action", [["get", "deleteRow", ["loc", [null, [56, 40], [56, 49]]]], ["get", "record", ["loc", [null, [56, 50], [56, 56]]]]], [], ["loc", [null, [56, 30], [56, 59]]]], ["inline", "t", ["components.object-list-view.menu-in-row.delete-menu-item-title"], [], ["loc", [null, [58, 20], [58, 90]]]]],
+          statements: [["element", "action", [["get", "deleteRow", ["loc", [null, [58, 40], [58, 49]]]], ["get", "record", ["loc", [null, [58, 50], [58, 56]]]]], [], ["loc", [null, [58, 30], [58, 59]]]], ["inline", "t", ["components.object-list-view.menu-in-row.delete-menu-item-title"], [], ["loc", [null, [60, 20], [60, 90]]]]],
           locals: [],
           templates: []
         };
@@ -48140,11 +48140,11 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
           "loc": {
             "source": null,
             "start": {
-              "line": 44,
+              "line": 46,
               "column": 2
             },
             "end": {
-              "line": 64,
+              "line": 66,
               "column": 2
             }
           },
@@ -48199,7 +48199,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
           morphs[1] = dom.createMorphAt(element2, 2, 2);
           return morphs;
         },
-        statements: [["block", "if", [["get", "showEditMenuItemInRow", ["loc", [null, [49, 16], [49, 37]]]]], [], 0, null, ["loc", [null, [49, 10], [54, 17]]]], ["block", "if", [["get", "showDeleteMenuItemInRow", ["loc", [null, [55, 16], [55, 39]]]]], [], 1, null, ["loc", [null, [55, 10], [60, 17]]]]],
+        statements: [["block", "if", [["get", "showEditMenuItemInRow", ["loc", [null, [51, 16], [51, 37]]]]], [], 0, null, ["loc", [null, [51, 10], [56, 17]]]], ["block", "if", [["get", "showDeleteMenuItemInRow", ["loc", [null, [57, 16], [57, 39]]]]], [], 1, null, ["loc", [null, [57, 10], [62, 17]]]]],
         locals: [],
         templates: [child0, child1]
       };
@@ -48213,11 +48213,11 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             "loc": {
               "source": null,
               "start": {
-                "line": 67,
+                "line": 69,
                 "column": 2
               },
               "end": {
-                "line": 89,
+                "line": 91,
                 "column": 2
               }
             },
@@ -48242,7 +48242,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
             return morphs;
           },
-          statements: [["inline", "object-list-view-row", [], ["record", ["subexpr", "@mut", [["get", "record", ["loc", [null, [69, 13], [69, 19]]]]], [], []], "columns", ["subexpr", "@mut", [["get", "columns", ["loc", [null, [70, 14], [70, 21]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [71, 15], [71, 23]]]]], [], []], "required", ["subexpr", "@mut", [["get", "required", ["loc", [null, [72, 15], [72, 23]]]]], [], []], "showMenuColumn", ["subexpr", "@mut", [["get", "showMenuColumn", ["loc", [null, [73, 21], [73, 35]]]]], [], []], "showHelperColumn", ["subexpr", "@mut", [["get", "showHelperColumn", ["loc", [null, [74, 23], [74, 39]]]]], [], []], "defaultRowConfig", ["subexpr", "@mut", [["get", "defaultRowConfig", ["loc", [null, [75, 23], [75, 39]]]]], [], []], "showValidationMessages", ["subexpr", "@mut", [["get", "showValidationMessages", ["loc", [null, [76, 29], [76, 51]]]]], [], []], "showAsteriskInRow", ["subexpr", "@mut", [["get", "showAsteriskInRow", ["loc", [null, [77, 24], [77, 41]]]]], [], []], "showCheckBoxInRow", ["subexpr", "@mut", [["get", "showCheckBoxInRow", ["loc", [null, [78, 24], [78, 41]]]]], [], []], "showDeleteButtonInRow", ["subexpr", "@mut", [["get", "showDeleteButtonInRow", ["loc", [null, [79, 28], [79, 49]]]]], [], []], "inHierarchicalMode", ["subexpr", "@mut", [["get", "inHierarchicalMode", ["loc", [null, [80, 25], [80, 43]]]]], [], []], "singleColumnCellComponent", ["subexpr", "@mut", [["get", "singleColumnCellComponent", ["loc", [null, [81, 32], [81, 57]]]]], [], []], "loadRecords", ["subexpr", "@mut", [["get", "loadRecords", ["loc", [null, [82, 18], [82, 29]]]]], [], []], "rowClick", ["subexpr", "@mut", [["get", "rowClick", ["loc", [null, [83, 15], [83, 23]]]]], [], []], "selectRow", ["subexpr", "@mut", [["get", "selectRow", ["loc", [null, [84, 16], [84, 25]]]]], [], []], "deleteRow", ["subexpr", "@mut", [["get", "deleteRow", ["loc", [null, [85, 16], [85, 25]]]]], [], []], "_currentLevel", ["subexpr", "@mut", [["get", "_currentLevel", ["loc", [null, [86, 20], [86, 33]]]]], [], []], "hierarchicalIndent", ["subexpr", "@mut", [["get", "_hierarchicalIndent", ["loc", [null, [87, 25], [87, 44]]]]], [], []]], ["loc", [null, [68, 4], [88, 6]]]]],
+          statements: [["inline", "object-list-view-row", [], ["record", ["subexpr", "@mut", [["get", "record", ["loc", [null, [71, 13], [71, 19]]]]], [], []], "columns", ["subexpr", "@mut", [["get", "columns", ["loc", [null, [72, 14], [72, 21]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [73, 15], [73, 23]]]]], [], []], "required", ["subexpr", "@mut", [["get", "required", ["loc", [null, [74, 15], [74, 23]]]]], [], []], "showMenuColumn", ["subexpr", "@mut", [["get", "showMenuColumn", ["loc", [null, [75, 21], [75, 35]]]]], [], []], "showHelperColumn", ["subexpr", "@mut", [["get", "showHelperColumn", ["loc", [null, [76, 23], [76, 39]]]]], [], []], "defaultRowConfig", ["subexpr", "@mut", [["get", "defaultRowConfig", ["loc", [null, [77, 23], [77, 39]]]]], [], []], "showValidationMessages", ["subexpr", "@mut", [["get", "showValidationMessages", ["loc", [null, [78, 29], [78, 51]]]]], [], []], "showAsteriskInRow", ["subexpr", "@mut", [["get", "showAsteriskInRow", ["loc", [null, [79, 24], [79, 41]]]]], [], []], "showCheckBoxInRow", ["subexpr", "@mut", [["get", "showCheckBoxInRow", ["loc", [null, [80, 24], [80, 41]]]]], [], []], "showDeleteButtonInRow", ["subexpr", "@mut", [["get", "showDeleteButtonInRow", ["loc", [null, [81, 28], [81, 49]]]]], [], []], "inHierarchicalMode", ["subexpr", "@mut", [["get", "inHierarchicalMode", ["loc", [null, [82, 25], [82, 43]]]]], [], []], "singleColumnCellComponent", ["subexpr", "@mut", [["get", "singleColumnCellComponent", ["loc", [null, [83, 32], [83, 57]]]]], [], []], "loadRecords", ["subexpr", "@mut", [["get", "loadRecords", ["loc", [null, [84, 18], [84, 29]]]]], [], []], "rowClick", ["subexpr", "@mut", [["get", "rowClick", ["loc", [null, [85, 15], [85, 23]]]]], [], []], "selectRow", ["subexpr", "@mut", [["get", "selectRow", ["loc", [null, [86, 16], [86, 25]]]]], [], []], "deleteRow", ["subexpr", "@mut", [["get", "deleteRow", ["loc", [null, [87, 16], [87, 25]]]]], [], []], "_currentLevel", ["subexpr", "@mut", [["get", "_currentLevel", ["loc", [null, [88, 20], [88, 33]]]]], [], []], "hierarchicalIndent", ["subexpr", "@mut", [["get", "_hierarchicalIndent", ["loc", [null, [89, 25], [89, 44]]]]], [], []]], ["loc", [null, [70, 4], [90, 6]]]]],
           locals: ["record"],
           templates: []
         };
@@ -48254,11 +48254,11 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
           "loc": {
             "source": null,
             "start": {
-              "line": 66,
+              "line": 68,
               "column": 0
             },
             "end": {
-              "line": 90,
+              "line": 92,
               "column": 0
             }
           },
@@ -48281,7 +48281,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
           dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["block", "each", [["get", "records", ["loc", [null, [67, 10], [67, 17]]]]], ["key", "key"], 0, null, ["loc", [null, [67, 2], [89, 11]]]]],
+        statements: [["block", "each", [["get", "records", ["loc", [null, [69, 10], [69, 17]]]]], ["key", "key"], 0, null, ["loc", [null, [69, 2], [91, 11]]]]],
         locals: [],
         templates: [child0]
       };
@@ -48300,7 +48300,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
             "column": 0
           },
           "end": {
-            "line": 91,
+            "line": 93,
             "column": 0
           }
         },
@@ -48364,8 +48364,8 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
         morphs[1] = dom.createAttrMorph(element9, 'class');
         morphs[2] = dom.createMorphAt(dom.childAt(element9, [1]), 0, 0);
         morphs[3] = dom.createMorphAt(element9, 3, 3);
-        morphs[4] = dom.createAttrMorph(element10, 'style');
-        morphs[5] = dom.createElementMorph(element10);
+        morphs[4] = dom.createAttrMorph(element10, 'onclick');
+        morphs[5] = dom.createAttrMorph(element10, 'style');
         morphs[6] = dom.createMorphAt(element10, 1, 1);
         morphs[7] = dom.createMorphAt(element10, 3, 3);
         morphs[8] = dom.createMorphAt(element8, 5, 5);
@@ -48373,7 +48373,7 @@ define("dummy/templates/mobile/components/object-list-view-row", ["exports"], fu
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["attribute", "class", ["concat", [["get", "record.rowConfig.customClass", ["loc", [null, [1, 13], [1, 41]]]]]]], ["attribute", "class", ["concat", ["object-list-view-helper-column ", ["subexpr", "unless", [["get", "showHelperColumn", ["loc", [null, [2, 53], [2, 69]]]], "hidden"], [], ["loc", [null, [2, 44], [2, 80]]]]]]], ["content", "record.key", ["loc", [null, [3, 24], [3, 38]]]], ["block", "if", [["get", "showHelperColumn", ["loc", [null, [4, 10], [4, 26]]]]], [], 0, null, ["loc", [null, [4, 4], [27, 11]]]], ["attribute", "style", ["concat", ["padding-left:", ["get", "hierarchicalIndent", ["loc", [null, [29, 78], [29, 96]]]], "px;"]]], ["element", "action", [["get", "rowClick", ["loc", [null, [29, 17], [29, 25]]]], ["get", "record", ["loc", [null, [29, 26], [29, 32]]]]], ["preventDefault", false], ["loc", [null, [29, 8], [29, 55]]]], ["inline", "component", [["get", "singleColumnCellComponent.componentName", ["loc", [null, [30, 18], [30, 57]]]]], ["model", ["subexpr", "@mut", [["get", "record.data", ["loc", [null, [31, 14], [31, 25]]]]], [], []], "columns", ["subexpr", "@mut", [["get", "columns", ["loc", [null, [32, 16], [32, 23]]]]], [], []], "showValidationMessages", ["subexpr", "@mut", [["get", "showValidationMessages", ["loc", [null, [33, 31], [33, 53]]]]], [], []], "hasEditableValues", ["subexpr", "@mut", [["get", "hasEditableValues", ["loc", [null, [34, 26], [34, 43]]]]], [], []], "dynamicProperties", ["subexpr", "@mut", [["get", "singleColumnCellComponent.componentProperties", ["loc", [null, [35, 26], [35, 71]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [36, 17], [36, 25]]]]], [], []]], ["loc", [null, [30, 6], [37, 8]]]], ["block", "if", [["get", "hasRecords", ["loc", [null, [38, 12], [38, 22]]]]], [], 1, null, ["loc", [null, [38, 6], [42, 13]]]], ["block", "if", [["get", "showMenuColumn", ["loc", [null, [44, 8], [44, 22]]]]], [], 2, null, ["loc", [null, [44, 2], [64, 9]]]], ["block", "if", [["subexpr", "and", [["get", "_expanded", ["loc", [null, [66, 11], [66, 20]]]], ["get", "inHierarchicalMode", ["loc", [null, [66, 21], [66, 39]]]]], [], ["loc", [null, [66, 6], [66, 40]]]]], [], 3, null, ["loc", [null, [66, 0], [90, 7]]]]],
+      statements: [["attribute", "class", ["concat", [["get", "record.rowConfig.customClass", ["loc", [null, [1, 13], [1, 41]]]]]]], ["attribute", "class", ["concat", ["object-list-view-helper-column ", ["subexpr", "unless", [["get", "showHelperColumn", ["loc", [null, [2, 53], [2, 69]]]], "hidden"], [], ["loc", [null, [2, 44], [2, 80]]]]]]], ["content", "record.key", ["loc", [null, [3, 24], [3, 38]]]], ["block", "if", [["get", "showHelperColumn", ["loc", [null, [4, 10], [4, 26]]]]], [], 0, null, ["loc", [null, [4, 4], [27, 11]]]], ["attribute", "onclick", ["subexpr", "action", ["onRowClick", ["get", "record", ["loc", [null, [30, 34], [30, 40]]]], ["subexpr", "hash", [], ["column", ["get", "columns", ["loc", [null, [30, 54], [30, 61]]]]], ["loc", [null, [30, 41], [30, 62]]]]], ["preventDefault", false], ["loc", [null, [30, 12], [30, 85]]]]], ["attribute", "style", ["concat", ["padding-left:", ["get", "hierarchicalIndent", ["loc", [null, [31, 26], [31, 44]]]], "px;"]]], ["inline", "component", [["get", "singleColumnCellComponent.componentName", ["loc", [null, [32, 18], [32, 57]]]]], ["model", ["subexpr", "@mut", [["get", "record.data", ["loc", [null, [33, 14], [33, 25]]]]], [], []], "columns", ["subexpr", "@mut", [["get", "columns", ["loc", [null, [34, 16], [34, 23]]]]], [], []], "showValidationMessages", ["subexpr", "@mut", [["get", "showValidationMessages", ["loc", [null, [35, 31], [35, 53]]]]], [], []], "hasEditableValues", ["subexpr", "@mut", [["get", "hasEditableValues", ["loc", [null, [36, 26], [36, 43]]]]], [], []], "dynamicProperties", ["subexpr", "@mut", [["get", "singleColumnCellComponent.componentProperties", ["loc", [null, [37, 26], [37, 71]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [38, 17], [38, 25]]]]], [], []]], ["loc", [null, [32, 6], [39, 8]]]], ["block", "if", [["get", "hasRecords", ["loc", [null, [40, 12], [40, 22]]]]], [], 1, null, ["loc", [null, [40, 6], [44, 13]]]], ["block", "if", [["get", "showMenuColumn", ["loc", [null, [46, 8], [46, 22]]]]], [], 2, null, ["loc", [null, [46, 2], [66, 9]]]], ["block", "if", [["subexpr", "and", [["get", "_expanded", ["loc", [null, [68, 11], [68, 20]]]], ["get", "inHierarchicalMode", ["loc", [null, [68, 21], [68, 39]]]]], [], ["loc", [null, [68, 6], [68, 40]]]]], [], 3, null, ["loc", [null, [68, 0], [92, 7]]]]],
       locals: [],
       templates: [child0, child1, child2, child3]
     };
@@ -50373,7 +50373,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+2950bbb6"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+8b1db10c"});
 }
 
 /* jshint ignore:end */
