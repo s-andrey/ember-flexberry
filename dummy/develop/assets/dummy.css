@@ -1329,6 +1329,9 @@ input::selection {
 .bgw-fix {
   position: relative;
 }
+.bgw-fix.mobile {
+  height: 50px;
+}
 .background-logo {
   height: 80px;
   position: fixed;
@@ -5101,8 +5104,8 @@ ui.button.ui-clear:hover {
 }
 .ui.check-all-at-page-button.button {
   padding: 0px;
-  height: 30px;
-  width: 30px;
+  height: 25px;
+  width: 25px;
   text-align: center;
   border: 0px;
   background: none;
@@ -5117,8 +5120,8 @@ ui.button.ui-clear:hover {
 }
 .ui.check-all-button.button {
   padding: 0px;
-  height: 30px;
-  width: 30px;
+  height: 25px;
+  width: 25px;
   text-align: center;
   border: 0px;
   background: none;
@@ -5136,8 +5139,8 @@ ui.button.ui-clear:hover {
 }
 .ui.clear-sorting-button.button {
   padding: 0px;
-  height: 30px;
-  width: 30px;
+  height: 25px;
+  width: 10px;
   text-align: center;
   border: 0px;
   background: none;
@@ -24432,6 +24435,10 @@ table.object-list-view.selectable thead {
 .object-list-view-helper-column {
   padding: 0px 7px!important;
 }
+.ui.fixed.table th.object-list-view-operations {
+  text-overflow: clip;
+  white-space: normal;
+}
 /* Views */
 /*!
  * # Semantic UI - Ad
@@ -39150,7 +39157,7 @@ img.item-minus {
   transition: width 0.3s ease-in-out 0s;
 }
 #example-mobile .flexberry-content {
-  padding: 4em 10px 2em 10px;
+  padding: 0px 10px 2em 10px;
   border-bottom: none;
 }
 .flexberry-word-break {
