@@ -1177,6 +1177,32 @@ define('dummy/controllers/application', ['exports', 'ember', 'dummy/config/envir
 define('dummy/controllers/colsconfig-dialog', ['exports', 'ember-flexberry/controllers/colsconfig-dialog'], function (exports, _emberFlexberryControllersColsconfigDialog) {
   exports['default'] = _emberFlexberryControllersColsconfigDialog['default'];
 });
+define('dummy/controllers/components-acceptance-tests/edit-form-validation/validation', ['exports', 'ember', 'ember-flexberry/controllers/edit-form'], function (exports, _ember, _emberFlexberryControllersEditForm) {
+  exports['default'] = _emberFlexberryControllersEditForm['default'].extend({
+    /**
+      Lookup events service.
+    */
+    lookupEvents: _ember['default'].inject.service('lookup-events'),
+
+    actions: {
+      /**
+        Handles click on lookup's choose button.
+      */
+      showLookupDialog: function showLookupDialog() {
+        // Create new master & add to model.
+
+        var master = this.get('store').createRecord('integration-examples/edit-form/validation/master', { text: 'Master text' });
+        this.get('model').set('master', master);
+
+        this.get('lookupEvents').lookupDialogOnHiddenTrigger('IntegrationExamplesValidationsMaster');
+
+        // Create temp file and add to model.
+        var tempFile = { fileName: 'Ждём НГ.png', fileSize: '27348', fileMimeType: '27348' };
+        this.get('model').set('file', tempFile);
+      }
+    }
+  });
+});
 define('dummy/controllers/components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox', ['exports', 'ember-flexberry/controllers/edit-form', 'ember-flexberry/mixins/edit-form-controller-operations-indication'], function (exports, _emberFlexberryControllersEditForm, _emberFlexberryMixinsEditFormControllerOperationsIndication) {
   exports['default'] = _emberFlexberryControllersEditForm['default'].extend(_emberFlexberryMixinsEditFormControllerOperationsIndication['default'], {
 
@@ -14646,6 +14672,7 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('components-acceptance-tests/flexberry-objectlistview/base-operations');
     this.route('components-acceptance-tests/flexberry-objectlistview/folv-paging');
     this.route('components-acceptance-tests/flexberry-objectlistview/date-format');
+    this.route('components-acceptance-tests/edit-form-validation/validation');
 
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-list-with-checked-checkbox');
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox', { path: 'components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox/:id' });
@@ -14656,6 +14683,42 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
 });
 define('dummy/routes/application', ['exports', 'ember', 'ember-flexberry/mixins/modal-application-route'], function (exports, _ember, _emberFlexberryMixinsModalApplicationRoute) {
   exports['default'] = _ember['default'].Route.extend(_emberFlexberryMixinsModalApplicationRoute['default'], {});
+});
+define('dummy/routes/components-acceptance-tests/edit-form-validation/validation', ['exports', 'ember-flexberry/routes/edit-form'], function (exports, _emberFlexberryRoutesEditForm) {
+  exports['default'] = _emberFlexberryRoutesEditForm['default'].extend({
+    /**
+      Name of model projection to be used as record's properties limitation.
+       @property modelProjection
+      @type String
+      @default 'BaseE'
+     */
+    modelProjection: 'BaseE',
+
+    /**
+      Name of model to be used as form's record type.
+       @property modelName
+      @type String
+      @default 'integration-examples/edit-form/validation/base'
+     */
+    modelName: 'integration-examples/edit-form/validation/base',
+
+    /**
+      Returns model related to current route.
+       @method model
+     */
+    model: function model(params) {
+      var store = this.get('store');
+
+      // Create base model.
+      var base = store.createRecord('integration-examples/edit-form/validation/base', {});
+
+      // Create detail & add to base model.
+      var detail1 = store.createRecord('integration-examples/edit-form/validation/detail', {});
+      base.get('details').pushObject(detail1);
+
+      return base;
+    }
+  });
 });
 define('dummy/routes/components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox', ['exports', 'ember-flexberry/routes/edit-form', 'ember-flexberry/mixins/edit-form-route-operations-indication'], function (exports, _emberFlexberryRoutesEditForm, _emberFlexberryMixinsEditFormRouteOperationsIndication) {
   exports['default'] = _emberFlexberryRoutesEditForm['default'].extend(_emberFlexberryMixinsEditFormRouteOperationsIndication['default'], {
@@ -19477,6 +19540,310 @@ define("dummy/templates/colsconfig-dialog", ["exports"], function (exports) {
       statements: [["block", "modal-dialog", [], ["title", ["subexpr", "@mut", [["get", "title", ["loc", [null, [2, 8], [2, 13]]]]], [], []], "sizeClass", "small", "close", "removeModalDialog", "created", "createdModalDialog", "useOkButton", false, "useCloseButton", false], 0, null, ["loc", [null, [1, 0], [10, 17]]]]],
       locals: [],
       templates: [child0]
+    };
+  })());
+});
+define("dummy/templates/components-acceptance-tests/edit-form-validation/validation", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 88,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-acceptance-tests/edit-form-validation/validation.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("h3");
+        dom.setAttribute(el1, "class", "ui header");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "sixteen wide");
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "inline fields");
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [2]);
+        var element1 = dom.childAt(element0, [3]);
+        var element2 = dom.childAt(element0, [5]);
+        var element3 = dom.childAt(element0, [7]);
+        var element4 = dom.childAt(element0, [9]);
+        var element5 = dom.childAt(element0, [11]);
+        var element6 = dom.childAt(element5, [3]);
+        var element7 = dom.childAt(element0, [13]);
+        var element8 = dom.childAt(element0, [15]);
+        var element9 = dom.childAt(element0, [17]);
+        var element10 = dom.childAt(element0, [19]);
+        var morphs = new Array(37);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1, 1]), 1, 1);
+        morphs[2] = dom.createAttrMorph(element1, 'class');
+        morphs[3] = dom.createMorphAt(dom.childAt(element1, [1]), 0, 0);
+        morphs[4] = dom.createMorphAt(element1, 3, 3);
+        morphs[5] = dom.createMorphAt(element1, 5, 5);
+        morphs[6] = dom.createAttrMorph(element2, 'class');
+        morphs[7] = dom.createMorphAt(dom.childAt(element2, [1]), 0, 0);
+        morphs[8] = dom.createMorphAt(element2, 3, 3);
+        morphs[9] = dom.createMorphAt(element2, 5, 5);
+        morphs[10] = dom.createAttrMorph(element3, 'class');
+        morphs[11] = dom.createMorphAt(dom.childAt(element3, [1]), 0, 0);
+        morphs[12] = dom.createMorphAt(element3, 3, 3);
+        morphs[13] = dom.createMorphAt(element3, 5, 5);
+        morphs[14] = dom.createAttrMorph(element4, 'class');
+        morphs[15] = dom.createMorphAt(dom.childAt(element4, [1]), 0, 0);
+        morphs[16] = dom.createMorphAt(element4, 3, 3);
+        morphs[17] = dom.createMorphAt(element4, 5, 5);
+        morphs[18] = dom.createAttrMorph(element5, 'class');
+        morphs[19] = dom.createMorphAt(dom.childAt(element5, [1]), 0, 0);
+        morphs[20] = dom.createMorphAt(element6, 1, 1);
+        morphs[21] = dom.createMorphAt(element6, 3, 3);
+        morphs[22] = dom.createAttrMorph(element7, 'class');
+        morphs[23] = dom.createMorphAt(dom.childAt(element7, [1]), 0, 0);
+        morphs[24] = dom.createMorphAt(element7, 3, 3);
+        morphs[25] = dom.createMorphAt(element7, 5, 5);
+        morphs[26] = dom.createAttrMorph(element8, 'class');
+        morphs[27] = dom.createMorphAt(dom.childAt(element8, [1]), 0, 0);
+        morphs[28] = dom.createMorphAt(element8, 3, 3);
+        morphs[29] = dom.createMorphAt(element8, 5, 5);
+        morphs[30] = dom.createAttrMorph(element9, 'class');
+        morphs[31] = dom.createMorphAt(dom.childAt(element9, [1]), 0, 0);
+        morphs[32] = dom.createMorphAt(element9, 3, 3);
+        morphs[33] = dom.createMorphAt(element9, 5, 5);
+        morphs[34] = dom.createAttrMorph(element10, 'class');
+        morphs[35] = dom.createMorphAt(dom.childAt(element10, [1]), 0, 0);
+        morphs[36] = dom.createMorphAt(element10, 3, 3);
+        return morphs;
+      },
+      statements: [["inline", "t", ["forms.integration-examples.edit-form.validation.caption"], [], ["loc", [null, [1, 22], [1, 85]]]], ["inline", "flexberry-validationsummary", [], ["errors", ["subexpr", "@mut", [["get", "model.errors", ["loc", [null, [5, 43], [5, 55]]]]], [], []]], ["loc", [null, [5, 6], [5, 57]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.flag", ["loc", [null, [8, 25], [8, 42]]]], "error", ""], [], ["loc", [null, [8, 20], [8, 55]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.flag-caption"], [], ["loc", [null, [9, 11], [9, 79]]]], ["inline", "flexberry-checkbox", [], ["value", ["subexpr", "@mut", [["get", "model.flag", ["loc", [null, [11, 12], [11, 22]]]]], [], []]], ["loc", [null, [10, 4], [12, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.flag", ["loc", [null, [13, 40], [13, 57]]]]], [], []], "pointing", "left pointing"], ["loc", [null, [13, 4], [13, 84]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.number", ["loc", [null, [15, 25], [15, 44]]]], "error", ""], [], ["loc", [null, [15, 20], [15, 57]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.number-caption"], [], ["loc", [null, [16, 11], [16, 81]]]], ["inline", "flexberry-textbox", [], ["value", ["subexpr", "@mut", [["get", "model.number", ["loc", [null, [18, 12], [18, 24]]]]], [], []]], ["loc", [null, [17, 4], [19, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.number", ["loc", [null, [20, 40], [20, 59]]]]], [], []], "pointing", "pointing"], ["loc", [null, [20, 4], [20, 81]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.text", ["loc", [null, [22, 25], [22, 42]]]], "error", ""], [], ["loc", [null, [22, 20], [22, 55]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.text-caption"], [], ["loc", [null, [23, 11], [23, 79]]]], ["inline", "flexberry-textbox", [], ["value", ["subexpr", "@mut", [["get", "model.text", ["loc", [null, [25, 12], [25, 22]]]]], [], []]], ["loc", [null, [24, 4], [26, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.text", ["loc", [null, [27, 40], [27, 57]]]]], [], []], "pointing", "pointing"], ["loc", [null, [27, 4], [27, 79]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.longText", ["loc", [null, [29, 25], [29, 46]]]], "error", ""], [], ["loc", [null, [29, 20], [29, 59]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.long-text-caption"], [], ["loc", [null, [30, 9], [30, 82]]]], ["inline", "flexberry-textarea", [], ["value", ["subexpr", "@mut", [["get", "model.longText", ["loc", [null, [32, 12], [32, 26]]]]], [], []]], ["loc", [null, [31, 4], [33, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.longText", ["loc", [null, [34, 40], [34, 61]]]]], [], []], "pointing", "pointing"], ["loc", [null, [34, 4], [34, 83]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.date", ["loc", [null, [36, 25], [36, 42]]]], "error", ""], [], ["loc", [null, [36, 20], [36, 55]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.date-caption"], [], ["loc", [null, [37, 11], [37, 79]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.date", ["loc", [null, [39, 40], [39, 57]]]]], [], []], "pointing", "right pointing"], ["loc", [null, [39, 4], [39, 85]]]], ["inline", "flexberry-datepicker", [], ["value", ["subexpr", "@mut", [["get", "model.date", ["loc", [null, [41, 12], [41, 22]]]]], [], []]], ["loc", [null, [40, 4], [42, 6]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.enumeration", ["loc", [null, [45, 25], [45, 49]]]], "error", ""], [], ["loc", [null, [45, 20], [45, 62]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.enumeration-caption"], [], ["loc", [null, [46, 11], [46, 86]]]], ["inline", "flexberry-dropdown", [], ["items", ["subexpr", "flexberry-enum", ["integration-examples/edit-form/validation/enumeration"], [], ["loc", [null, [48, 12], [48, 84]]]], "value", ["subexpr", "@mut", [["get", "model.enumeration", ["loc", [null, [49, 12], [49, 29]]]]], [], []]], ["loc", [null, [47, 4], [50, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.enumeration", ["loc", [null, [51, 40], [51, 64]]]]], [], []], "pointing", "pointing"], ["loc", [null, [51, 4], [51, 86]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.file", ["loc", [null, [53, 25], [53, 42]]]], "error", ""], [], ["loc", [null, [53, 20], [53, 55]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.file-caption"], [], ["loc", [null, [54, 11], [54, 79]]]], ["inline", "flexberry-file", [], ["value", ["subexpr", "@mut", [["get", "model.file", ["loc", [null, [56, 12], [56, 22]]]]], [], []], "showUploadButton", false, "showDownloadButton", false], ["loc", [null, [55, 4], [59, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.file", ["loc", [null, [60, 40], [60, 57]]]]], [], []], "pointing", "pointing"], ["loc", [null, [60, 4], [60, 79]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.master", ["loc", [null, [62, 25], [62, 44]]]], "error", ""], [], ["loc", [null, [62, 20], [62, 57]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.master-caption"], [], ["loc", [null, [63, 11], [63, 81]]]], ["inline", "flexberry-lookup", [], ["componentName", "IntegrationExamplesValidationsMaster", "value", ["subexpr", "@mut", [["get", "model.master", ["loc", [null, [66, 12], [66, 24]]]]], [], []], "relatedModel", ["subexpr", "@mut", [["get", "model", ["loc", [null, [67, 19], [67, 24]]]]], [], []], "relationName", "master", "projection", "MasterL", "displayAttributeName", "text", "title", ["subexpr", "t", ["forms.integration-examples.edit-form.validation.master-caption"], [], ["loc", [null, [71, 12], [71, 80]]]], "choose", ["subexpr", "action", ["showLookupDialog"], [], ["loc", [null, [72, 13], [72, 40]]]], "remove", ["subexpr", "action", ["removeLookupValue"], [], ["loc", [null, [73, 13], [73, 41]]]]], ["loc", [null, [64, 4], [74, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.master", ["loc", [null, [75, 40], [75, 59]]]]], [], []], "pointing", "pointing"], ["loc", [null, [75, 4], [75, 81]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.files", ["loc", [null, [77, 25], [77, 43]]]], "error", ""], [], ["loc", [null, [77, 20], [77, 56]]]]]]], ["inline", "t", ["forms.integration-examples.edit-form.validation.details-caption"], [], ["loc", [null, [78, 11], [78, 82]]]], ["inline", "flexberry-groupedit", [], ["componentName", "IntegrationExamplesEditFormValidationsDetails", "content", ["subexpr", "@mut", [["get", "model.details", ["loc", [null, [81, 14], [81, 27]]]]], [], []], "mainModelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [82, 26], [82, 41]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection.attributes.details", ["loc", [null, [83, 22], [83, 56]]]]], [], []], "orderable", false], ["loc", [null, [79, 4], [85, 6]]]]],
+      locals: [],
+      templates: []
     };
   })());
 });
@@ -52490,7 +52857,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.10+2bcbb277"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.10+77f9484e"});
 }
 
 /* jshint ignore:end */
