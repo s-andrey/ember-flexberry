@@ -37648,7 +37648,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
                   "column": 4
                 },
                 "end": {
-                  "line": 158,
+                  "line": 159,
                   "column": 4
                 }
               },
@@ -37673,7 +37673,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
               morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
               return morphs;
             },
-            statements: [["inline", "object-list-view-row", [], ["record", ["subexpr", "@mut", [["get", "record", ["loc", [null, [133, 15], [133, 21]]]]], [], []], "columns", ["subexpr", "@mut", [["get", "columns", ["loc", [null, [134, 16], [134, 23]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [135, 17], [135, 25]]]]], [], []], "required", ["subexpr", "@mut", [["get", "required", ["loc", [null, [136, 17], [136, 25]]]]], [], []], "showMenuColumn", ["subexpr", "@mut", [["get", "showMenuColumn", ["loc", [null, [137, 23], [137, 37]]]]], [], []], "sendMenuItemAction", ["subexpr", "@mut", [["get", "sendMenuItemAction", ["loc", [null, [138, 27], [138, 45]]]]], [], []], "menuInRowAdditionalItems", ["subexpr", "@mut", [["get", "menuInRowAdditionalItems", ["loc", [null, [139, 33], [139, 57]]]]], [], []], "showHelperColumn", ["subexpr", "@mut", [["get", "showHelperColumn", ["loc", [null, [140, 25], [140, 41]]]]], [], []], "defaultRowConfig", ["subexpr", "@mut", [["get", "defaultRowConfig", ["loc", [null, [141, 25], [141, 41]]]]], [], []], "showValidationMessages", ["subexpr", "@mut", [["get", "showValidationMessages", ["loc", [null, [142, 31], [142, 53]]]]], [], []], "showAsteriskInRow", ["subexpr", "@mut", [["get", "showAsteriskInRow", ["loc", [null, [143, 26], [143, 43]]]]], [], []], "showCheckBoxInRow", ["subexpr", "@mut", [["get", "showCheckBoxInRow", ["loc", [null, [144, 26], [144, 43]]]]], [], []], "showDeleteButtonInRow", ["subexpr", "@mut", [["get", "showDeleteButtonInRow", ["loc", [null, [145, 30], [145, 51]]]]], [], []], "showEditButtonInRow", ["subexpr", "@mut", [["get", "showEditButtonInRow", ["loc", [null, [146, 28], [146, 47]]]]], [], []], "inHierarchicalMode", ["subexpr", "@mut", [["get", "inHierarchicalMode", ["loc", [null, [147, 27], [147, 45]]]]], [], []], "inExpandMode", ["subexpr", "@mut", [["get", "inExpandMode", ["loc", [null, [148, 21], [148, 33]]]]], [], []], "loadRecords", ["subexpr", "@mut", [["get", "loadRecords", ["loc", [null, [149, 20], [149, 31]]]]], [], []], "doRenderData", ["subexpr", "@mut", [["get", "record.doRenderData", ["loc", [null, [150, 21], [150, 40]]]]], [], []], "rowClick", ["subexpr", "@mut", [["get", "rowClick", ["loc", [null, [151, 17], [151, 25]]]]], [], []], "selectRow", ["subexpr", "@mut", [["get", "selectRow", ["loc", [null, [152, 18], [152, 27]]]]], [], []], "deleteRow", ["subexpr", "@mut", [["get", "deleteRow", ["loc", [null, [153, 18], [153, 27]]]]], [], []], "_currentLevel", ["subexpr", "@mut", [["get", "_currentLevel", ["loc", [null, [154, 22], [154, 35]]]]], [], []], "hierarchicalIndent", ["subexpr", "@mut", [["get", "_hierarchicalIndent", ["loc", [null, [155, 27], [155, 46]]]]], [], []], "defaultLeftPadding", ["subexpr", "@mut", [["get", "defaultLeftPadding", ["loc", [null, [156, 27], [156, 45]]]]], [], []]], ["loc", [null, [132, 6], [157, 8]]]]],
+            statements: [["inline", "object-list-view-row", [], ["record", ["subexpr", "@mut", [["get", "record", ["loc", [null, [133, 15], [133, 21]]]]], [], []], "columns", ["subexpr", "@mut", [["get", "columns", ["loc", [null, [134, 16], [134, 23]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [135, 17], [135, 25]]]]], [], []], "required", ["subexpr", "@mut", [["get", "required", ["loc", [null, [136, 17], [136, 25]]]]], [], []], "showMenuColumn", ["subexpr", "@mut", [["get", "showMenuColumn", ["loc", [null, [137, 23], [137, 37]]]]], [], []], "sendMenuItemAction", ["subexpr", "@mut", [["get", "sendMenuItemAction", ["loc", [null, [138, 27], [138, 45]]]]], [], []], "menuInRowAdditionalItems", ["subexpr", "@mut", [["get", "menuInRowAdditionalItems", ["loc", [null, [139, 33], [139, 57]]]]], [], []], "showHelperColumn", ["subexpr", "@mut", [["get", "showHelperColumn", ["loc", [null, [140, 25], [140, 41]]]]], [], []], "defaultRowConfig", ["subexpr", "@mut", [["get", "defaultRowConfig", ["loc", [null, [141, 25], [141, 41]]]]], [], []], "showValidationMessages", ["subexpr", "@mut", [["get", "showValidationMessages", ["loc", [null, [142, 31], [142, 53]]]]], [], []], "showAsteriskInRow", ["subexpr", "@mut", [["get", "showAsteriskInRow", ["loc", [null, [143, 26], [143, 43]]]]], [], []], "showCheckBoxInRow", ["subexpr", "@mut", [["get", "showCheckBoxInRow", ["loc", [null, [144, 26], [144, 43]]]]], [], []], "showDeleteButtonInRow", ["subexpr", "@mut", [["get", "showDeleteButtonInRow", ["loc", [null, [145, 30], [145, 51]]]]], [], []], "showEditButtonInRow", ["subexpr", "@mut", [["get", "showEditButtonInRow", ["loc", [null, [146, 28], [146, 47]]]]], [], []], "inHierarchicalMode", ["subexpr", "@mut", [["get", "inHierarchicalMode", ["loc", [null, [147, 27], [147, 45]]]]], [], []], "inExpandMode", ["subexpr", "@mut", [["get", "inExpandMode", ["loc", [null, [148, 21], [148, 33]]]]], [], []], "loadRecords", ["subexpr", "@mut", [["get", "loadRecords", ["loc", [null, [149, 20], [149, 31]]]]], [], []], "doRenderData", ["subexpr", "@mut", [["get", "record.doRenderData", ["loc", [null, [150, 21], [150, 40]]]]], [], []], "rowClick", ["subexpr", "@mut", [["get", "rowClick", ["loc", [null, [151, 17], [151, 25]]]]], [], []], "selectRow", ["subexpr", "@mut", [["get", "selectRow", ["loc", [null, [152, 18], [152, 27]]]]], [], []], "deleteRow", ["subexpr", "@mut", [["get", "deleteRow", ["loc", [null, [153, 18], [153, 27]]]]], [], []], "_currentLevel", ["subexpr", "@mut", [["get", "_currentLevel", ["loc", [null, [154, 22], [154, 35]]]]], [], []], "hierarchicalIndent", ["subexpr", "@mut", [["get", "_hierarchicalIndent", ["loc", [null, [155, 27], [155, 46]]]]], [], []], "defaultLeftPadding", ["subexpr", "@mut", [["get", "defaultLeftPadding", ["loc", [null, [156, 27], [156, 45]]]]], [], []], "overflowedComponents", ["subexpr", "@mut", [["get", "overflowedComponents", ["loc", [null, [157, 29], [157, 49]]]]], [], []]], ["loc", [null, [132, 6], [158, 8]]]]],
             locals: ["record"],
             templates: []
           };
@@ -37689,7 +37689,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
                 "column": 2
               },
               "end": {
-                "line": 159,
+                "line": 160,
                 "column": 2
               }
             },
@@ -37712,7 +37712,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
             dom.insertBoundary(fragment, null);
             return morphs;
           },
-          statements: [["block", "each", [["get", "records", ["loc", [null, [131, 12], [131, 19]]]]], ["key", "key"], 0, null, ["loc", [null, [131, 4], [158, 13]]]]],
+          statements: [["block", "each", [["get", "records", ["loc", [null, [131, 12], [131, 19]]]]], ["key", "key"], 0, null, ["loc", [null, [131, 4], [159, 13]]]]],
           locals: [],
           templates: [child0]
         };
@@ -37731,7 +37731,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
               "column": 0
             },
             "end": {
-              "line": 160,
+              "line": 161,
               "column": 0
             }
           },
@@ -37793,7 +37793,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
           dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["attribute", "class", ["concat", [["get", "record.rowConfig.customClass", ["loc", [null, [2, 15], [2, 43]]]]]]], ["attribute", "class", ["concat", ["object-list-view-helper-column ", ["subexpr", "unless", [["get", "showHelperColumn", ["loc", [null, [3, 55], [3, 71]]]], "hidden"], [], ["loc", [null, [3, 46], [3, 82]]]]]]], ["attribute", "style", ["get", "defaultPaddingStyle", ["loc", [null, [3, 92], [3, 111]]]]], ["content", "record.key", ["loc", [null, [4, 26], [4, 40]]]], ["block", "if", [["get", "showHelperColumn", ["loc", [null, [5, 12], [5, 28]]]]], [], 0, null, ["loc", [null, [5, 6], [42, 13]]]], ["block", "each", [["get", "columns", ["loc", [null, [44, 12], [44, 19]]]]], [], 1, null, ["loc", [null, [44, 4], [101, 13]]]], ["block", "if", [["get", "showMenuColumn", ["loc", [null, [102, 10], [102, 24]]]]], [], 2, null, ["loc", [null, [102, 4], [128, 11]]]], ["block", "if", [["subexpr", "and", [["get", "inExpandMode", ["loc", [null, [130, 13], [130, 25]]]], ["get", "inHierarchicalMode", ["loc", [null, [130, 26], [130, 44]]]]], [], ["loc", [null, [130, 8], [130, 45]]]]], [], 3, null, ["loc", [null, [130, 2], [159, 9]]]]],
+        statements: [["attribute", "class", ["concat", [["get", "record.rowConfig.customClass", ["loc", [null, [2, 15], [2, 43]]]]]]], ["attribute", "class", ["concat", ["object-list-view-helper-column ", ["subexpr", "unless", [["get", "showHelperColumn", ["loc", [null, [3, 55], [3, 71]]]], "hidden"], [], ["loc", [null, [3, 46], [3, 82]]]]]]], ["attribute", "style", ["get", "defaultPaddingStyle", ["loc", [null, [3, 92], [3, 111]]]]], ["content", "record.key", ["loc", [null, [4, 26], [4, 40]]]], ["block", "if", [["get", "showHelperColumn", ["loc", [null, [5, 12], [5, 28]]]]], [], 0, null, ["loc", [null, [5, 6], [42, 13]]]], ["block", "each", [["get", "columns", ["loc", [null, [44, 12], [44, 19]]]]], [], 1, null, ["loc", [null, [44, 4], [101, 13]]]], ["block", "if", [["get", "showMenuColumn", ["loc", [null, [102, 10], [102, 24]]]]], [], 2, null, ["loc", [null, [102, 4], [128, 11]]]], ["block", "if", [["subexpr", "and", [["get", "inExpandMode", ["loc", [null, [130, 13], [130, 25]]]], ["get", "inHierarchicalMode", ["loc", [null, [130, 26], [130, 44]]]]], [], ["loc", [null, [130, 8], [130, 45]]]]], [], 3, null, ["loc", [null, [130, 2], [160, 9]]]]],
         locals: [],
         templates: [child0, child1, child2, child3]
       };
@@ -37812,7 +37812,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
             "column": 0
           },
           "end": {
-            "line": 161,
+            "line": 162,
             "column": 0
           }
         },
@@ -37835,7 +37835,7 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "if", [["get", "doRenderData", ["loc", [null, [1, 6], [1, 18]]]]], [], 0, null, ["loc", [null, [1, 0], [160, 7]]]]],
+      statements: [["block", "if", [["get", "doRenderData", ["loc", [null, [1, 6], [1, 18]]]]], [], 0, null, ["loc", [null, [1, 0], [161, 7]]]]],
       locals: [],
       templates: [child0]
     };
@@ -52442,7 +52442,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+c2e062aa"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.9+9bd38583"});
 }
 
 /* jshint ignore:end */
