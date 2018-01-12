@@ -1870,6 +1870,329 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-wrapper-
     assert.ok(true, 'acceptance/components/flexberry-objectlistview/folv-wrapper-projection-test.js should pass jshint.');
   });
 });
+define('dummy/tests/acceptance/components/readonly-test/edit-form-readonly-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp) {
+  var _this = this;
+
+  var app = undefined;
+  var path = 'components-acceptance-tests/edit-form-readonly';
+
+  (0, _qunit.module)('Acceptance | edit-form | readonly-mode ', {
+    beforeEach: function beforeEach() {
+
+      // Start application.
+      app = (0, _dummyTestsHelpersStartApp['default'])();
+
+      // Enable acceptance test mode in application controller (to hide unnecessary markup from application.hbs).
+      var applicationController = app.__container__.lookup('controller:application');
+      applicationController.set('isInAcceptanceTestMode', true);
+    },
+
+    afterEach: function afterEach() {
+      _ember['default'].run(app, 'destroy');
+    }
+  });
+
+  (0, _qunit.test)('controller is render properly', function (assert) {
+    assert.expect(3);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      assert.equal(currentPath(), path, 'Path for edit-form-readonly-test is correctly');
+      assert.strictEqual(controller.get('readonly'), true, 'Controller\'s flag \'readonly\' is enabled');
+
+      controller.set('readonly', false);
+      assert.strictEqual(controller.get('readonly'), false, 'Controller\'s flag \'readonly\' is disabled');
+    });
+  });
+
+  (0, _qunit.test)('flexbery-checkbox on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $checkbox = _ember['default'].$('.not-in-groupedit .flexberry-checkbox');
+      assert.strictEqual($checkbox.hasClass('read-only'), true, 'Checkbox is readonly');
+
+      var $checkboxFge = _ember['default'].$('.in-groupedit .flexberry-checkbox');
+      assert.strictEqual($checkboxFge.hasClass('read-only'), true, 'Groupedit\'s checkbox is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($checkbox.hasClass('read-only'), false, 'Checkbox don\'t readonly');
+        assert.strictEqual($checkboxFge.hasClass('read-only'), false, 'Groupedit\'s checkbox don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexbery-textbox on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $textbox = _ember['default'].$('.not-in-groupedit .flexberry-textbox');
+      var $textboxInput = $textbox.children('input');
+      assert.strictEqual(_ember['default'].$.trim($textboxInput.attr('readonly')), 'readonly', 'Textbox is readonly');
+
+      var $textboxFge = _ember['default'].$('.in-groupedit .flexberry-textbox');
+      var $textboxFgeInput = $textboxFge.children('input');
+      assert.strictEqual(_ember['default'].$.trim($textboxFgeInput.attr('readonly')), 'readonly', 'Groupedit\'s textbox is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('readonly'), false, 'Textbox don\'t readonly');
+        assert.strictEqual($(_this).is('readonly'), false, 'Groupedit\'s textbox don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-textarea on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $textarea = _ember['default'].$('.not-in-groupedit .flexberry-textarea');
+      var $textareaInput = $textarea.children('textarea');
+      assert.strictEqual(_ember['default'].$.trim($textareaInput.attr('readonly')), 'readonly', 'Textarea is readonly');
+
+      var $textareaFGE = _ember['default'].$('.in-groupedit .flexberry-textarea');
+      var $textareaInputFGE = $textareaFGE.children('textarea');
+      assert.strictEqual(_ember['default'].$.trim($textareaInputFGE.attr('readonly')), 'readonly', 'Groupedit\'s textarea is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual(_ember['default'].$.trim($textareaInput.attr('readonly')), '', 'Textarea don\'t readonly');
+        assert.strictEqual(_ember['default'].$.trim($textareaInputFGE.attr('readonly')), '', 'Groupedit\'s textarea don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-datepicker on readonly editform', function (assert) {
+    assert.expect(8);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $datepicker = _ember['default'].$('.not-in-groupedit .flexberry-datepicker');
+      var $datepickerInput = $datepicker.children('input');
+      assert.strictEqual(_ember['default'].$.trim($datepickerInput.attr('readonly')), 'readonly', 'Time is readonly');
+      var $button = $datepicker.children('.calendar');
+      assert.strictEqual($button.hasClass('link'), false, 'Datepicker hasn\'t link');
+
+      var $datepickerFge = _ember['default'].$('.in-groupedit .flexberry-datepicker');
+      var $datepickerFgeInput = $datepickerFge.children('input');
+      assert.strictEqual(_ember['default'].$.trim($datepickerFgeInput.attr('readonly')), 'readonly', 'Groupedit\'s datepicker is readonly');
+      var $buttonFge = $datepickerFge.children('.calendar');
+      assert.strictEqual($buttonFge.hasClass('link'), false, 'Groupedit\'s datepicker hasn\'t link');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual(_ember['default'].$.trim($datepickerInput.attr('readonly')), '', 'Time don\'t readonly');
+        assert.strictEqual($button.hasClass('link'), true, 'Datepicker has link');
+
+        assert.strictEqual(_ember['default'].$.trim($datepickerFgeInput.attr('readonly')), '', 'Groupedit\'s datepicker don\'t readonly');
+        assert.strictEqual($buttonFge.hasClass('link'), true, 'Groupedit\'s datepicker has link');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-simpledatetime on readonly editform', function (assert) {
+    assert.expect(2);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $simpledatetime = _ember['default'].$('.not-in-groupedit .flexberry-simpledatetime .custom-flatpickr');
+
+      assert.strictEqual(_ember['default'].$.trim($simpledatetime.attr('readonly')), 'readonly', 'Time is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual(_ember['default'].$.trim($simpledatetime.attr('readonly')), '', 'Time don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-dropdown on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $dropdown = _ember['default'].$('.not-in-groupedit .flexberry-dropdown');
+      assert.strictEqual($dropdown.hasClass('disabled'), true, 'Dropdown is readonly');
+
+      var $dropdownFge = _ember['default'].$('.in-groupedit .flexberry-dropdown');
+      assert.strictEqual($dropdownFge.hasClass('disabled'), true, 'Groupedit\'s dropdown is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($dropdown.hasClass('disabled'), false, 'Dropdown don\'t readonly');
+        assert.strictEqual($dropdownFge.hasClass('disabled'), false, 'Groupedit\'s dropdown don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-file on readonly edit form', function (assert) {
+    assert.expect(14);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $file = _ember['default'].$('.not-in-groupedit input.flexberry-file-filename-input');
+      assert.strictEqual(_ember['default'].$.trim($file.attr('readonly')), 'readonly', 'Flexberry-file is readonly');
+      var $downloadButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-download-button');
+      assert.strictEqual($downloadButton.hasClass('disabled'), true, 'Flexberry-file\'s button \'Download\' is readonly');
+
+      var $fileFge = _ember['default'].$('.in-groupedit input.flexberry-file-filename-input');
+      assert.strictEqual(_ember['default'].$.trim($fileFge.attr('readonly')), 'readonly', 'Groupedit\'s flexberry-file is readonly');
+      var $downloadButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-download-button');
+      assert.strictEqual($downloadButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file\'s button \'Download\' is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('readonly'), false, 'Flexberry-file don\'t readonly');
+        var $addButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-add-button');
+        assert.strictEqual($addButton.hasClass('disabled'), false, 'Flexberry-file\'s button \'Add\' don\'t readonly');
+        var $removeButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-remove-button');
+        assert.strictEqual($removeButton.hasClass('disabled'), true, 'Flexberry-file has button \'Remove\'');
+        var $uploadButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-upload-button');
+        assert.strictEqual($uploadButton.hasClass('disabled'), true, 'Flexberry-file has button \'Upload\'');
+        assert.strictEqual($downloadButton.hasClass('disabled'), true, 'Flexberry-file has button \'Download\'');
+
+        assert.strictEqual($(_this).is('readonly'), false, 'Groupedit\'s flexberry-file don\'t readonly');
+        var $addButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-add-button');
+        assert.strictEqual($addButtonFge.hasClass('disabled'), false, 'Groupedit\'s flexberry-file\'s button \'Add\' don\'t readonly');
+        var $removeButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-remove-button');
+        assert.strictEqual($removeButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file has button \'Remove\'');
+        var $uploadButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-upload-button');
+        assert.strictEqual($uploadButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file has button \'Upload\'');
+        assert.strictEqual($downloadButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file has button \'Download\'');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-lookup on readonly edit form', function (assert) {
+    assert.expect(12);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $lookup = _ember['default'].$('.not-in-groupedit input.lookup-field');
+      assert.strictEqual(_ember['default'].$.trim($lookup.attr('readonly')), 'readonly', 'Lookup is readonly');
+      var $chooseButton = _ember['default'].$('.not-in-groupedit button.ui-change');
+      assert.strictEqual($chooseButton.hasClass('disabled'), true, 'Flexberry-lookup\'s button \'Choose\' is readonly');
+      var $removeButton = _ember['default'].$('.not-in-groupedit button.ui-clear');
+      assert.strictEqual($removeButton.hasClass('disabled'), true, 'Flexberry-lookup\'s button \'Remove\' is readonly');
+
+      var $lookupFge = _ember['default'].$('.in-groupedit input.lookup-field');
+      assert.strictEqual(_ember['default'].$.trim($lookupFge.attr('readonly')), 'readonly', 'Groupedit\'s lookup is readonly');
+      var $chooseButtonFge = _ember['default'].$('.in-groupedit button.ui-change');
+      assert.strictEqual($chooseButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-lookup\'s button \'Choose\' is readonly');
+      var $removeButtonFge = _ember['default'].$('.in-groupedit button.ui-clear');
+      assert.strictEqual($removeButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-lookup\'s button \'Remove\' is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('readonly'), false, 'Lookup don\'t readonly');
+        assert.strictEqual($chooseButton.hasClass('disabled'), false, 'Flexberry-lookup\'s button \'Choose\' don\'t readonly');
+        assert.strictEqual($removeButton.hasClass('disabled'), false, 'Flexberry-lookup\'s button \'Remove\' don\'t readonly');
+
+        assert.strictEqual($(_this).is('readonly'), false, 'Groupedit\'s lookup don\'t readonly');
+        assert.strictEqual($chooseButtonFge.hasClass('disabled'), false, 'Groupedit\'s flexberry-lookup\'s button \'Choose\' don\'t readonly');
+        assert.strictEqual($removeButtonFge.hasClass('disabled'), false, 'Groupedit\'s flexberry-lookup\'s button \'Remove\' don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-lookup as dropdown on readonly edit form', function (assert) {
+    assert.expect(2);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $dropdownAsLookup = _ember['default'].$('.not-in-groupedit .flexberry-lookup');
+      var $dropdown = $($dropdownAsLookup[1]).children('.flexberry-dropdown');
+      assert.strictEqual($dropdown.hasClass('disabled'), true, 'Lookup as dropdown is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($dropdown.hasClass('disabled'), false, 'Lookup as dropdown don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-groupedit on readonly edit form', function (assert) {
+    assert.expect(2);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $groupedit = _ember['default'].$('.in-groupedit table');
+      assert.strictEqual($groupedit.hasClass('readonly'), true, 'Groupedit is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($groupedit.hasClass('readonly'), false, 'Groupedit don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-groupedit\'s button on readonly edit form', function (assert) {
+    assert.expect(12);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $addButton = _ember['default'].$('.in-groupedit .ui-add');
+      assert.strictEqual(_ember['default'].$.trim($addButton.attr('disabled')), 'disabled', 'Flexberry-groupedit\'s button \'Add\' is readonly');
+
+      var $removeButton = _ember['default'].$('.in-groupedit .ui-delete');
+      assert.strictEqual(_ember['default'].$.trim($removeButton.attr('disabled')), 'disabled', 'Flexberry-groupedit\'s button \'Remove\' is readonly');
+
+      var $checkbox = _ember['default'].$('.in-groupedit .flexberry-checkbox');
+      assert.strictEqual($checkbox.hasClass('read-only'), true, 'Flexberry-groupedit\'s checkbox helper is readonly');
+
+      var $removeButtonRow = _ember['default'].$('.in-groupedit .object-list-view-row-delete-button');
+      assert.strictEqual($removeButtonRow.hasClass('disabled'), true, 'Flexberry-groupedit\'s button \'Remove in row\' is readonly');
+
+      var $itemEditMenu = _ember['default'].$('.in-groupedit .edit-menu');
+      assert.strictEqual($itemEditMenu.hasClass('disabled'), true, 'Flexberry-groupedit\'s item \'Edit\' in left menu is readonly');
+      var $itemDeleteMenu = _ember['default'].$('.in-groupedit .delete-menu');
+      assert.strictEqual($itemDeleteMenu.hasClass('disabled'), true, 'Flexberry-groupedit\'s item \'Delete\' in left menu is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('disabled'), false, 'Flexberry-groupedit\'s button \'Add\' don\'t readonly');
+        assert.strictEqual($(_this).is('disabled'), false, 'Flexberry-groupedit\'s button \'Remove\' don\'t readonly');
+        assert.strictEqual($checkbox.hasClass('read-only'), false, 'Flexberry-groupedit\'s checkbox helper don\'t readonly');
+        assert.strictEqual($removeButtonRow.hasClass('disabled'), false, 'Flexberry-groupedit\'s button \'Remove in row\' don\'t readonly');
+        assert.strictEqual($itemEditMenu.hasClass('disabled'), false, 'Flexberry-groupedit\'s item \'Edit\' in left menu don\'t readonly');
+        assert.strictEqual($itemDeleteMenu.hasClass('disabled'), false, 'Flexberry-groupedit\'s item \'Delete\' in left menu don\'t readonly');
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/readonly-test/edit-form-readonly-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/readonly-test');
+  test('acceptance/components/readonly-test/edit-form-readonly-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/readonly-test/edit-form-readonly-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/readonly-test/edit-form-readonly-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/readonly-test/edit-form-readonly-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/readonly-test/edit-form-readonly-test.js should pass jshint.');
+  });
+});
 define('dummy/tests/acceptance/edit-form-validation-test/execute-validation-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp) {
   exports.executeTest = executeTest;
 
@@ -2737,6 +3060,23 @@ define('dummy/tests/controllers/application.jshint', ['exports'], function (expo
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'controllers/application.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/edit-form-readonly.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests');
+  test('controllers/components-acceptance-tests/edit-form-readonly.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/edit-form-readonly.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/edit-form-readonly.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/edit-form-readonly.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/edit-form-readonly.js should pass jshint.');
   });
 });
 define('dummy/tests/controllers/components-acceptance-tests/edit-form-validation/validation.jscs-test', ['exports'], function (exports) {
@@ -14162,6 +14502,23 @@ define('dummy/tests/routes/application.jshint', ['exports'], function (exports) 
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/application.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/edit-form-readonly.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests');
+  test('routes/components-acceptance-tests/edit-form-readonly.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/edit-form-readonly.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/edit-form-readonly.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/edit-form-readonly.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/edit-form-readonly.js should pass jshint.');
   });
 });
 define('dummy/tests/routes/components-acceptance-tests/edit-form-validation/validation.jscs-test', ['exports'], function (exports) {

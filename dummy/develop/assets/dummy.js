@@ -1177,6 +1177,69 @@ define('dummy/controllers/application', ['exports', 'ember', 'dummy/config/envir
 define('dummy/controllers/colsconfig-dialog', ['exports', 'ember-flexberry/controllers/colsconfig-dialog'], function (exports, _emberFlexberryControllersColsconfigDialog) {
   exports['default'] = _emberFlexberryControllersColsconfigDialog['default'];
 });
+define('dummy/controllers/components-acceptance-tests/edit-form-readonly', ['exports', 'ember-flexberry/controllers/edit-form'], function (exports, _emberFlexberryControllersEditForm) {
+  exports['default'] = _emberFlexberryControllersEditForm['default'].extend({
+    /**
+      Flag: indicates whether the form is in readonly mode or not.
+       @property readonly
+      @type Boolean
+      @default true
+     */
+    readonly: true,
+
+    /**
+      Method to get type and attributes of a component,
+      which will be embeded in object-list-view cell.
+       @method getCellComponent.
+      @param {Object} attr Attribute of projection property related to current table cell.
+      @param {String} bindingPath Path to model property related to current table cell.
+      @param {DS.Model} modelClass Model class of data record related to current table row.
+      @return {Object} Object containing name & properties of component, which will be used to render current table cell.
+      { componentName: 'my-component',  componentProperties: { ... } }.
+     */
+    getCellComponent: function getCellComponent(attr, bindingPath, model) {
+      var cellComponent = this._super.apply(this, arguments);
+
+      if (attr.kind === 'belongsTo' && bindingPath === 'master') {
+        cellComponent.componentProperties = {
+          projection: 'MasterL',
+          displayAttributeName: 'text',
+          title: 'Master',
+          relationName: 'master',
+          choose: 'showLookupDialog',
+          remove: 'removeLookupValue'
+        };
+      }
+
+      if (bindingPath === 'longText') {
+        return {
+          componentName: 'flexberry-textarea',
+          componentProperties: {}
+        };
+      }
+
+      if (bindingPath === 'time') {
+        return {
+          componentName: 'flexberry-simpledatetime',
+          componentProperties: {}
+        };
+      }
+
+      if (attr.kind === 'belongsTo' && bindingPath === 'masterDropdown') {
+        cellComponent.componentProperties = {
+          projection: 'MasterDropdownL',
+          displayAttributeName: 'text',
+          title: 'Master dropdown',
+          relationName: 'masterDropdown',
+          choose: 'showLookupDialog',
+          remove: 'removeLookupValue'
+        };
+      }
+
+      return cellComponent;
+    }
+  });
+});
 define('dummy/controllers/components-acceptance-tests/edit-form-validation/validation', ['exports', 'ember', 'ember-flexberry/controllers/edit-form'], function (exports, _ember, _emberFlexberryControllersEditForm) {
   exports['default'] = _emberFlexberryControllersEditForm['default'].extend({
     /**
@@ -11343,6 +11406,10 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
               'caption': 'Settings deletion',
               'title': ''
             }
+          },
+          'components-acceptance-tests': {
+            'caption': 'Acceptance tests',
+            'title': ''
           }
         }
       },
@@ -12332,6 +12399,10 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
               'caption': 'Удаление настроек',
               'title': ''
             }
+          },
+          'components-acceptance-tests': {
+            'caption': 'Acceptance тесты',
+            'title': ''
           }
         }
       },
@@ -14231,7 +14302,9 @@ define('dummy/models/integration-examples/edit-form/readonly-mode/aggregator', [
     details: _emberFlexberryData.Projection.hasMany('integration-examples/edit-form/readonly-mode/detail', 'Details', {
       flag: _emberFlexberryData.Projection.attr('Flag'),
       text: _emberFlexberryData.Projection.attr('Text'),
+      longText: _emberFlexberryData.Projection.attr('Long text'),
       date: _emberFlexberryData.Projection.attr('Date'),
+      time: _emberFlexberryData.Projection.attr('Time'),
       enumeration: _emberFlexberryData.Projection.attr('Enumeration'),
       file: _emberFlexberryData.Projection.attr('File'),
       master: _emberFlexberryData.Projection.belongsTo('integration-examples/edit-form/readonly-mode/master', 'Master', {
@@ -14240,6 +14313,13 @@ define('dummy/models/integration-examples/edit-form/readonly-mode/aggregator', [
         })
       }, {
         displayMemberPath: 'name'
+      }),
+      masterDropdown: _emberFlexberryData.Projection.belongsTo('integration-examples/edit-form/validation/master-dropdown', 'Master dropdown', {
+        text: _emberFlexberryData.Projection.attr('Text', {
+          hidden: true
+        })
+      }, {
+        displayMemberPath: 'text'
       })
     })
   });
@@ -14258,6 +14338,7 @@ define('dummy/models/integration-examples/edit-form/readonly-mode/detail', ['exp
 
     flag: _emberData['default'].attr('boolean'),
     text: _emberData['default'].attr('string'),
+    longText: _emberData['default'].attr('string'),
     date: _emberData['default'].attr('date'),
     enumeration: _emberData['default'].attr('integration-examples/edit-form/readonly-mode/enumeration'),
     file: _emberData['default'].attr('file'),
@@ -14273,6 +14354,7 @@ define('dummy/models/integration-examples/edit-form/readonly-mode/detail', ['exp
   Model.defineProjection('DetailE', 'integration-examples/edit-form/readonly-mode/detail', {
     flag: _emberFlexberryData.Projection.attr('Flag'),
     text: _emberFlexberryData.Projection.attr('Text'),
+    longText: _emberFlexberryData.Projection.attr('longText'),
     date: _emberFlexberryData.Projection.attr('Date'),
     enumeration: _emberFlexberryData.Projection.attr('Enumeration'),
     file: _emberFlexberryData.Projection.attr('File'),
@@ -14672,6 +14754,7 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('components-acceptance-tests/flexberry-objectlistview/base-operations');
     this.route('components-acceptance-tests/flexberry-objectlistview/folv-paging');
     this.route('components-acceptance-tests/flexberry-objectlistview/date-format');
+    this.route('components-acceptance-tests/edit-form-readonly');
     this.route('components-acceptance-tests/edit-form-validation/validation');
 
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-list-with-checked-checkbox');
@@ -14683,6 +14766,38 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
 });
 define('dummy/routes/application', ['exports', 'ember', 'ember-flexberry/mixins/modal-application-route'], function (exports, _ember, _emberFlexberryMixinsModalApplicationRoute) {
   exports['default'] = _ember['default'].Route.extend(_emberFlexberryMixinsModalApplicationRoute['default'], {});
+});
+define('dummy/routes/components-acceptance-tests/edit-form-readonly', ['exports', 'ember-flexberry/routes/edit-form'], function (exports, _emberFlexberryRoutesEditForm) {
+  exports['default'] = _emberFlexberryRoutesEditForm['default'].extend({
+    /**
+      Name of model projection to be used as record's properties limitation.
+       @property modelProjection
+      @type String
+      @default 'AggregatorE'
+     */
+    modelProjection: 'AggregatorE',
+
+    /**
+      Name of model to be used as form's record type.
+       @property modelName
+      @type String
+      @default 'integration-examples/edit-form/readonly-mode/aggregator'
+     */
+    modelName: 'integration-examples/edit-form/readonly-mode/aggregator',
+
+    /**
+      Returns model related to current route.
+       @method model
+     */
+    model: function model(params) {
+      var store = this.get('store');
+      var aggregator = store.createRecord('integration-examples/edit-form/readonly-mode/aggregator', {});
+      var detail = store.createRecord('integration-examples/edit-form/readonly-mode/detail', {});
+      aggregator.get('details').pushObject(detail);
+
+      return aggregator;
+    }
+  });
 });
 define('dummy/routes/components-acceptance-tests/edit-form-validation/validation', ['exports', 'ember-flexberry/routes/edit-form'], function (exports, _emberFlexberryRoutesEditForm) {
   exports['default'] = _emberFlexberryRoutesEditForm['default'].extend({
@@ -19540,6 +19655,119 @@ define("dummy/templates/colsconfig-dialog", ["exports"], function (exports) {
       statements: [["block", "modal-dialog", [], ["title", ["subexpr", "@mut", [["get", "title", ["loc", [null, [2, 8], [2, 13]]]]], [], []], "sizeClass", "small", "close", "removeModalDialog", "created", "createdModalDialog", "useOkButton", false, "useCloseButton", false], 0, null, ["loc", [null, [1, 0], [10, 17]]]]],
       locals: [],
       templates: [child0]
+    };
+  })());
+});
+define("dummy/templates/components-acceptance-tests/edit-form-readonly", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 69,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-acceptance-tests/edit-form-readonly.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("h3");
+        dom.setAttribute(el1, "class", "ui header");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n  ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "not-in-groupedit");
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n      ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n      ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n  ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "in-groupedit");
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [2]);
+        var morphs = new Array(11);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 0, 0);
+        morphs[1] = dom.createMorphAt(element0, 1, 1);
+        morphs[2] = dom.createMorphAt(element0, 3, 3);
+        morphs[3] = dom.createMorphAt(element0, 5, 5);
+        morphs[4] = dom.createMorphAt(element0, 7, 7);
+        morphs[5] = dom.createMorphAt(element0, 9, 9);
+        morphs[6] = dom.createMorphAt(element0, 11, 11);
+        morphs[7] = dom.createMorphAt(element0, 13, 13);
+        morphs[8] = dom.createMorphAt(element0, 15, 15);
+        morphs[9] = dom.createMorphAt(element0, 17, 17);
+        morphs[10] = dom.createMorphAt(dom.childAt(fragment, [4]), 1, 1);
+        return morphs;
+      },
+      statements: [["inline", "t", ["forms.integration-examples.edit-form.readonly-mode.caption"], [], ["loc", [null, [1, 22], [1, 88]]]], ["inline", "flexberry-checkbox", [], ["value", ["subexpr", "@mut", [["get", "model.flag", ["loc", [null, [4, 12], [4, 22]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [5, 15], [5, 23]]]]], [], []]], ["loc", [null, [3, 4], [6, 6]]]], ["inline", "flexberry-textbox", [], ["value", ["subexpr", "@mut", [["get", "model.text", ["loc", [null, [8, 12], [8, 22]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [9, 15], [9, 23]]]]], [], []]], ["loc", [null, [7, 4], [10, 6]]]], ["inline", "flexberry-textarea", [], ["value", ["subexpr", "@mut", [["get", "model.longText", ["loc", [null, [12, 12], [12, 26]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [13, 15], [13, 23]]]]], [], []]], ["loc", [null, [11, 4], [14, 6]]]], ["inline", "flexberry-datepicker", [], ["value", ["subexpr", "@mut", [["get", "model.date", ["loc", [null, [16, 14], [16, 24]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [17, 17], [17, 25]]]]], [], []]], ["loc", [null, [15, 6], [18, 8]]]], ["inline", "flexberry-simpledatetime", [], ["readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [20, 17], [20, 25]]]]], [], []], "type", "time", "value", ["subexpr", "@mut", [["get", "model.time", ["loc", [null, [22, 14], [22, 24]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [23, 17], [23, 25]]]]], [], []]], ["loc", [null, [19, 6], [24, 8]]]], ["inline", "flexberry-dropdown", [], ["items", ["subexpr", "flexberry-enum", ["integration-examples/edit-form/readonly-mode/enumeration"], [], ["loc", [null, [26, 12], [26, 87]]]], "value", ["subexpr", "@mut", [["get", "model.enumeration", ["loc", [null, [27, 12], [27, 29]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [28, 15], [28, 23]]]]], [], []]], ["loc", [null, [25, 4], [29, 6]]]], ["inline", "flexberry-file", [], ["value", ["subexpr", "@mut", [["get", "model.file", ["loc", [null, [31, 12], [31, 22]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [32, 15], [32, 23]]]]], [], []]], ["loc", [null, [30, 4], [33, 6]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.master", ["loc", [null, [35, 12], [35, 24]]]]], [], []], "relatedModel", ["subexpr", "@mut", [["get", "model", ["loc", [null, [36, 19], [36, 24]]]]], [], []], "relationName", "master", "projection", "MasterL", "displayAttributeName", "text", "title", ["subexpr", "t", ["forms.integration-examples.edit-form.readonly-mode.master-caption"], [], ["loc", [null, [40, 12], [40, 83]]]], "choose", ["subexpr", "action", ["showLookupDialog"], [], ["loc", [null, [41, 13], [41, 40]]]], "remove", ["subexpr", "action", ["removeLookupValue"], [], ["loc", [null, [42, 13], [42, 41]]]], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [43, 15], [43, 23]]]]], [], []]], ["loc", [null, [34, 4], [44, 6]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.masterDropdown", ["loc", [null, [46, 12], [46, 32]]]]], [], []], "relatedModel", ["subexpr", "@mut", [["get", "model", ["loc", [null, [47, 19], [47, 24]]]]], [], []], "relationName", "masterDropdown", "projection", "MasterDropdownL", "displayAttributeName", "text", "title", ["subexpr", "t", ["forms.integration-examples.edit-form.readonly-mode.master-dropdown-caption"], [], ["loc", [null, [51, 12], [51, 92]]]], "choose", ["subexpr", "action", ["showLookupDialog"], [], ["loc", [null, [52, 13], [52, 40]]]], "remove", ["subexpr", "action", ["removeLookupValue"], [], ["loc", [null, [53, 13], [53, 41]]]], "dropdown", true, "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [55, 15], [55, 23]]]]], [], []]], ["loc", [null, [45, 4], [56, 6]]]], ["inline", "flexberry-groupedit", [], ["componentName", "aggregatorDetailsGroupedit", "content", ["subexpr", "@mut", [["get", "model.details", ["loc", [null, [61, 14], [61, 27]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection.attributes.details", ["loc", [null, [62, 22], [62, 56]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [63, 15], [63, 23]]]]], [], []], "showDeleteButtonInRow", true, "showEditMenuItemInRow", true, "showDeleteMenuItemInRow", true], ["loc", [null, [59, 4], [67, 6]]]]],
+      locals: [],
+      templates: []
     };
   })());
 });
@@ -31318,7 +31546,7 @@ define("dummy/templates/components/flexberry-datepicker", ["exports"], function 
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "input", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [2, 7], [2, 11]]]]], [], []], "class", ["subexpr", "@mut", [["get", "classes", ["loc", [null, [3, 8], [3, 15]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [4, 11], [4, 19]]]]], [], []], "required", ["subexpr", "@mut", [["get", "required", ["loc", [null, [5, 11], [5, 19]]]]], [], []], "placeholder", ["subexpr", "@mut", [["get", "placeholder", ["loc", [null, [6, 14], [6, 25]]]]], [], []]], ["loc", [null, [1, 0], [7, 2]]]], ["attribute", "class", ["concat", ["calendar ", ["subexpr", "unless", [["get", "readonly", ["loc", [null, [8, 28], [8, 36]]]], "link"], [], ["loc", [null, [8, 19], [8, 45]]]], " icon"]]]],
+      statements: [["inline", "input", [], ["type", ["subexpr", "@mut", [["get", "type", ["loc", [null, [2, 7], [2, 11]]]]], [], []], "class", ["subexpr", "@mut", [["get", "classes", ["loc", [null, [3, 8], [3, 15]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonlyAttr", ["loc", [null, [4, 11], [4, 23]]]]], [], []], "required", ["subexpr", "@mut", [["get", "required", ["loc", [null, [5, 11], [5, 19]]]]], [], []], "placeholder", ["subexpr", "@mut", [["get", "placeholder", ["loc", [null, [6, 14], [6, 25]]]]], [], []]], ["loc", [null, [1, 0], [7, 2]]]], ["attribute", "class", ["concat", ["calendar ", ["subexpr", "unless", [["get", "readonly", ["loc", [null, [8, 28], [8, 36]]]], "link"], [], ["loc", [null, [8, 19], [8, 45]]]], " icon"]]]],
       locals: [],
       templates: []
     };
@@ -37785,7 +38013,6 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
               var el1 = dom.createTextNode("              ");
               dom.appendChild(el0, el1);
               var el1 = dom.createElement("div");
-              dom.setAttribute(el1, "class", "item");
               var el2 = dom.createTextNode("\n                ");
               dom.appendChild(el1, el2);
               var el2 = dom.createElement("i");
@@ -37806,12 +38033,13 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
             },
             buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
               var element3 = dom.childAt(fragment, [1]);
-              var morphs = new Array(2);
-              morphs[0] = dom.createElementMorph(element3);
-              morphs[1] = dom.createMorphAt(dom.childAt(element3, [3]), 0, 0);
+              var morphs = new Array(3);
+              morphs[0] = dom.createAttrMorph(element3, 'class');
+              morphs[1] = dom.createElementMorph(element3);
+              morphs[2] = dom.createMorphAt(dom.childAt(element3, [3]), 0, 0);
               return morphs;
             },
-            statements: [["element", "action", ["onRowClick", ["get", "record", ["loc", [null, [108, 54], [108, 60]]]], ["subexpr", "hash", [], ["column", null, "columnIndex", null, "rowEdit", true], ["loc", [null, [108, 61], [108, 109]]]]], [], ["loc", [null, [108, 32], [108, 111]]]], ["inline", "t", ["components.object-list-view.menu-in-row.edit-menu-item-title"], [], ["loc", [null, [110, 22], [110, 90]]]]],
+            statements: [["attribute", "class", ["concat", ["item ", ["subexpr", "if", [["subexpr", "or", [["get", "readonly", ["loc", [null, [108, 40], [108, 48]]]], ["subexpr", "not", [["get", "record.rowConfig.canBeDeleted", ["loc", [null, [108, 54], [108, 83]]]]], [], ["loc", [null, [108, 49], [108, 84]]]]], [], ["loc", [null, [108, 36], [108, 85]]]], "disabled"], [], ["loc", [null, [108, 31], [108, 98]]]], " edit-menu"]]], ["element", "action", ["onRowClick", ["get", "record", ["loc", [null, [108, 132], [108, 138]]]], ["subexpr", "hash", [], ["column", null, "columnIndex", null, "rowEdit", true], ["loc", [null, [108, 139], [108, 187]]]]], [], ["loc", [null, [108, 110], [108, 189]]]], ["inline", "t", ["components.object-list-view.menu-in-row.edit-menu-item-title"], [], ["loc", [null, [110, 22], [110, 90]]]]],
             locals: [],
             templates: []
           };
@@ -37843,7 +38071,6 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
               var el1 = dom.createTextNode("              ");
               dom.appendChild(el0, el1);
               var el1 = dom.createElement("div");
-              dom.setAttribute(el1, "class", "item");
               var el2 = dom.createTextNode("\n                ");
               dom.appendChild(el1, el2);
               var el2 = dom.createElement("i");
@@ -37864,12 +38091,13 @@ define("dummy/templates/components/object-list-view-row", ["exports"], function 
             },
             buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
               var element2 = dom.childAt(fragment, [1]);
-              var morphs = new Array(2);
-              morphs[0] = dom.createElementMorph(element2);
-              morphs[1] = dom.createMorphAt(dom.childAt(element2, [3]), 0, 0);
+              var morphs = new Array(3);
+              morphs[0] = dom.createAttrMorph(element2, 'class');
+              morphs[1] = dom.createElementMorph(element2);
+              morphs[2] = dom.createMorphAt(dom.childAt(element2, [3]), 0, 0);
               return morphs;
             },
-            statements: [["element", "action", [["get", "deleteRow", ["loc", [null, [114, 42], [114, 51]]]], ["get", "record", ["loc", [null, [114, 52], [114, 58]]]]], [], ["loc", [null, [114, 32], [114, 61]]]], ["inline", "t", ["components.object-list-view.menu-in-row.delete-menu-item-title"], [], ["loc", [null, [116, 22], [116, 92]]]]],
+            statements: [["attribute", "class", ["concat", ["item ", ["subexpr", "if", [["subexpr", "or", [["get", "readonly", ["loc", [null, [114, 40], [114, 48]]]], ["subexpr", "not", [["get", "record.rowConfig.canBeDeleted", ["loc", [null, [114, 54], [114, 83]]]]], [], ["loc", [null, [114, 49], [114, 84]]]]], [], ["loc", [null, [114, 36], [114, 85]]]], "disabled"], [], ["loc", [null, [114, 31], [114, 98]]]], " delete-menu"]]], ["element", "action", [["get", "deleteRow", ["loc", [null, [114, 122], [114, 131]]]], ["get", "record", ["loc", [null, [114, 132], [114, 138]]]]], [], ["loc", [null, [114, 112], [114, 141]]]], ["inline", "t", ["components.object-list-view.menu-in-row.delete-menu-item-title"], [], ["loc", [null, [116, 22], [116, 92]]]]],
             locals: [],
             templates: []
           };
@@ -52857,7 +53085,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.10+553de688"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.9.2-beta.10+5c775d56"});
 }
 
 /* jshint ignore:end */
