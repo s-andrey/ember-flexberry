@@ -1870,6 +1870,1096 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-wrapper-
     assert.ok(true, 'acceptance/components/flexberry-objectlistview/folv-wrapper-projection-test.js should pass jshint.');
   });
 });
+define('dummy/tests/acceptance/components/readonly-test/edit-form-readonly-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp) {
+  var _this = this;
+
+  var app = undefined;
+  var path = 'components-acceptance-tests/edit-form-readonly';
+
+  (0, _qunit.module)('Acceptance | edit-form | readonly-mode ', {
+    beforeEach: function beforeEach() {
+
+      // Start application.
+      app = (0, _dummyTestsHelpersStartApp['default'])();
+
+      // Enable acceptance test mode in application controller (to hide unnecessary markup from application.hbs).
+      var applicationController = app.__container__.lookup('controller:application');
+      applicationController.set('isInAcceptanceTestMode', true);
+    },
+
+    afterEach: function afterEach() {
+      _ember['default'].run(app, 'destroy');
+    }
+  });
+
+  (0, _qunit.test)('controller is render properly', function (assert) {
+    assert.expect(3);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      assert.equal(currentPath(), path, 'Path for edit-form-readonly-test is correctly');
+      assert.strictEqual(controller.get('readonly'), true, 'Controller\'s flag \'readonly\' is enabled');
+
+      controller.set('readonly', false);
+      assert.strictEqual(controller.get('readonly'), false, 'Controller\'s flag \'readonly\' is disabled');
+    });
+  });
+
+  (0, _qunit.test)('flexbery-checkbox on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $checkbox = _ember['default'].$('.not-in-groupedit .flexberry-checkbox');
+      assert.strictEqual($checkbox.hasClass('read-only'), true, 'Checkbox is readonly');
+
+      var $checkboxFge = _ember['default'].$('.in-groupedit .flexberry-checkbox');
+      assert.strictEqual($checkboxFge.hasClass('read-only'), true, 'Groupedit\'s checkbox is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($checkbox.hasClass('read-only'), false, 'Checkbox don\'t readonly');
+        assert.strictEqual($checkboxFge.hasClass('read-only'), false, 'Groupedit\'s checkbox don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexbery-textbox on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $textbox = _ember['default'].$('.not-in-groupedit .flexberry-textbox');
+      var $textboxInput = $textbox.children('input');
+      assert.strictEqual(_ember['default'].$.trim($textboxInput.attr('readonly')), 'readonly', 'Textbox is readonly');
+
+      var $textboxFge = _ember['default'].$('.in-groupedit .flexberry-textbox');
+      var $textboxFgeInput = $textboxFge.children('input');
+      assert.strictEqual(_ember['default'].$.trim($textboxFgeInput.attr('readonly')), 'readonly', 'Groupedit\'s textbox is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('readonly'), false, 'Textbox don\'t readonly');
+        assert.strictEqual($(_this).is('readonly'), false, 'Groupedit\'s textbox don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-textarea on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $textarea = _ember['default'].$('.not-in-groupedit .flexberry-textarea');
+      var $textareaInput = $textarea.children('textarea');
+      assert.strictEqual(_ember['default'].$.trim($textareaInput.attr('readonly')), 'readonly', 'Textarea is readonly');
+
+      var $textareaFGE = _ember['default'].$('.in-groupedit .flexberry-textarea');
+      var $textareaInputFGE = $textareaFGE.children('textarea');
+      assert.strictEqual(_ember['default'].$.trim($textareaInputFGE.attr('readonly')), 'readonly', 'Groupedit\'s textarea is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual(_ember['default'].$.trim($textareaInput.attr('readonly')), '', 'Textarea don\'t readonly');
+        assert.strictEqual(_ember['default'].$.trim($textareaInputFGE.attr('readonly')), '', 'Groupedit\'s textarea don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-datepicker on readonly editform', function (assert) {
+    assert.expect(8);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $datepicker = _ember['default'].$('.not-in-groupedit .flexberry-datepicker');
+      var $datepickerInput = $datepicker.children('input');
+      assert.strictEqual(_ember['default'].$.trim($datepickerInput.attr('readonly')), 'readonly', 'Time is readonly');
+      var $button = $datepicker.children('.calendar');
+      assert.strictEqual($button.hasClass('link'), false, 'Datepicker hasn\'t link');
+
+      var $datepickerFge = _ember['default'].$('.in-groupedit .flexberry-datepicker');
+      var $datepickerFgeInput = $datepickerFge.children('input');
+      assert.strictEqual(_ember['default'].$.trim($datepickerFgeInput.attr('readonly')), 'readonly', 'Groupedit\'s datepicker is readonly');
+      var $buttonFge = $datepickerFge.children('.calendar');
+      assert.strictEqual($buttonFge.hasClass('link'), false, 'Groupedit\'s datepicker hasn\'t link');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual(_ember['default'].$.trim($datepickerInput.attr('readonly')), '', 'Time don\'t readonly');
+        assert.strictEqual($button.hasClass('link'), true, 'Datepicker has link');
+
+        assert.strictEqual(_ember['default'].$.trim($datepickerFgeInput.attr('readonly')), '', 'Groupedit\'s datepicker don\'t readonly');
+        assert.strictEqual($buttonFge.hasClass('link'), true, 'Groupedit\'s datepicker has link');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-simpledatetime on readonly editform', function (assert) {
+    assert.expect(2);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $simpledatetime = _ember['default'].$('.not-in-groupedit .flexberry-simpledatetime .custom-flatpickr');
+
+      assert.strictEqual(_ember['default'].$.trim($simpledatetime.attr('readonly')), 'readonly', 'Time is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual(_ember['default'].$.trim($simpledatetime.attr('readonly')), '', 'Time don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-dropdown on readonly editform', function (assert) {
+    assert.expect(4);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $dropdown = _ember['default'].$('.not-in-groupedit .flexberry-dropdown');
+      assert.strictEqual($dropdown.hasClass('disabled'), true, 'Dropdown is readonly');
+
+      var $dropdownFge = _ember['default'].$('.in-groupedit .flexberry-dropdown');
+      assert.strictEqual($dropdownFge.hasClass('disabled'), true, 'Groupedit\'s dropdown is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($dropdown.hasClass('disabled'), false, 'Dropdown don\'t readonly');
+        assert.strictEqual($dropdownFge.hasClass('disabled'), false, 'Groupedit\'s dropdown don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-file on readonly edit form', function (assert) {
+    assert.expect(14);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $file = _ember['default'].$('.not-in-groupedit input.flexberry-file-filename-input');
+      assert.strictEqual(_ember['default'].$.trim($file.attr('readonly')), 'readonly', 'Flexberry-file is readonly');
+      var $downloadButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-download-button');
+      assert.strictEqual($downloadButton.hasClass('disabled'), true, 'Flexberry-file\'s button \'Download\' is readonly');
+
+      var $fileFge = _ember['default'].$('.in-groupedit input.flexberry-file-filename-input');
+      assert.strictEqual(_ember['default'].$.trim($fileFge.attr('readonly')), 'readonly', 'Groupedit\'s flexberry-file is readonly');
+      var $downloadButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-download-button');
+      assert.strictEqual($downloadButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file\'s button \'Download\' is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('readonly'), false, 'Flexberry-file don\'t readonly');
+        var $addButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-add-button');
+        assert.strictEqual($addButton.hasClass('disabled'), false, 'Flexberry-file\'s button \'Add\' don\'t readonly');
+        var $removeButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-remove-button');
+        assert.strictEqual($removeButton.hasClass('disabled'), true, 'Flexberry-file has button \'Remove\'');
+        var $uploadButton = _ember['default'].$('.not-in-groupedit label.flexberry-file-upload-button');
+        assert.strictEqual($uploadButton.hasClass('disabled'), true, 'Flexberry-file has button \'Upload\'');
+        assert.strictEqual($downloadButton.hasClass('disabled'), true, 'Flexberry-file has button \'Download\'');
+
+        assert.strictEqual($(_this).is('readonly'), false, 'Groupedit\'s flexberry-file don\'t readonly');
+        var $addButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-add-button');
+        assert.strictEqual($addButtonFge.hasClass('disabled'), false, 'Groupedit\'s flexberry-file\'s button \'Add\' don\'t readonly');
+        var $removeButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-remove-button');
+        assert.strictEqual($removeButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file has button \'Remove\'');
+        var $uploadButtonFge = _ember['default'].$('.in-groupedit label.flexberry-file-upload-button');
+        assert.strictEqual($uploadButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file has button \'Upload\'');
+        assert.strictEqual($downloadButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-file has button \'Download\'');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-lookup on readonly edit form', function (assert) {
+    assert.expect(12);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $lookup = _ember['default'].$('.not-in-groupedit input.lookup-field');
+      assert.strictEqual(_ember['default'].$.trim($lookup.attr('readonly')), 'readonly', 'Lookup is readonly');
+      var $chooseButton = _ember['default'].$('.not-in-groupedit button.ui-change');
+      assert.strictEqual($chooseButton.hasClass('disabled'), true, 'Flexberry-lookup\'s button \'Choose\' is readonly');
+      var $removeButton = _ember['default'].$('.not-in-groupedit button.ui-clear');
+      assert.strictEqual($removeButton.hasClass('disabled'), true, 'Flexberry-lookup\'s button \'Remove\' is readonly');
+
+      var $lookupFge = _ember['default'].$('.in-groupedit input.lookup-field');
+      assert.strictEqual(_ember['default'].$.trim($lookupFge.attr('readonly')), 'readonly', 'Groupedit\'s lookup is readonly');
+      var $chooseButtonFge = _ember['default'].$('.in-groupedit button.ui-change');
+      assert.strictEqual($chooseButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-lookup\'s button \'Choose\' is readonly');
+      var $removeButtonFge = _ember['default'].$('.in-groupedit button.ui-clear');
+      assert.strictEqual($removeButtonFge.hasClass('disabled'), true, 'Groupedit\'s flexberry-lookup\'s button \'Remove\' is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('readonly'), false, 'Lookup don\'t readonly');
+        assert.strictEqual($chooseButton.hasClass('disabled'), false, 'Flexberry-lookup\'s button \'Choose\' don\'t readonly');
+        assert.strictEqual($removeButton.hasClass('disabled'), false, 'Flexberry-lookup\'s button \'Remove\' don\'t readonly');
+
+        assert.strictEqual($(_this).is('readonly'), false, 'Groupedit\'s lookup don\'t readonly');
+        assert.strictEqual($chooseButtonFge.hasClass('disabled'), false, 'Groupedit\'s flexberry-lookup\'s button \'Choose\' don\'t readonly');
+        assert.strictEqual($removeButtonFge.hasClass('disabled'), false, 'Groupedit\'s flexberry-lookup\'s button \'Remove\' don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-lookup as dropdown on readonly edit form', function (assert) {
+    assert.expect(2);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $dropdownAsLookup = _ember['default'].$('.not-in-groupedit .flexberry-lookup');
+      var $dropdown = $($dropdownAsLookup[1]).children('.flexberry-dropdown');
+      assert.strictEqual($dropdown.hasClass('disabled'), true, 'Lookup as dropdown is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($dropdown.hasClass('disabled'), false, 'Lookup as dropdown don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-groupedit on readonly edit form', function (assert) {
+    assert.expect(2);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $groupedit = _ember['default'].$('.in-groupedit table');
+      assert.strictEqual($groupedit.hasClass('readonly'), true, 'Groupedit is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($groupedit.hasClass('readonly'), false, 'Groupedit don\'t readonly');
+      });
+    });
+  });
+
+  (0, _qunit.test)('flexberry-groupedit\'s button on readonly edit form', function (assert) {
+    assert.expect(12);
+
+    visit(path);
+    andThen(function () {
+      var controller = app.__container__.lookup('controller:' + currentRouteName());
+      var $addButton = _ember['default'].$('.in-groupedit .ui-add');
+      assert.strictEqual(_ember['default'].$.trim($addButton.attr('disabled')), 'disabled', 'Flexberry-groupedit\'s button \'Add\' is readonly');
+
+      var $removeButton = _ember['default'].$('.in-groupedit .ui-delete');
+      assert.strictEqual(_ember['default'].$.trim($removeButton.attr('disabled')), 'disabled', 'Flexberry-groupedit\'s button \'Remove\' is readonly');
+
+      var $checkbox = _ember['default'].$('.in-groupedit .flexberry-checkbox');
+      assert.strictEqual($checkbox.hasClass('read-only'), true, 'Flexberry-groupedit\'s checkbox helper is readonly');
+
+      var $removeButtonRow = _ember['default'].$('.in-groupedit .object-list-view-row-delete-button');
+      assert.strictEqual($removeButtonRow.hasClass('disabled'), true, 'Flexberry-groupedit\'s button \'Remove in row\' is readonly');
+
+      var $itemEditMenu = _ember['default'].$('.in-groupedit .edit-menu');
+      assert.strictEqual($itemEditMenu.hasClass('disabled'), true, 'Flexberry-groupedit\'s item \'Edit\' in left menu is readonly');
+      var $itemDeleteMenu = _ember['default'].$('.in-groupedit .delete-menu');
+      assert.strictEqual($itemDeleteMenu.hasClass('disabled'), true, 'Flexberry-groupedit\'s item \'Delete\' in left menu is readonly');
+
+      controller.set('readonly', false);
+      _ember['default'].run.scheduleOnce('afterRender', function () {
+        assert.strictEqual($(_this).is('disabled'), false, 'Flexberry-groupedit\'s button \'Add\' don\'t readonly');
+        assert.strictEqual($(_this).is('disabled'), false, 'Flexberry-groupedit\'s button \'Remove\' don\'t readonly');
+        assert.strictEqual($checkbox.hasClass('read-only'), false, 'Flexberry-groupedit\'s checkbox helper don\'t readonly');
+        assert.strictEqual($removeButtonRow.hasClass('disabled'), false, 'Flexberry-groupedit\'s button \'Remove in row\' don\'t readonly');
+        assert.strictEqual($itemEditMenu.hasClass('disabled'), false, 'Flexberry-groupedit\'s item \'Edit\' in left menu don\'t readonly');
+        assert.strictEqual($itemDeleteMenu.hasClass('disabled'), false, 'Flexberry-groupedit\'s item \'Delete\' in left menu don\'t readonly');
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/readonly-test/edit-form-readonly-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/readonly-test');
+  test('acceptance/components/readonly-test/edit-form-readonly-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/readonly-test/edit-form-readonly-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/readonly-test/edit-form-readonly-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/readonly-test/edit-form-readonly-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/readonly-test/edit-form-readonly-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/execute-validation-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp) {
+  exports.executeTest = executeTest;
+
+  function executeTest(testName, callback) {
+    var app = undefined;
+    var store = undefined;
+    var userSettingsService = undefined;
+
+    (0, _qunit.module)('Acceptance | flexberry-validation | ' + testName, {
+      beforeEach: function beforeEach() {
+
+        // Start application.
+        app = (0, _dummyTestsHelpersStartApp['default'])();
+
+        // Enable acceptance test mode in application controller (to hide unnecessary markup from application.hbs).
+        var applicationController = app.__container__.lookup('controller:application');
+        applicationController.set('isInAcceptanceTestMode', true);
+        store = app.__container__.lookup('service:store');
+
+        userSettingsService = app.__container__.lookup('service:user-settings');
+        var getCurrentPerPage = function getCurrentPerPage() {
+          return 5;
+        };
+
+        userSettingsService.set('getCurrentPerPage', getCurrentPerPage);
+      },
+
+      afterEach: function afterEach() {
+        _ember['default'].run(app, 'destroy');
+        var daterangepicker = _ember['default'].$('.daterangepicker');
+        daterangepicker.remove();
+      }
+    });
+
+    (0, _qunit.test)(testName, function (assert) {
+      return callback(store, assert, app);
+    });
+  }
+});
+define('dummy/tests/acceptance/edit-form-validation-test/execute-validation-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/execute-validation-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/execute-validation-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/execute-validation-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/execute-validation-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/execute-validation-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-base-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check default value', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationLablesContainer = _ember['default'].$('.ember-view.ui.basic.label');
+      var $validationSixteenWide = _ember['default'].$('.list');
+      var $validationLi = $validationSixteenWide.children('li');
+
+      // Сounting the number of validationmessage.
+      assert.equal($validationLablesContainer.length, 11, 'All components have default value');
+      assert.equal($validationLi.length, 17, 'All components have default value in sixteenWide');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-base-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-base-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-base-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-base-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-base-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-base-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-checkbox-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation checkbox', function (store, assert, app) {
+    assert.expect(4);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[0]);
+      var $validationFlexberryCheckbox = $validationField.children('.flexberry-checkbox');
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Flag is required,Flag must be \'true\' only', 'Checkbox\'s label have default value by default');
+
+      _ember['default'].run(function () {
+        $validationFlexberryCheckbox.click();
+      });
+
+      // Check validationmessage text afther first click.
+      assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Checkbox\'s label havn\'t value after first click');
+
+      _ember['default'].run(function () {
+        $validationFlexberryCheckbox.click();
+      });
+
+      // Check validationmessage text = 'Flag must be 'true' only' afther first click.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Flag must be \'true\' only', 'Checkbox\'s label have value after second click');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-checkbox-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-checkbox-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-checkbox-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-checkbox-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-checkbox-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-checkbox-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-datepicker-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation datepicker', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[4]);
+      $validationField = $validationField.children('.inline');
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+      var $validationDateField = _ember['default'].$('.calendar.link.icon');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Date is required', 'Datepicker have default value');
+
+      _ember['default'].run(function () {
+
+        // Open datepicker calendar.
+        $validationDateField.click();
+        var $validationDateButton = _ember['default'].$('.available');
+        $validationDateButton = _ember['default'].$($validationDateButton[18]);
+
+        // Select date.
+        $validationDateButton.click();
+      });
+
+      // Check validationmessage text.
+      $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Waiting for completion _setProperOffsetToCalendar().
+      var done = assert.async();
+      setTimeout(function () {
+        assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Datepicker have value');
+        done();
+      }, 2000);
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-datepicker-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-datepicker-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-datepicker-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-datepicker-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-datepicker-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-datepicker-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-detail-delete-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check detail delete', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      // Сounting the number of validationmessage.
+      var $validationLablesContainer = _ember['default'].$('.ember-view.ui.basic.label');
+      assert.equal($validationLablesContainer.length, 11, 'All components have default value');
+
+      var $validationFlexberryCheckboxs = _ember['default'].$('.flexberry-checkbox');
+      var $validationFlexberryCheckbox = _ember['default'].$($validationFlexberryCheckboxs[1]);
+      var $validationFlexberryOLVDeleteButton = _ember['default'].$(_ember['default'].$('.ui.disabled.button')[1]);
+
+      // Delete detail.
+      _ember['default'].run(function () {
+        $validationFlexberryCheckbox.click();
+        $validationFlexberryOLVDeleteButton.click();
+      });
+
+      // Сounting the number of validationmessage = 8 afther detail delete.
+      $validationLablesContainer = _ember['default'].$('.ember-view.ui.basic.label');
+      assert.equal($validationLablesContainer.length, 8, 'Detail was deleted without errors');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-detail-delete-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-detail-delete-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-detail-delete-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-detail-delete-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-detail-delete-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-detail-delete-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-detail-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check detail\'s components', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      // Сounting the number of validationmessage.
+      var $validationLablesContainer = _ember['default'].$('.ember-view.ui.basic.label');
+      assert.equal($validationLablesContainer.length, 11, 'All components have default value');
+
+      var $validationFlexberryCheckboxs = _ember['default'].$('.flexberry-checkbox');
+      var $validationFlexberryOLVCheckbox = _ember['default'].$($validationFlexberryCheckboxs[2]);
+
+      var $validationFlexberryTextboxs = _ember['default'].$('.flexberry-textbox');
+      var $validationFlexberryOLVTextbox1 = _ember['default'].$($validationFlexberryTextboxs[2]);
+      var $validationFlexberryOLVTextbox2 = _ember['default'].$($validationFlexberryTextboxs[3]);
+
+      // Selct textbox inner.
+      var $validationFlexberryTextboxInner1 = $validationFlexberryOLVTextbox1.children('input');
+      var $validationFlexberryTextboxInner2 = $validationFlexberryOLVTextbox2.children('input');
+
+      // Select deteil's validationmessages.
+      var $validationField1 = _ember['default'].$($validationLablesContainer[8]);
+      var $validationField2 = _ember['default'].$($validationLablesContainer[9]);
+      var $validationField3 = _ember['default'].$($validationLablesContainer[10]);
+
+      // Data insertion.
+      _ember['default'].run(function () {
+        $validationFlexberryOLVCheckbox.click();
+        $validationFlexberryTextboxInner1[0].value = '1';
+        $validationFlexberryTextboxInner1.change();
+        $validationFlexberryTextboxInner2[0].value = '12345';
+        $validationFlexberryTextboxInner2.change();
+      });
+
+      // Validationmessage must be empty.
+      assert.ok($validationField1.text().trim() === '' && $validationField2.text().trim() === '' && $validationField3.text().trim() === '', 'All components have default value');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-detail-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-detail-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-detail-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-detail-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-detail-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-detail-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-dropdown-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation dropdown', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[5]);
+      var $validationFlexberryDropdown = $validationField.children('.flexberry-dropdown');
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Enumeration is required', 'Dropdown have default value');
+
+      _ember['default'].run(function () {
+
+        // Open dropdown.
+        $validationFlexberryDropdown.click();
+        var $validationFlexberryDropdownMenu = $validationFlexberryDropdown.children('.menu');
+        var $validationFlexberryDropdownItems = $validationFlexberryDropdownMenu.children('.item');
+        var $validationFlexberryDropdownItem = _ember['default'].$($validationFlexberryDropdownItems[0]);
+
+        // Select item
+        $validationFlexberryDropdownItem.click();
+      });
+
+      // Validationmessage must be empty.
+      assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Dropdown have value');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-dropdown-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-dropdown-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-dropdown-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-dropdown-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-dropdown-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-dropdown-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-file-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation file', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationFieldFile = _ember['default'].$(_ember['default'].$('.field.error')[6]);
+      var $validationFlexberryErrorLable = $validationFieldFile.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'File is required', 'Flexberry file have default value');
+
+      var $validationFlexberryLookupButtons = _ember['default'].$('.ui.button');
+      var $validationFlexberryLookupButton = _ember['default'].$($validationFlexberryLookupButtons[2]);
+
+      // Click lookup button.
+      _ember['default'].run(function () {
+        $validationFlexberryLookupButton.click();
+      });
+
+      var done = assert.async();
+
+      // Сounting the number of validationmessage.
+      setTimeout(function () {
+        assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Flexberry file have value');
+        done();
+      }, 2000);
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-file-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-file-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-file-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-file-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-file-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-file-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-lookup-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation lookup', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[7]);
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Master is required', 'Lookup have default value');
+
+      var $validationFlexberryLookupButtons = _ember['default'].$('.ui.button');
+      var $validationFlexberryLookupButton = _ember['default'].$($validationFlexberryLookupButtons[2]);
+
+      // Click lookup button.
+      _ember['default'].run(function () {
+        $validationFlexberryLookupButton.click();
+      });
+
+      var done = assert.async();
+
+      // Waiting for the action complete.
+      setTimeout(function () {
+        assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Lookup have value');
+        done();
+      }, 1000);
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-lookup-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-lookup-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-lookup-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-lookup-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-lookup-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-lookup-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check complete all tests', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationDataField = _ember['default'].$('.calendar.link.icon');
+
+      _ember['default'].run(function () {
+        // Open datepicker calendar.
+        $validationDataField.click();
+        var $validationDateButton = _ember['default'].$('.available');
+        $validationDateButton = _ember['default'].$($validationDateButton[16]);
+
+        // Select date.
+        $validationDateButton.click();
+      });
+
+      var $validationFlexberryLookupButtons = _ember['default'].$('.ui.button');
+      var $validationFlexberryLookupButton = _ember['default'].$($validationFlexberryLookupButtons[2]);
+
+      // Click lookup button.
+      _ember['default'].run(function () {
+        $validationFlexberryLookupButton.click();
+      });
+
+      var $validationFlexberryCheckboxs = _ember['default'].$('.flexberry-checkbox');
+      var $validationFlexberryCheckbox = _ember['default'].$($validationFlexberryCheckboxs[0]);
+      var $validationFlexberryOLVCheckbox = _ember['default'].$($validationFlexberryCheckboxs[2]);
+
+      _ember['default'].run(function () {
+        $validationFlexberryCheckbox.click();
+        $validationFlexberryOLVCheckbox.click();
+      });
+
+      var $validationFlexberryDropdown = _ember['default'].$('.flexberry-dropdown');
+
+      _ember['default'].run(function () {
+
+        // Open dropdown.
+        $validationFlexberryDropdown.click();
+        var $validationFlexberryDropdownMenu = $validationFlexberryDropdown.children('.menu');
+        var $validationFlexberryDropdownItems = $validationFlexberryDropdownMenu.children('.item');
+        var $validationFlexberryDropdownItem = _ember['default'].$($validationFlexberryDropdownItems[0]);
+
+        // Select item
+        $validationFlexberryDropdownItem.click();
+      });
+
+      var $validationFlexberryTextboxs = _ember['default'].$('.flexberry-textbox');
+      var $validationFlexberryTextbox1 = _ember['default'].$($validationFlexberryTextboxs[0]);
+      var $validationFlexberryTextbox2 = _ember['default'].$($validationFlexberryTextboxs[1]);
+      var $validationFlexberryOLVTextbox1 = _ember['default'].$($validationFlexberryTextboxs[2]);
+      var $validationFlexberryOLVTextbox2 = _ember['default'].$($validationFlexberryTextboxs[3]);
+      var $validationFlexberryTextarea = _ember['default'].$('.flexberry-textarea');
+
+      var $validationFlexberryTextboxInner1 = $validationFlexberryTextbox1.children('input');
+      var $validationFlexberryTextboxInner2 = $validationFlexberryTextbox2.children('input');
+      var $validationFlexberryOLVTextboxInner1 = $validationFlexberryOLVTextbox1.children('input');
+      var $validationFlexberryOLVTextboxInner2 = $validationFlexberryOLVTextbox2.children('input');
+      var $validationFlexberryTextAreaInner = $validationFlexberryTextarea.children('textarea');
+
+      // Insert text in textbox and textarea.
+      _ember['default'].run(function () {
+        $validationFlexberryTextboxInner1[0].value = '1';
+        $validationFlexberryTextboxInner1.change();
+        $validationFlexberryTextboxInner2[0].value = '12345';
+        $validationFlexberryTextboxInner2.change();
+        $validationFlexberryTextAreaInner.val('1');
+        $validationFlexberryTextAreaInner.change();
+        $validationFlexberryOLVTextboxInner1[0].value = '1';
+        $validationFlexberryOLVTextboxInner1.change();
+        $validationFlexberryOLVTextboxInner2[0].value = '12345';
+        $validationFlexberryOLVTextboxInner2.change();
+      });
+
+      var $validationFlexberryFileAddButton = _ember['default'].$('.add.outline');
+
+      _ember['default'].run(function () {
+        $validationFlexberryFileAddButton.click();
+      });
+
+      var done = assert.async();
+
+      // Сounting the number of validationmessage.
+      setTimeout(function () {
+        var $validationLablesContainer = _ember['default'].$('.ember-view.ui.basic.label');
+        var $validationMessage = true;
+
+        for (var i = 0; i < 10; i++) {
+          if ($validationLablesContainer[i].textContent.trim() !== '') {
+            $validationMessage = false;
+          }
+        }
+
+        var $validationSixteenWide = _ember['default'].$('.list');
+        var $validationLi = $validationSixteenWide.children('li');
+
+        // Сounting the number of validationmessage.
+        assert.equal($validationLi.length, 0, 'All components have default value in sixteenWide');
+
+        assert.ok($validationMessage, 'All components have correct value, All validationmessage disabled');
+        done();
+      }, 5000);
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textarea-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation textarea', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[3]);
+      var $validationFlexberryTextarea = _ember['default'].$('.flexberry-textarea');
+      var $validationFlexberryTextboxInner = $validationFlexberryTextarea.children('textarea');
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Long text is required', 'Textarea have default value');
+
+      // Insert text in textarea.
+      _ember['default'].run(function () {
+        $validationFlexberryTextboxInner.val('1');
+        $validationFlexberryTextboxInner.change();
+      });
+
+      // Validationmessage must be empty.
+      assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Textarea have default value');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textarea-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-textarea-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-textarea-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textarea-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-textarea-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-textarea-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textbox-letter-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation letter textbox', function (store, assert, app) {
+    assert.expect(4);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[2]);
+      var $validationFlexberryTextbox = $validationField.children('.flexberry-textbox');
+      var $validationFlexberryTextboxInner = $validationFlexberryTextbox.children('input');
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Text is required,Text length must be >= 5', 'letter textbox have default value');
+
+      // Insert text in textbox.
+      _ember['default'].run(function () {
+        $validationFlexberryTextboxInner[0].value = '1';
+        $validationFlexberryTextboxInner.change();
+      });
+
+      // Check default validationmessage for text length <5 letter.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Text length must be >= 5', 'letter textbox have < 5 letter');
+
+      // Insert text in textbox.
+      _ember['default'].run(function () {
+        $validationFlexberryTextboxInner[0].value = '12345';
+        $validationFlexberryTextboxInner.change();
+      });
+
+      // Check default validationmessage for text length >5 letter.
+      assert.equal($validationFlexberryErrorLable.text().trim(), '', 'letter textbox have >= 5 letter');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textbox-letter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-textbox-letter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-textbox-letter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textbox-letter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-textbox-letter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-textbox-letter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textbox-numeric-test', ['exports', 'ember', 'dummy/tests/acceptance/edit-form-validation-test/execute-validation-test'], function (exports, _ember, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest) {
+
+  (0, _dummyTestsAcceptanceEditFormValidationTestExecuteValidationTest.executeTest)('check operation numeric textbox', function (store, assert, app) {
+    assert.expect(4);
+    var path = 'components-acceptance-tests/edit-form-validation/validation';
+
+    // Open validation page.
+    visit(path);
+
+    andThen(function () {
+      assert.equal(currentPath(), path);
+
+      var $validationField = _ember['default'].$(_ember['default'].$('.field.error')[1]);
+      var $validationFlexberryTextbox = $validationField.children('.flexberry-textbox');
+      var $validationFlexberryTextboxInner = $validationFlexberryTextbox.children('input');
+      var $validationFlexberryErrorLable = $validationField.children('.label');
+
+      // Check default validationmessage text.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Number is required,Number is invalid', 'Numeric textbox have default value');
+
+      // Insert text in textbox.
+      _ember['default'].run(function () {
+        $validationFlexberryTextboxInner[0].value = '2';
+        $validationFlexberryTextboxInner.change();
+      });
+
+      // Check default validationmessage text for even numbers.
+      assert.equal($validationFlexberryErrorLable.text().trim(), 'Number must be an odd', 'Numeric textbox have even value');
+
+      // Insert text in textbox.
+      _ember['default'].run(function () {
+        $validationFlexberryTextboxInner[0].value = '1';
+        $validationFlexberryTextboxInner.change();
+      });
+
+      // Check default validationmessage text for odd numbers.
+      assert.equal($validationFlexberryErrorLable.text().trim(), '', 'Numeric textbox have odd value');
+    });
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textbox-numeric-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/edit-form-validation-test');
+  test('acceptance/edit-form-validation-test/validation-textbox-numeric-test.js should pass jscs', function () {
+    ok(true, 'acceptance/edit-form-validation-test/validation-textbox-numeric-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/edit-form-validation-test/validation-textbox-numeric-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/edit-form-validation-test/validation-textbox-numeric-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/edit-form-validation-test/validation-textbox-numeric-test.js should pass jshint.');
+  });
+});
 define('dummy/tests/adapters/application.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -1970,6 +3060,40 @@ define('dummy/tests/controllers/application.jshint', ['exports'], function (expo
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'controllers/application.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/edit-form-readonly.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests');
+  test('controllers/components-acceptance-tests/edit-form-readonly.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/edit-form-readonly.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/edit-form-readonly.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/edit-form-readonly.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/edit-form-readonly.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/edit-form-validation/validation.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests/edit-form-validation');
+  test('controllers/components-acceptance-tests/edit-form-validation/validation.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/edit-form-validation/validation.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/edit-form-validation/validation.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/edit-form-validation/validation.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/edit-form-validation/validation.js should pass jshint.');
   });
 });
 define('dummy/tests/controllers/components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox.jscs-test', ['exports'], function (exports) {
@@ -13380,6 +14504,40 @@ define('dummy/tests/routes/application.jshint', ['exports'], function (exports) 
     assert.ok(true, 'routes/application.js should pass jshint.');
   });
 });
+define('dummy/tests/routes/components-acceptance-tests/edit-form-readonly.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests');
+  test('routes/components-acceptance-tests/edit-form-readonly.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/edit-form-readonly.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/edit-form-readonly.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/edit-form-readonly.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/edit-form-readonly.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/edit-form-validation/validation.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests/edit-form-validation');
+  test('routes/components-acceptance-tests/edit-form-validation/validation.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/edit-form-validation/validation.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/edit-form-validation/validation.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/edit-form-validation/validation.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/edit-form-validation/validation.js should pass jshint.');
+  });
+});
 define('dummy/tests/routes/components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -15335,21 +16493,21 @@ define('dummy/tests/services/store.jshint', ['exports'], function (exports) {
     assert.ok(true, 'services/store.js should pass jshint.');
   });
 });
-define('dummy/tests/services/user-settings.jscs-test', ['exports'], function (exports) {
+define('dummy/tests/services/user.jscs-test', ['exports'], function (exports) {
   'use strict';
 
   module('JSCS - services');
-  test('services/user-settings.js should pass jscs', function () {
-    ok(true, 'services/user-settings.js should pass jscs.');
+  test('services/user.js should pass jscs', function () {
+    ok(true, 'services/user.js should pass jscs.');
   });
 });
-define('dummy/tests/services/user-settings.jshint', ['exports'], function (exports) {
+define('dummy/tests/services/user.jshint', ['exports'], function (exports) {
   'use strict';
 
-  QUnit.module('JSHint - services/user-settings.js');
+  QUnit.module('JSHint - services/user.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'services/user-settings.js should pass jshint.');
+    assert.ok(true, 'services/user.js should pass jshint.');
   });
 });
 define('dummy/tests/test-helper', ['exports', 'dummy/tests/helpers/resolver', 'ember-qunit'], function (exports, _dummyTestsHelpersResolver, _emberQunit) {
