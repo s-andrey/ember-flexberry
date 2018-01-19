@@ -16493,21 +16493,21 @@ define('dummy/tests/services/store.jshint', ['exports'], function (exports) {
     assert.ok(true, 'services/store.js should pass jshint.');
   });
 });
-define('dummy/tests/services/user-settings.jscs-test', ['exports'], function (exports) {
+define('dummy/tests/services/user.jscs-test', ['exports'], function (exports) {
   'use strict';
 
   module('JSCS - services');
-  test('services/user-settings.js should pass jscs', function () {
-    ok(true, 'services/user-settings.js should pass jscs.');
+  test('services/user.js should pass jscs', function () {
+    ok(true, 'services/user.js should pass jscs.');
   });
 });
-define('dummy/tests/services/user-settings.jshint', ['exports'], function (exports) {
+define('dummy/tests/services/user.jshint', ['exports'], function (exports) {
   'use strict';
 
-  QUnit.module('JSHint - services/user-settings.js');
+  QUnit.module('JSHint - services/user.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'services/user-settings.js should pass jshint.');
+    assert.ok(true, 'services/user.js should pass jshint.');
   });
 });
 define('dummy/tests/test-helper', ['exports', 'dummy/tests/helpers/resolver', 'ember-qunit'], function (exports, _dummyTestsHelpersResolver, _emberQunit) {
