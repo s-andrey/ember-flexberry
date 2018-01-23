@@ -5180,6 +5180,16 @@ ui.button.ui-clear:hover {
 .ui.ui-add.button:hover i.icon.plus:before {
   color: #7dd4b4;
 }
+.ui.ui-clear-settings.button {
+  padding: 0px;
+  height: 30px;
+  width: 30px;
+  border: 1px solid #7ba7d9;
+  text-align: right;
+}
+.ui.ui-clear-settings.button:hover {
+  background: #FFFFFF;
+}
 .right.pointing.ui.icon.dropdown.button:hover i.icon.list.layout:before {
   color: #FFFFFF;
 }
