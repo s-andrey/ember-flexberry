@@ -18252,6 +18252,29 @@ input[type=checkbox]:indeterminate:after {
 .ui.form input[type="checkbox"] {
   margin: 5px;
 }
+.ui.form .olv-toolbar-info-modal-dialog-content textarea {
+  background: white;
+}
+.center.aligned.ui.grid div {
+  margin: 0px 0px 10px 0px;
+}
+.ui.button.olv-toolbar-info-modal-dialog-ok-button {
+  padding: 0.8571em 1.284em 0.8571em;
+}
+.ui.button.flexberry-file-error-modal-dialog-ok-button {
+  padding: 0.8571em 1.284em 0.8571em;
+}
+.center.aligned.ui.grid .button {
+  background: white;
+  color: #4f73b0;
+  border: 1px solid #4f73b0;
+  opacity: 1;
+}
+.center.aligned.ui.grid .button:hover {
+  background: #7dd4b4;
+  color: white;
+  border: 1px solid #7dd4b4;
+}
 select {
   color: #7ba7d9;
 }
@@ -30008,6 +30031,10 @@ a.ui.card:hover,
   background: #f1f8ff;
   color: #7ba7d9;
   border-left: none;
+}
+/* Readonly checkbox */
+.ui.checkbox.flexberry-checkbox.read-only {
+  opacity: 0.5;
 }
 /*!
  * # Semantic UI - Dimmer
