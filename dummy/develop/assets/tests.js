@@ -18672,7 +18672,7 @@ define('dummy/tests/unit/services/form-load-time-tracker-test.jshint', ['exports
     assert.ok(true, 'unit/services/form-load-time-tracker-test.js should pass jshint.');
   });
 });
-define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app', 'dummy/tests/helpers/destroy-app'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp, _dummyTestsHelpersDestroyApp) {
+define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app', 'dummy/tests/helpers/destroy-app', 'dummy/config/environment'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp, _dummyTestsHelpersDestroyApp, _dummyConfigEnvironment) {
 
   var app = undefined;
 
@@ -18715,7 +18715,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), errorMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), errorAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), errorProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), errorMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -18832,7 +18832,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), warnMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), warnAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), warnProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsWarnMessage = savedLogRecord.get('message').indexOf(warnMessage) > -1;
       assert.ok(savedMessageContainsWarnMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -18951,7 +18951,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), logMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), logAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), logProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), logMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -19069,7 +19069,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), infoMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), infoAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), infoProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), infoMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -19187,7 +19187,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), debugMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), debugAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), debugProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsDebugMessage = savedLogRecord.get('message').indexOf(debugMessage) > -1;
       assert.ok(savedMessageContainsDebugMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -19306,7 +19306,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), deprecationMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), deprecationAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), deprecationProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsDeprecationMessage = savedLogRecord.get('message').indexOf(deprecationMessage) > -1;
       assert.ok(savedMessageContainsDeprecationMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -19425,7 +19425,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), assertMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), assertAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), assertProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsAssertMessage = savedLogRecord.get('message').indexOf(assertMessage) > -1;
       assert.ok(savedMessageContainsAssertMessage);
       var formattedMessageContainsAssertMessage = savedLogRecord.get('formattedMessage').indexOf(assertMessage) > -1;
@@ -19544,7 +19544,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), errorMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), errorAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), errorProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), errorMessage);
       var formattedMessageContainsErrorMessage = savedLogRecord.get('formattedMessage').indexOf(errorMessage) > -1;
       assert.ok(formattedMessageContainsErrorMessage);
@@ -19667,7 +19667,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), promiseMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), promiseAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), promiseProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), promiseErrorMessage);
 
       var formattedMessageContainsPromiseErrorMessage = savedLogRecord.get('formattedMessage').indexOf(promiseErrorMessage) > -1;
