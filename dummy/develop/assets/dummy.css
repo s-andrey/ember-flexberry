@@ -10436,13 +10436,13 @@ div.item-minus {
 ---------------------*/
 /* browsers require these rules separate */
 .ui.input input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #999999;
 }
 .ui.input input::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #999999;
 }
 .ui.input input::-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #999999;
 }
 /*******************************
             States
@@ -10845,6 +10845,15 @@ input {
 ::-ms-reveal {
   width: 0;
   height: 0;
+}
+.ui.form input.ember-view.ember-text-field:-ms-input-placeholder {
+  color: #999999;
+}
+.ui.form textarea.ember-view.ember-text-area:-ms-input-placeholder {
+  color: #999999;
+}
+.ember-view.ui.dropdown div.default.text {
+  color: #999999;
 }
 /*!
  * # Semantic UI - Label
