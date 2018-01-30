@@ -925,6 +925,11 @@ define('dummy/controllers/application', ['exports', 'ember', 'dummy/config/envir
               title: i18n.t('forms.application.sitemap.components-examples.flexberry-lookup.customizing-window-example.title'),
               children: null
             }, {
+              link: 'components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example',
+              caption: i18n.t('forms.application.sitemap.components-examples.flexberry-lookup.hierarchy-olv-in-lookup-example.caption'),
+              title: i18n.t('forms.application.sitemap.components-examples.flexberry-lookup.hierarchy-olv-in-lookup-example.title'),
+              children: null
+            }, {
               link: 'components-examples/flexberry-lookup/limit-function-example',
               caption: i18n.t('forms.application.sitemap.components-examples.flexberry-lookup.limit-function-example.caption'),
               title: i18n.t('forms.application.sitemap.components-examples.flexberry-lookup.limit-function-example.title'),
@@ -3874,6 +3879,37 @@ define('dummy/controllers/components-examples/flexberry-lookup/dropdown-mode-exa
     lookupCustomLimitPredicate: _ember['default'].computed(function () {
       return new StringPredicate('name').contains('Type');
     })
+  });
+});
+define('dummy/controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example', ['exports', 'ember', 'ember-flexberry/controllers/edit-form'], function (exports, _ember, _emberFlexberryControllersEditForm) {
+  exports['default'] = _emberFlexberryControllersEditForm['default'].extend({
+
+    actions: {
+      /**
+        This method returns custom properties for lookup window.
+         @method getLookupFolvProperties
+        @param {Object} options Parameters of lookup that called this method.
+        @param {String} [options.projection] Lookup projection.
+        @param {String} [options.relationName] Lookup relation name.
+        @return {Object} Set of options for lookup window.
+       */
+      getLookupFolvProperties: function getLookupFolvProperties(options) {
+        var methodArgs = _ember['default'].merge({
+          projection: undefined,
+          relationName: undefined
+        }, options);
+
+        if (methodArgs.relationName === 'type') {
+          return {
+            disableHierarchicalMode: false,
+            modelName: 'ember-flexberry-dummy-suggestion-type',
+            modelProjection: 'SettingLookupExampleView'
+          };
+        }
+
+        return undefined;
+      }
+    }
   });
 });
 define('dummy/controllers/components-examples/flexberry-lookup/limit-function-example', ['exports', 'ember', 'ember-flexberry/controllers/edit-form', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryControllersEditForm, _emberFlexberryData) {
@@ -11255,6 +11291,10 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
                 'caption': 'Window customization',
                 'title': ''
               },
+              'hierarchy-olv-in-lookup-example': {
+                'caption': 'Example hierarchical OLV in lookup',
+                'title': ''
+              },
               'limit-function-example': {
                 'caption': 'Limit function example',
                 'title': ''
@@ -11638,6 +11678,10 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
           },
           'customizing-window-example': {
             'caption': 'Flexberry-lookup. Window customization',
+            'titleLookup': 'Master'
+          },
+          'hierarchy-olv-in-lookup-example': {
+            'caption': 'Flexberry-lookup. Example hierarchical OLV in lookup',
             'titleLookup': 'Master'
           },
           'limit-function-example': {
@@ -12248,6 +12292,10 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
                 'caption': 'Настройка окна',
                 'title': ''
               },
+              'hierarchy-olv-in-lookup-example': {
+                'caption': 'Пример иерархического OLV-а в lookup-e',
+                'title': ''
+              },
               'limit-function-example': {
                 'caption': 'Функция ограничения',
                 'title': ''
@@ -12631,6 +12679,10 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
           },
           'customizing-window-example': {
             'caption': 'Flexberry-lookup. Настройка окна',
+            'titleLookup': 'Мастер'
+          },
+          'hierarchy-olv-in-lookup-example': {
+            'caption': 'Flexberry-lookup. Пример иерархического OLV-а в lookup-e',
             'titleLookup': 'Мастер'
           },
           'limit-function-example': {
@@ -14698,6 +14750,7 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('components-examples/flexberry-groupedit/configurate-row-example');
     this.route('components-examples/flexberry-lookup/settings-example');
     this.route('components-examples/flexberry-lookup/customizing-window-example');
+    this.route('components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example');
     this.route('components-examples/flexberry-lookup/limit-function-example');
     this.route('components-examples/flexberry-lookup/limit-function-through-dynamic-properties-example');
     this.route('components-examples/flexberry-lookup/lookup-block-form-example');
@@ -15718,6 +15771,47 @@ define('dummy/routes/components-examples/flexberry-lookup/dropdown-mode-example'
       var store = this.get('store');
       var base = store.createRecord('ember-flexberry-dummy-suggestion');
       return base;
+    }
+  });
+});
+define('dummy/routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example', ['exports', 'ember', 'ember-flexberry/routes/edit-form', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryRoutesEditForm, _emberFlexberryData) {
+  var Builder = _emberFlexberryData.Query.Builder;
+  exports['default'] = _emberFlexberryRoutesEditForm['default'].extend({
+    /**
+      Name of model projection to be used as record's properties limitation.
+       @property modelProjection
+      @type String
+      @default 'DropDownLookupExampleView'
+     */
+    modelProjection: 'CustomizeLookupWindowExampleView',
+
+    /**
+      Name of model to be used as form's record type.
+       @property modelName
+      @type String
+      @default 'ember-flexberry-dummy-suggestion'
+     */
+    modelName: 'ember-flexberry-dummy-suggestion',
+
+    /**
+      Returns model related to current route.
+       @method model
+     */
+    model: function model(params) {
+      var store = this.get('store');
+      var base = store.createRecord('ember-flexberry-dummy-suggestion');
+      return base;
+    },
+
+    actions: {
+      loadRecordsById: function loadRecordsById(id, target, property) {
+        var hierarchicalAttribute = 'parent';
+        var modelName = 'ember-flexberry-dummy-suggestion-type';
+        var projectionName = 'SettingLookupExampleView';
+        var builder = new Builder(this.store).from(modelName).selectByProjection(projectionName).where(hierarchicalAttribute, 'eq', id);
+
+        _ember['default'].set(target, property, this.store.query(modelName, builder.build()));
+      }
     }
   });
 });
@@ -22982,6 +23076,74 @@ define("dummy/templates/components-examples/flexberry-lookup/dropdown-mode-examp
         return morphs;
       },
       statements: [["inline", "t", ["forms.components-examples.flexberry-lookup.dropdown-mode-example.caption"], [], ["loc", [null, [1, 22], [1, 102]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.type", ["loc", [null, [6, 12], [6, 22]]]]], [], []], "projection", "DropDownLookupExampleView", "displayAttributeName", "name", "title", "Master", "relationName", "type", "choose", "showLookupDialog", "remove", "removeLookupValue", "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [13, 15], [13, 23]]]]], [], []], "lookupLimitPredicate", ["subexpr", "@mut", [["get", "lookupCustomLimitPredicate", ["loc", [null, [14, 27], [14, 53]]]]], [], []], "dropdown", true, "dropdownIsSearch", true, "sorting", "desc", "direction", "downward"], ["loc", [null, [5, 4], [19, 6]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.type", ["loc", [null, [24, 12], [24, 22]]]]], [], []], "projection", "DropDownLookupExampleView", "displayAttributeName", "name", "title", "Master", "relationName", "type", "choose", "showLookupDialog", "remove", "removeLookupValue", "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [31, 15], [31, 23]]]]], [], []], "lookupLimitPredicate", ["subexpr", "@mut", [["get", "lookupCustomLimitPredicate", ["loc", [null, [32, 27], [32, 53]]]]], [], []], "dropdown", true, "sorting", "desc", "direction", "upward"], ["loc", [null, [23, 4], [36, 6]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("dummy/templates/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 19,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("h3");
+        dom.setAttribute(el1, "class", "ui header");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2, 1]), 1, 1);
+        return morphs;
+      },
+      statements: [["inline", "t", ["forms.components-examples.flexberry-lookup.hierarchy-olv-in-lookup-example.caption"], [], ["loc", [null, [1, 22], [1, 112]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.type", ["loc", [null, [5, 12], [5, 22]]]]], [], []], "projection", "CustomizeLookupWindowExampleView", "displayAttributeName", "name", "title", ["subexpr", "t", ["forms.components-examples.flexberry-lookup.hierarchy-olv-in-lookup-example.titleLookup"], [], ["loc", [null, [8, 12], [8, 104]]]], "relationName", "type", "choose", "showLookupDialog", "remove", "removeLookupValue", "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [12, 15], [12, 23]]]]], [], []], "lookupWindowCustomProperties", ["subexpr", "action", ["getLookupFolvProperties"], [], ["loc", [null, [13, 35], [13, 69]]]], "lookupLimitPredicate", ["subexpr", "@mut", [["get", "lookupCustomLimitPredicate", ["loc", [null, [14, 27], [14, 53]]]]], [], []], "autocomplete", true], ["loc", [null, [4, 4], [16, 6]]]]],
       locals: [],
       templates: []
     };
@@ -53222,7 +53384,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+dfcefa02"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+48b9f818"});
 }
 
 /* jshint ignore:end */
