@@ -547,6 +547,725 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-
     assert.ok(true, 'acceptance/components/flexberry-objectlistview/execute-folv-test.js should pass jshint.');
   });
 });
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check empty filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/custom-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'empty';
+    var filtreInsertParametr = '';
+    _ember['default'].run(function () {
+      var builder = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Eq, '');
+      store.query(modelName, builder.build()).then(function (result) {
+        var arr = result.toArray();
+
+        // Add an object with an empty address, if it is not present.
+        if (arr.length === 0) {
+          (function () {
+            var newRecords = _ember['default'].A();
+            var user = newRecords.pushObject(store.createRecord('ember-flexberry-dummy-application-user', { name: 'Random name fot empty filther test',
+              eMail: 'Random eMail fot empty filther test' }));
+            var type = newRecords.pushObject(store.createRecord('ember-flexberry-dummy-suggestion-type', { name: 'Random name fot empty filther test' }));
+
+            newRecords.forEach(function (item) {
+              item.save();
+            });
+
+            var done = assert.async();
+            window.setTimeout(function () {
+              _ember['default'].run(function () {
+                newRecords = _ember['default'].A();
+                newRecords.pushObject(store.createRecord(modelName, { type: type, author: user, editor1: user }));
+                newRecords.forEach(function (item) {
+                  item.save();
+                });
+              });
+              done();
+            }, 1000);
+          })();
+        }
+      });
+
+      visit(path + '?perPage=500');
+      andThen(function () {
+        assert.equal(currentPath(), path);
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address === undefined) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check filter by enter click', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'eq';
+    var filtreInsertParametr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter by enter click function.
+          var refreshFunction = function refreshFunction() {
+            var input = _ember['default'].$('.ember-text-field')[0];
+            input.focus();
+            keyEvent(input, 'keydown', 13);
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address !== filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check filter renders', function (store, assert, app) {
+    assert.expect(34);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+
+    _ember['default'].run(function () {
+      visit(path);
+      andThen(function () {
+        assert.equal(currentPath(), path);
+
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $filterRemoveButton = $filterButtonDiv.children('.removeFilter-button');
+        var $filterButtonIcon = $filterButton.children('i');
+
+        var $table = _ember['default'].$('.object-list-view');
+        var $tableTbody = $table.children('tbody');
+        var $tableRows = $tableTbody.children('tr');
+
+        // Check filtre button div.
+        assert.strictEqual($filterButtonDiv.prop('tagName'), 'DIV', 'Filtre button\'s wrapper is a <div>');
+        assert.strictEqual($filterButtonDiv.hasClass('ui icon buttons'), true, 'Filtre button\'s wrapper has \'ui icon buttons\' css-class');
+        assert.strictEqual($filterButtonDiv.hasClass('filter-active'), true, 'Filtre button\'s wrapper has \'filter-active\' css-class');
+        assert.strictEqual($filterButtonDiv.length === 1, true, 'Component has filter button');
+
+        // Check filtre button.
+        assert.strictEqual($filterButton.length === 1, true, 'Filtre button has inner button block');
+        assert.strictEqual($filterButton.hasClass('ui button'), true, 'Filtre button\'s wrapper has \'ui button\' css-class');
+        assert.strictEqual($filterButton[0].title, 'Добавить фильтр', 'Filtre button has title');
+        assert.strictEqual($filterButton.prop('tagName'), 'BUTTON', 'Component\'s inner button block is a <button>');
+
+        // Check button's icon <i>.
+        assert.strictEqual($filterButtonIcon.length === 1, true, 'Filtre button\'s title has icon block');
+        assert.strictEqual($filterButtonIcon.prop('tagName'), 'I', 'Filtre button\'s icon block is a <i>');
+        assert.strictEqual($filterButtonIcon.hasClass('filter icon'), true, 'Filtre button\'s icon block has \'filter icon\' css-class');
+
+        // Check filtre remove button.
+        assert.strictEqual($filterRemoveButton.length === 0, true, 'Component hasn\'t remove filter button');
+
+        // Check filtre row.
+        assert.strictEqual($tableRows.length === 5, true, 'Filtre row aren\'t active');
+
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        $tableRows = $tableTbody.children('tr');
+
+        // Check filtre row afther filter active.
+        assert.strictEqual($tableRows.length === 7, true, 'Filtre row aren\'t active');
+
+        var filtreInsertOperation = 'ge';
+        var filtreInsertParametr = 'A value that will never be told';
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+            $filterButton = $filterButtonDiv.children('.button.active');
+            $filterButtonIcon = $filterButton.children('i');
+            $filterRemoveButton = $filterButtonDiv.children('.removeFilter-button');
+            var $filterRemoveButtonIcon = $filterRemoveButton.children('i');
+
+            // Check filtre button div.
+            assert.strictEqual($filterButtonDiv.prop('tagName'), 'DIV', 'Filtre button\'s wrapper is a <div>');
+            assert.strictEqual($filterButtonDiv.hasClass('ui icon buttons'), true, 'Filtre button\'s wrapper has \'ui icon buttons\' css-class');
+            assert.strictEqual($filterButtonDiv.hasClass('filter-active'), true, 'Filtre button\'s wrapper has \'filter-active\' css-class');
+            assert.strictEqual($filterButtonDiv.length === 1, true, 'Component has filter button');
+
+            // Check filtre button.
+            assert.strictEqual($filterButton.length === 1, true, 'Filtre button has inner button block');
+            assert.strictEqual($filterButton.hasClass('ui button'), true, 'Filtre button\'s wrapper has \'ui button\' css-class');
+            assert.strictEqual($filterButton[0].title, 'Добавить фильтр', 'Filtre button has title');
+            assert.strictEqual($filterButton.prop('tagName'), 'BUTTON', 'Component\'s inner button block is a <button>');
+
+            // Check button's icon <i>.
+            assert.strictEqual($filterButtonIcon.length === 1, true, 'Filtre button\'s title has icon block');
+            assert.strictEqual($filterButtonIcon.prop('tagName'), 'I', 'Filtre button\'s icon block is a <i>');
+            assert.strictEqual($filterButtonIcon.hasClass('filter icon'), true, 'Filtre button\'s icon block has \'filter icon\' css-class');
+
+            // Check filtre remove button.
+            assert.strictEqual($filterRemoveButton.length === 1, true, 'Filtre remove button has inner button block');
+            assert.strictEqual($filterRemoveButton.hasClass('ui button'), true, 'Filtre remove button\'s wrapper has \'ui button\' css-class');
+            assert.strictEqual($filterRemoveButton[0].title, 'Сбросить фильтр', 'Filtre remove button has title');
+            assert.strictEqual($filterRemoveButton.prop('tagName'), 'BUTTON', 'Component\'s inner button block is a <button>');
+
+            // Check remove button's icon <i>.
+            assert.strictEqual($filterRemoveButtonIcon.length === 1, true, 'Filtre button\'s title has icon block');
+            assert.strictEqual($filterRemoveButtonIcon.prop('tagName'), 'I', 'Filtre button\'s icon block is a <i>');
+            assert.strictEqual($filterRemoveButtonIcon.hasClass('remove icon'), true, 'Filtre button\'s icon block has \'remove icon\' css-class');
+
+            // Deactivate filtre row.
+            $filterButton.click();
+
+            // Apply filter.
+            var done2 = assert.async();
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+              $tableRows = $tableTbody.children('tr');
+
+              // Check filtre row afther filter deactivate.
+              assert.strictEqual($tableRows.length === 1, true, 'Filtre row aren\'t deactivate');
+              done2();
+            });
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check filter', function (store, assert, app) {
+    assert.expect(2);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperationArr = ['eq', undefined, 'eq', 'eq', 'eq', 'eq'];
+    var filtreInsertValueArr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertValueArr = [arr.objectAt(0).get('address'), undefined, arr.objectAt(0).get('votes'), arr.objectAt(0).get('moderated'), arr.objectAt(0).get('type.name'), arr.objectAt(0).get('author.name')];
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterObjectListView)($objectListView, filtreInsertOperationArr, filtreInsertValueArr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function ($list) {
+            var filtherResult = controller.model.content;
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check ge filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'ge';
+    var filtreInsertParametr = undefined;
+
+    visit(path + '?perPage=500');
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('votes') - 1;
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 2, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var votes = filtherResult[0]._data.votes;
+              if (votes <= filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check le filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'le';
+    var filtreInsertParametr = undefined;
+
+    visit(path + '?perPage=500');
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('votes') + 1;
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 2, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var votes = filtherResult[0]._data.votes;
+              if (votes >= filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check like filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'like';
+    var filtreInsertParametr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+        filtreInsertParametr = filtreInsertParametr.slice(1, filtreInsertParametr.length);
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address.lastIndexOf(filtreInsertParametr) === -1) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check neq filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'neq';
+    var filtreInsertParametr = undefined;
+
+    visit(path + '?perPage=500');
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address === filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check without operation filter', function (store, assert, app) {
+    assert.expect(4);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = '';
+    var filtreInsertParametr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+        filtreInsertParametr = filtreInsertParametr.slice(1, filtreInsertParametr.length);
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address.lastIndexOf(filtreInsertParametr) === -1) {
+                successful = false;
+              }
+            }
+
+            var dropdown = _ember['default'].$('.flexberry-dropdown')[0];
+            assert.equal(dropdown.innerText, 'like', 'Filter select like operation if it is not specified');
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js should pass jshint.');
+  });
+});
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-check-all-at-all-page-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions) {
 
   var olvContainerClass = '.object-list-view-container';
@@ -1107,7 +1826,6 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-getCellC
       (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingLocales)('en', app).then(function () {
 
         var olvContainerClass = '.object-list-view-container';
-        var trTableClass = 'table.object-list-view tbody tr';
 
         var controller = app.__container__.lookup('controller:' + currentRouteName());
 
@@ -1147,8 +1865,16 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-getCellC
 
         var timeout = 500;
         _ember['default'].run.later(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
           var done = assert.async();
-          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($refreshButton, olvContainerClass, trTableClass).then(function ($list) {
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var $list = _ember['default'].$(olvContainerClass);
             assert.ok($list, 'list loaded');
 
             // Date format most be DD.MM.YYYY, hh:mm:ss.
@@ -1162,7 +1888,8 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-getCellC
             var done2 = assert.async();
             _ember['default'].run.later(function () {
               var done1 = assert.async();
-              (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($refreshButton, olvContainerClass, trTableClass).then(function ($list) {
+              (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+                var $list = _ember['default'].$(olvContainerClass);
                 assert.ok($list, 'list loaded');
 
                 // Date format most be II (example Sep 4 1986).
@@ -1348,7 +2075,7 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-open-new
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-paging-dropdown-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data/utils/generate-unique-id'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryDataUtilsGenerateUniqueId) {
 
   (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check paging dropdown', function (store, assert, app) {
-    assert.expect(7);
+    assert.expect(6);
     var path = 'components-acceptance-tests/flexberry-objectlistview/folv-paging';
     var modelName = 'ember-flexberry-dummy-suggestion-type';
     var uuid = (0, _emberFlexberryDataUtilsGenerateUniqueId['default'])();
@@ -1363,38 +2090,47 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-paging-d
         andThen(function () {
           assert.equal(currentPath(), path);
 
-          var $folvPerPageButton = _ember['default'].$('.flexberry-dropdown.compact');
-          var $menu = _ember['default'].$('.menu', $folvPerPageButton);
-          var trTableBody = function trTableBody() {
-            return $(_ember['default'].$('table.object-list-view tbody tr')).length.toString();
+          var $choosedIthem = undefined;
+          var trTableBody = undefined;
+          var activeItem = undefined;
+
+          // Refresh function.
+          var refreshFunction = function refreshFunction() {
+            var $folvPerPageButton = _ember['default'].$('.flexberry-dropdown.compact');
+            var $menu = _ember['default'].$('.menu', $folvPerPageButton);
+            trTableBody = function () {
+              return $(_ember['default'].$('table.object-list-view tbody tr')).length.toString();
+            };
+
+            activeItem = function () {
+              return $(_ember['default'].$('.item.active.selected', $menu)).attr('data-value');
+            };
+
+            // The list should be more than 5 items.
+            assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
+            $folvPerPageButton.click();
+            var timeout = 500;
+            _ember['default'].run.later(function () {
+              var menuIsVisible = $menu.hasClass('visible');
+              assert.strictEqual(menuIsVisible, true, 'menu is visible');
+              $choosedIthem = _ember['default'].$('.item', $menu);
+              $choosedIthem[1].click();
+            }, timeout);
           };
 
-          var activeItem = function activeItem() {
-            return $(_ember['default'].$('.item.active.selected', $menu)).attr('data-value');
-          };
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            assert.equal(activeItem(), $($choosedIthem[1]).attr('data-value'), 'equal');
 
-          // The list should be more than 5 items.
-          assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
-          $folvPerPageButton.click();
-          var timeout = 500;
-          _ember['default'].run.later(function () {
-            var menuIsVisible = $menu.hasClass('visible');
-            assert.strictEqual(menuIsVisible, true, 'menu is visible');
-            var $choosedIthem = _ember['default'].$('.item', $menu);
-            var done = assert.async();
-            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($choosedIthem[1], '.object-list-view-container', 'table.object-list-view tbody tr').then(function ($list) {
-              assert.ok($list);
-              assert.equal(activeItem(), $($choosedIthem[1]).attr('data-value'), 'equal');
-
-              // The list should be more than 10 items
-              assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
-            })['catch'](function (reason) {
-              throw new Error(reason);
-            })['finally'](function () {
-              (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.deleteRecords)(store, modelName, uuid, assert);
-              done();
-            });
-          }, timeout);
+            // The list should be more than 10 items
+            assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
+          })['catch'](function (reason) {
+            throw new Error(reason);
+          })['finally'](function () {
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.deleteRecords)(store, modelName, uuid, assert);
+            done();
+          });
         });
       });
     });
@@ -1475,12 +2211,9 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-paging-n
 });
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-clear-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry/locales/ru/translations'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryLocalesRuTranslations) {
 
-  var olvContainerClass = '.object-list-view-container';
-  var trTableClass = 'table.object-list-view tbody tr';
-
   // Need to add sort by multiple columns.
   (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check sorting clear', function (store, assert, app) {
-    assert.expect(9);
+    assert.expect(8);
     var path = 'components-acceptance-tests/flexberry-objectlistview/base-operations';
     visit(path);
     andThen(function () {
@@ -1503,13 +2236,18 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 
             // Check sortihg icon in the first column. Sorting icon is not added.
             assert.equal($thead.children[0].children.length, 1, 'no sorting icon in the first column');
+
+            // Refresh function.
+            var refreshFunction = function refreshFunction() {
+              $thead.click();
+            };
+
             var done1 = assert.async();
-            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($thead, olvContainerClass, trTableClass).then(function ($list) {
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
               var $thead = _ember['default'].$('th.dt-head-left', $olv)[0];
               var $ord = _ember['default'].$('.object-list-view-order-icon', $thead);
               var $divOrd = _ember['default'].$('div', $ord);
 
-              assert.ok($list);
               assert.equal($divOrd.attr('title'), _ember['default'].get(_emberFlexberryLocalesRuTranslations['default'], 'components.object-list-view.sort-ascending'), 'title is Order ascending');
               assert.equal(_ember['default'].$.trim($divOrd.text()), String.fromCharCode('9650') + '1', 'sorting symbol added');
 
@@ -1562,12 +2300,9 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 });
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry/locales/ru/translations'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryLocalesRuTranslations) {
 
-  var olvContainerClass = '.object-list-view-container';
-  var trTableClass = 'table.object-list-view tbody tr';
-
   // Need to add sort by multiple columns.
   (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check sorting', function (store, assert, app) {
-    assert.expect(11);
+    assert.expect(9);
     var path = 'components-acceptance-tests/flexberry-objectlistview/base-operations';
     visit(path);
     andThen(function () {
@@ -1590,13 +2325,18 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 
             // Check sortihg icon in the first column. Sorting icon is not added.
             assert.equal($thead.children[0].children.length, 1, 'no sorting icon in the first column');
+
+            // Refresh function.
+            var refreshFunction = function refreshFunction() {
+              $thead.click();
+            };
+
             var done1 = assert.async();
-            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($thead, olvContainerClass, trTableClass).then(function ($list) {
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
               var $thead = _ember['default'].$('th.dt-head-left', $olv)[0];
               var $ord = _ember['default'].$('.object-list-view-order-icon', $thead);
               var $divOrd = _ember['default'].$('div', $ord);
 
-              assert.ok($list);
               assert.equal($divOrd.attr('title'), _ember['default'].get(_emberFlexberryLocalesRuTranslations['default'], 'components.object-list-view.sort-ascending'), 'title is Order ascending');
               assert.equal(_ember['default'].$.trim($divOrd.text()), String.fromCharCode('9650') + '1', 'sorting symbol added');
 
@@ -1604,12 +2344,10 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
               (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.checkSortingList)(store, projectionName, $olv, 'address asc').then(function (isTrue) {
                 assert.ok(isTrue, 'sorting applied');
                 var done3 = assert.async();
-                (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($thead, olvContainerClass, trTableClass).then(function ($list) {
+                (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
                   var $thead = _ember['default'].$('th.dt-head-left', $olv)[0];
                   var $ord = _ember['default'].$('.object-list-view-order-icon', $thead);
                   var $divOrd = _ember['default'].$('div', $ord);
-
-                  assert.ok($list);
 
                   assert.equal($divOrd.attr('title'), _ember['default'].get(_emberFlexberryLocalesRuTranslations['default'], 'components.object-list-view.sort-descending'), 'title is Order descending');
                   assert.equal(_ember['default'].$.trim($divOrd.text()), String.fromCharCode('9660') + '1', 'sorting symbol changed');
@@ -1652,10 +2390,13 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 });
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', ['exports', 'ember', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryData) {
   exports.loadingList = loadingList;
+  exports.refreshListByFunction = refreshListByFunction;
   exports.checkSortingList = checkSortingList;
   exports.addRecords = addRecords;
   exports.deleteRecords = deleteRecords;
   exports.loadingLocales = loadingLocales;
+  exports.filterObjectListView = filterObjectListView;
+  exports.filterCollumn = filterCollumn;
 
   // Function for waiting list loading.
 
@@ -1685,6 +2426,75 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-fu
           window.clearInterval(checkIntervalId);
           checkIntervalSucceed = true;
           resolve($list);
+        }, checkInterval);
+      });
+
+      // Set wait timeout.
+      _ember['default'].run(function () {
+        window.setTimeout(function () {
+          if (checkIntervalSucceed) {
+            return;
+          }
+
+          // Time is out.
+          // Stop intervals & reject promise.
+          window.clearInterval(checkIntervalId);
+          reject('editForm load operation is timed out');
+        }, timeout);
+      });
+    });
+  }
+
+  /**
+    Function for waiting list loading afther refresh by function at acceptance test.
+  
+    @public
+    @method refreshListByFunction
+    @param {Function} refreshFunction Method options.
+    @param {Object} controlle Current form controller.
+  
+    For use:
+      Form controller must have the following code:
+        ```js
+          loadCount: 0
+        ```
+  
+      Form router must have the following code:
+        ```js
+          onModelLoadingAlways(data) {
+            let loadCount = this.get('controller.loadCount') + 1;
+            this.set('controller.loadCount', loadCount);
+          }
+        ```
+   */
+
+  function refreshListByFunction(refreshFunction, controller) {
+    return new _ember['default'].RSVP.Promise(function (resolve, reject) {
+      var checkIntervalId = undefined;
+      var checkIntervalSucceed = false;
+      var checkInterval = 500;
+      var renderInterval = 100;
+      var timeout = 10000;
+
+      var $lastLoadCount = controller.loadCount;
+      refreshFunction();
+
+      _ember['default'].run(function () {
+        checkIntervalId = window.setInterval(function () {
+          var loadCount = controller.loadCount;
+          if (loadCount === $lastLoadCount) {
+
+            // Data isn't loaded yet.
+            return;
+          }
+
+          // Data is loaded, wait to render.
+          // Stop interval & resolve promise.
+          window.setTimeout(function () {
+            window.clearInterval(checkIntervalId);
+            checkIntervalSucceed = true;
+            resolve();
+          }, renderInterval);
         }, checkInterval);
       });
 
@@ -1780,6 +2590,55 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-fu
       var timeout = 500;
       _ember['default'].run.later(function () {
         resolve({ msg: 'ok' });
+      }, timeout);
+    });
+  }
+
+  // Function for filter object-list-view by list of operations and values.
+
+  function filterObjectListView(objectListView, operations, filterValues) {
+    var tableBody = objectListView.children('tbody');
+    var tableRow = _ember['default'].$(tableBody.children('tr'));
+    var tableColumns = _ember['default'].$(tableRow[0]).children('td');
+
+    var promises = _ember['default'].A();
+
+    for (var i = 0; i < tableColumns.length; i++) {
+      if (operations[i]) {
+        promises.push(filterCollumn(objectListView, i, operations[i], filterValues[i]));
+      }
+    }
+
+    return _ember['default'].RSVP.Promise.all(promises);
+  }
+
+  // Function for filter object-list-view at one column by operations and values.
+
+  function filterCollumn(objectListView, columnNumber, operation, filterValue) {
+    return new _ember['default'].RSVP.Promise(function (resolve) {
+      var tableBody = objectListView.children('tbody');
+      var tableRow = tableBody.children('tr');
+
+      var filterOperation = _ember['default'].$(tableRow[0]).find('.flexberry-dropdown')[columnNumber];
+      var filterValueCell = _ember['default'].$(tableRow[1]).children('td')[columnNumber];
+
+      // Select an existing item.
+      _ember['default'].$(filterOperation).dropdown('set selected', operation);
+
+      var dropdown = _ember['default'].$(filterValueCell).find('.flexberry-dropdown');
+      var textbox = _ember['default'].$(filterValueCell).find('.ember-text-field');
+
+      if (textbox.length !== 0) {
+        fillIn(textbox, filterValue);
+      }
+
+      if (dropdown.length !== 0) {
+        dropdown.dropdown('set selected', filterValue);
+      }
+
+      var timeout = 300;
+      _ember['default'].run.later(function () {
+        resolve();
       }, timeout);
     });
   }
@@ -3283,6 +4142,23 @@ define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlist
     assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/base-operations.js should pass jshint.');
   });
 });
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests/flexberry-objectlistview');
+  test('controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jshint.');
+  });
+});
 define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/date-format.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -3298,6 +4174,23 @@ define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlist
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/date-format.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests/flexberry-objectlistview');
+  test('controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jshint.');
   });
 });
 define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/folv-paging.jscs-test', ['exports'], function (exports) {
@@ -16460,6 +17353,23 @@ define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/
     assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/base-operations.js should pass jshint.');
   });
 });
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests/flexberry-objectlistview');
+  test('routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jshint.');
+  });
+});
 define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/date-format.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -16475,6 +17385,23 @@ define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/date-format.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests/flexberry-objectlistview');
+  test('routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jshint.');
   });
 });
 define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/folv-paging.jscs-test', ['exports'], function (exports) {

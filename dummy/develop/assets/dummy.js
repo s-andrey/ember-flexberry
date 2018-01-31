@@ -2122,6 +2122,13 @@ define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/b
     singleColumnHeaderTitle: undefined,
 
     /**
+      Cout of list loading.
+       @property loadCount
+      @type Int
+    */
+    loadCount: 0,
+
+    /**
       Current records.
        @property _records
       @type Object[]
@@ -2129,6 +2136,79 @@ define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/b
       @readOnly
     */
     records: []
+  });
+});
+define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter', ['exports', 'ember', 'ember-flexberry/controllers/list-form'], function (exports, _ember, _emberFlexberryControllersListForm) {
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend({
+    filterByAnyWord: false,
+
+    filterByAllWords: false,
+
+    /**
+      Cout of list loading.
+       @property loadCount
+      @type Int
+    */
+    loadCount: 0,
+
+    customButtons: _ember['default'].computed('filterByAnyWord', 'filterByAllWords', function () {
+      return [{
+        buttonName: 'filterByAnyWord',
+        buttonAction: 'toggleFilterByAnyWord',
+        buttonClasses: this.get('filterByAnyWord') ? 'positive' : ''
+      }, {
+        buttonName: 'filterByAllWords',
+        buttonAction: 'toggleFilterByAllWords',
+        buttonClasses: this.get('filterByAllWords') ? 'positive' : ''
+      }];
+    }),
+
+    actions: {
+      toggleFilterByAnyWord: function toggleFilterByAnyWord() {
+        this.toggleProperty('filterByAnyWord');
+        if (this.get('filterByAnyWord')) {
+          this.set('filterByAllWords', false);
+        }
+      },
+
+      toggleFilterByAllWords: function toggleFilterByAllWords() {
+        this.toggleProperty('filterByAllWords');
+        if (this.get('filterByAllWords')) {
+          this.set('filterByAnyWord', false);
+        }
+      },
+
+      componentForFilter: function componentForFilter(type, relation) {
+        switch (type) {
+          case 'date':
+            return { name: 'flexberry-datepicker' };
+          case 'decimal':
+            return { name: 'flexberry-textbox', properties: { 'class': 'compact fluid' } };
+          default:
+            return {};
+        }
+      },
+
+      conditionsByType: function conditionsByType(type) {
+        switch (type) {
+          case 'file':
+            return null;
+
+          case 'date':
+          case 'number':
+            return ['eq', 'neq', 'le', 'ge'];
+
+          case 'string':
+            return ['eq', 'neq', 'like', 'empty'];
+
+          case 'boolean':
+            return ['eq'];
+
+          default:
+            return ['eq', 'neq'];
+        }
+      }
+    }
   });
 });
 define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/date-format', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
@@ -2254,6 +2334,13 @@ define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/d
     singleColumnHeaderTitle: undefined,
 
     /**
+      Cout of list loading.
+       @property loadCount
+      @type Int
+    */
+    loadCount: 0,
+
+    /**
       Current records.
        @property _records
       @type Object[]
@@ -2295,6 +2382,73 @@ define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/d
 
       return this._super.apply(this, arguments);
     }
+  });
+});
+define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend({
+
+    /**
+      Model projection for 'flexberry-objectlistview' component 'modelProjection' property.
+       @property projection
+      @type Object
+     */
+    projection: 'FlexberryObjectlistviewFilterTest',
+
+    /**
+      Name of related edit form route (for 'flexberry-objectlistview' component 'editFormRoute' property).
+       @property editFormRoute
+      @type String
+     */
+    editFormRoute: 'ember-flexberry-dummy-suggestion-edit',
+
+    /**
+      Flag: indicates whether 'flexberry-objectlistview' component is in 'enableFilters' mode or not.
+       @property enableFilters
+      @type Boolean
+     */
+    enableFilters: true,
+
+    /**
+      Flag: indicates whether 'flexberry-objectlistview' component is in 'refreshButton' mode or not.
+       @property refreshButton
+      @type Boolean
+     */
+    refreshButton: true,
+
+    /**
+      Flag: indicates whether 'flexberry-objectlistview' component is in 'showEditMenuItemInRow' mode or not.
+       @property showEditMenuItemInRow
+      @type Boolean
+     */
+    showEditMenuItemInRow: true,
+
+    /**
+      Flag: indicates whether 'flexberry-objectlistview' component is in 'rowClickable' mode or not.
+       @property rowClickable
+      @type Boolean
+     */
+    rowClickable: false,
+
+    /**
+      Flag: indicates whether 'flexberry-objectlistview' component is in 'orderable' mode or not.
+       @property orderable
+      @type Boolean
+     */
+    orderable: false,
+
+    /**
+      Flag to use colsConfigButton button at toolbar.
+       @property colsConfigButton
+      @type Boolean
+    */
+    colsConfigButton: false,
+
+    /**
+      Cout of list loading.
+       @property loadCount
+      @type Int
+    */
+    loadCount: 0
   });
 });
 define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/folv-paging', ['exports', 'ember-flexberry/controllers/list-form'], function (exports, _emberFlexberryControllersListForm) {
@@ -2425,6 +2579,13 @@ define('dummy/controllers/components-acceptance-tests/flexberry-objectlistview/f
       @type String
      */
     singleColumnHeaderTitle: undefined,
+
+    /**
+      Cout of list loading.
+       @property loadCount
+      @type Int
+    */
+    loadCount: 0,
 
     /**
       Current records.
@@ -14228,6 +14389,28 @@ define('dummy/models/ember-flexberry-dummy-suggestion', ['exports', 'ember', 'em
     })
   });
 
+  // Example to filter test.
+  Model.defineProjection('FlexberryObjectlistviewFilterTest', 'ember-flexberry-dummy-suggestion', {
+    address: _emberFlexberryData.Projection.attr('Address'),
+    date: _emberFlexberryData.Projection.attr('Date'),
+    votes: _emberFlexberryData.Projection.attr('Votes'),
+    moderated: _emberFlexberryData.Projection.attr('Moderated'),
+    type: _emberFlexberryData.Projection.belongsTo('ember-flexberry-dummy-suggestion-type', 'Type', {
+      name: _emberFlexberryData.Projection.attr('Name', {
+        hidden: true
+      })
+    }, {
+      displayMemberPath: 'name'
+    }),
+    author: _emberFlexberryData.Projection.belongsTo('ember-flexberry-dummy-application-user', 'Author', {
+      name: _emberFlexberryData.Projection.attr('Name', {
+        hidden: true
+      })
+    }, {
+      displayMemberPath: 'name'
+    })
+  });
+
   exports['default'] = Model;
 });
 define('dummy/models/ember-flexberry-dummy-toggler-example-detail', ['exports', 'ember-data', 'ember-flexberry-data'], function (exports, _emberData, _emberFlexberryData) {
@@ -14894,6 +15077,8 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('components-acceptance-tests/flexberry-objectlistview/date-format');
     this.route('components-acceptance-tests/edit-form-readonly');
     this.route('components-acceptance-tests/edit-form-validation/validation');
+    this.route('components-acceptance-tests/flexberry-objectlistview/folv-filter');
+    this.route('components-acceptance-tests/flexberry-objectlistview/custom-filter');
 
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-list-with-checked-checkbox');
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox', { path: 'components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox/:id' });
@@ -15406,7 +15591,108 @@ define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/base-o
       @type String
       @default 'ember-flexberry-dummy-suggestion'
      */
-    modelName: 'ember-flexberry-dummy-suggestion'
+    modelName: 'ember-flexberry-dummy-suggestion',
+
+    /**
+      This method will be invoked always when load operation completed,
+      regardless of load promise's state (was it fulfilled or rejected).
+       @method onModelLoadingAlways.
+      @param {Object} data Data about completed load operation.
+     */
+    onModelLoadingAlways: function onModelLoadingAlways(data) {
+      var loadCount = this.get('controller.loadCount') + 1;
+      this.set('controller.loadCount', loadCount);
+    }
+  });
+});
+define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/custom-filter', ['exports', 'ember-flexberry/routes/list-form', 'ember-flexberry-data'], function (exports, _emberFlexberryRoutesListForm, _emberFlexberryData) {
+  var SimplePredicate = _emberFlexberryData.Query.SimplePredicate;
+  var StringPredicate = _emberFlexberryData.Query.StringPredicate;
+  exports['default'] = _emberFlexberryRoutesListForm['default'].extend({
+    /**
+      Name of model projection to be used as record's properties limitation.
+       @property modelProjection
+      @type String
+      @default 'FlexberryObjectlistviewCustomFilter'
+    */
+    modelProjection: 'FlexberryObjectlistviewCustomFilter',
+
+    /**
+      Name of model to be used as list's records types.
+       @property modelName
+      @type String
+      @default 'ember-flexberry-dummy-application-user'
+    */
+    modelName: 'ember-flexberry-dummy-suggestion',
+
+    /**
+    developerUserSettings.
+    {
+    <componentName>: {
+      <settingName>: {
+          colsOrder: [ { propName :<colName>, hide: true|false }, ... ],
+          sorting: [{ propName: <colName>, direction: "asc"|"desc" }, ... ],
+          colsWidths: [ <colName>:<colWidth>, ... ],
+        },
+        ...
+      },
+      ...
+    }
+    For default userSetting use empty name ('').
+    <componentName> may contain any of properties: colsOrder, sorting, colsWidth or being empty.
+     @property developerUserSettings
+    @type Object
+    @default {}
+    */
+    developerUserSettings: { FOLVCustomFilterObjectListView: {} },
+
+    predicateForFilter: function predicateForFilter(filter) {
+      if (filter.type === 'string' && filter.condition === 'like') {
+        return new StringPredicate(filter.name).contains(filter.pattern);
+      }
+
+      if (filter.type === 'string' && filter.condition === 'empty') {
+        return new SimplePredicate(filter.name, 'eq', null);
+      }
+
+      if (filter.type === 'decimal') {
+        return new SimplePredicate(filter.name, filter.condition, filter.pattern ? Number(filter.pattern) : filter.pattern);
+      }
+
+      return this._super.apply(this, arguments);
+    },
+
+    predicateForAttribute: function predicateForAttribute(attribute, filter) {
+      switch (attribute.type) {
+        case 'boolean':
+          var yes = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'ДА', 'Да', 'да', '1', '+'];
+          var no = ['False', 'False', 'false', 'NO', 'No', 'no', 'НЕТ', 'Нет', 'нет', '0', '-'];
+
+          if (yes.indexOf(filter) > 0) {
+            return new SimplePredicate(attribute.name, 'eq', 'true');
+          }
+
+          if (no.indexOf(filter) > 0) {
+            return new SimplePredicate(attribute.name, 'eq', 'false');
+          }
+
+          return null;
+
+        default:
+          return this._super.apply(this, arguments);
+      }
+    },
+
+    /**
+      This method will be invoked always when load operation completed,
+      regardless of load promise's state (was it fulfilled or rejected).
+       @method onModelLoadingAlways.
+      @param {Object} data Data about completed load operation.
+     */
+    onModelLoadingAlways: function onModelLoadingAlways(data) {
+      var loadCount = this.get('controller.loadCount') + 1;
+      this.set('controller.loadCount', loadCount);
+    }
   });
 });
 define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/date-format', ['exports', 'ember-flexberry/routes/list-form'], function (exports, _emberFlexberryRoutesListForm) {
@@ -15446,7 +15732,80 @@ define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/date-f
       @type String
       @default 'ember-flexberry-dummy-suggestion'
      */
-    modelName: 'ember-flexberry-dummy-suggestion'
+    modelName: 'ember-flexberry-dummy-suggestion',
+
+    /**
+      This method will be invoked always when load operation completed,
+      regardless of load promise's state (was it fulfilled or rejected).
+       @method onModelLoadingAlways.
+      @param {Object} data Data about completed load operation.
+     */
+    onModelLoadingAlways: function onModelLoadingAlways(data) {
+      var loadCount = this.get('controller.loadCount') + 1;
+      this.set('controller.loadCount', loadCount);
+    }
+  });
+});
+define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/folv-filter', ['exports', 'ember-flexberry/routes/list-form', 'ember-flexberry-data'], function (exports, _emberFlexberryRoutesListForm, _emberFlexberryData) {
+  exports['default'] = _emberFlexberryRoutesListForm['default'].extend({
+    /**
+      Name of model projection to be used as record's properties limitation.
+       @property modelProjection
+      @type String
+      @default 'SuggestionL'
+     */
+    modelProjection: 'FlexberryObjectlistviewFilterTest',
+
+    /**
+    developerUserSettings.
+    {
+    <componentName>: {
+      <settingName>: {
+          colsOrder: [ { propName :<colName>, hide: true|false }, ... ],
+          sorting: [{ propName: <colName>, direction: "asc"|"desc" }, ... ],
+          colsWidths: [ <colName>:<colWidth>, ... ],
+        },
+        ...
+      },
+      ...
+    }
+    For default userSetting use empty name ('').
+    <componentName> may contain any of properties: colsOrder, sorting, colsWidth or being empty.
+     @property developerUserSettings
+    @type Object
+    @default {}
+    */
+    developerUserSettings: { FOLVSettingExampleObjectListView: {} },
+
+    /**
+      Name of model to be used as list's records types.
+       @property modelName
+      @type String
+      @default 'ember-flexberry-dummy-suggestion'
+     */
+    modelName: 'ember-flexberry-dummy-suggestion',
+
+    /**
+      It overrides base method and forms the limit predicate for loaded data.
+       @public
+      @method objectListViewLimitPredicate
+      @param {Object} options Method options..
+     */
+    objectListViewLimitPredicate: function objectListViewLimitPredicate(options) {
+      var limitFunction = new _emberFlexberryData.Query.SimplePredicate('address', _emberFlexberryData.Query.FilterOperator.Neq, undefined);
+      return limitFunction;
+    },
+
+    /**
+      This method will be invoked always when load operation completed,
+      regardless of load promise's state (was it fulfilled or rejected).
+       @method onModelLoadingAlways.
+      @param {Object} data Data about completed load operation.
+     */
+    onModelLoadingAlways: function onModelLoadingAlways(data) {
+      var loadCount = this.get('controller.loadCount') + 1;
+      this.set('controller.loadCount', loadCount);
+    }
   });
 });
 define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/folv-paging', ['exports', 'ember-flexberry/routes/list-form'], function (exports, _emberFlexberryRoutesListForm) {
@@ -15493,7 +15852,18 @@ define('dummy/routes/components-acceptance-tests/flexberry-objectlistview/folv-p
       @type String
       @default 'ember-flexberry-dummy-suggestion'
      */
-    modelName: 'ember-flexberry-dummy-suggestion-type'
+    modelName: 'ember-flexberry-dummy-suggestion-type',
+
+    /**
+      This method will be invoked always when load operation completed,
+      regardless of load promise's state (was it fulfilled or rejected).
+       @method onModelLoadingAlways.
+      @param {Object} data Data about completed load operation.
+     */
+    onModelLoadingAlways: function onModelLoadingAlways(data) {
+      var loadCount = this.get('controller.loadCount') + 1;
+      this.set('controller.loadCount', loadCount);
+    }
   });
 });
 define('dummy/routes/components-examples/flexberry-button/settings-example', ['exports', 'ember'], function (exports, _ember) {
@@ -21368,6 +21738,65 @@ define("dummy/templates/components-acceptance-tests/flexberry-objectlistview/bas
     };
   })());
 });
+define("dummy/templates/components-acceptance-tests/flexberry-objectlistview/custom-filter", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 41,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-acceptance-tests/flexberry-objectlistview/custom-filter.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("h3");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "row");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 0, 0);
+        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 1, 1);
+        return morphs;
+      },
+      statements: [["inline", "t", ["forms.components-examples.flexberry-objectlistview.custom-filter.caption"], [], ["loc", [null, [1, 4], [1, 84]]]], ["inline", "flexberry-objectlistview", [], ["content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [4, 12], [4, 17]]]]], [], []], "modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [6, 20], [6, 35]]]]], [], []], "editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [7, 18], [7, 31]]]]], [], []], "createNewButton", false, "refreshButton", true, "enableFilters", true, "filters", ["subexpr", "@mut", [["get", "filters", ["loc", [null, [11, 12], [11, 19]]]]], [], []], "applyFilters", ["subexpr", "action", ["applyFilters"], [], ["loc", [null, [12, 17], [12, 40]]]], "resetFilters", ["subexpr", "action", ["resetFilters"], [], ["loc", [null, [13, 17], [13, 40]]]], "componentForFilter", ["subexpr", "action", ["componentForFilter"], [], ["loc", [null, [14, 23], [14, 52]]]], "conditionsByType", ["subexpr", "action", ["conditionsByType"], [], ["loc", [null, [15, 21], [15, 48]]]], "filterButton", true, "filterText", ["subexpr", "@mut", [["get", "filter", ["loc", [null, [17, 15], [17, 21]]]]], [], []], "filterByAnyWord", ["subexpr", "@mut", [["get", "filterByAnyWord", ["loc", [null, [18, 20], [18, 35]]]]], [], []], "filterByAllWords", ["subexpr", "@mut", [["get", "filterByAllWords", ["loc", [null, [19, 21], [19, 37]]]]], [], []], "filterByAnyMatch", ["subexpr", "action", ["filterByAnyMatch"], [], ["loc", [null, [20, 21], [20, 48]]]], "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [21, 12], [21, 27]]]]], [], []], "orderable", true, "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [23, 10], [23, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [24, 17], [24, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [25, 18], [25, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [26, 22], [26, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [27, 20], [27, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [28, 16], [28, 27]]]]], [], []], "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [29, 17], [29, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [30, 23], [30, 52]]]], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [31, 17], [31, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [32, 13], [32, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [33, 13], [33, 32]]]], "colsConfigButton", false, "componentName", "FOLVCustomFilterObjectListView", "customButtons", ["subexpr", "@mut", [["get", "customButtons", ["loc", [null, [36, 18], [36, 31]]]]], [], []], "toggleFilterByAnyWord", "toggleFilterByAnyWord", "toggleFilterByAllWords", "toggleFilterByAllWords"], ["loc", [null, [3, 2], [39, 4]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 define("dummy/templates/components-acceptance-tests/flexberry-objectlistview/date-format", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     return {
@@ -21409,6 +21838,52 @@ define("dummy/templates/components-acceptance-tests/flexberry-objectlistview/dat
         return morphs;
       },
       statements: [["inline", "flexberry-objectlistview", [], ["editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [2, 16], [2, 29]]]]], [], []], "showCheckBoxInRow", true, "modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [5, 18], [5, 33]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [6, 10], [6, 15]]]]], [], []], "createNewButton", true, "refreshButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [9, 10], [9, 25]]]]], [], []], "orderable", true, "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [11, 15], [11, 38]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [12, 21], [12, 50]]]], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [13, 8], [13, 13]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [14, 15], [14, 27]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [15, 16], [15, 29]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [16, 20], [16, 37]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [17, 18], [17, 33]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [18, 14], [18, 25]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [19, 15], [19, 38]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [20, 11], [20, 30]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [21, 11], [21, 30]]]], "componentName", "SuggestionTypeObjectListView", "showDeleteMenuItemInRow", true, "deleteButton", true, "rowClickable", ["subexpr", "@mut", [["get", "rowClickable", ["loc", [null, [25, 15], [25, 27]]]]], [], []]], ["loc", [null, [1, 0], [26, 2]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("dummy/templates/components-acceptance-tests/flexberry-objectlistview/folv-filter", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 25,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-acceptance-tests/flexberry-objectlistview/folv-filter.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["inline", "flexberry-objectlistview", [], ["editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [2, 16], [2, 29]]]]], [], []], "modelName", ["subexpr", "@mut", [["get", "modelName", ["loc", [null, [3, 12], [3, 21]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [4, 18], [4, 33]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [5, 10], [5, 15]]]]], [], []], "refreshButton", ["subexpr", "@mut", [["get", "refreshButton", ["loc", [null, [6, 16], [6, 29]]]]], [], []], "orderable", ["subexpr", "@mut", [["get", "orderable", ["loc", [null, [7, 12], [7, 21]]]]], [], []], "colsConfigButton", ["subexpr", "@mut", [["get", "colsConfigButton", ["loc", [null, [8, 19], [8, 35]]]]], [], []], "rowClickable", ["subexpr", "@mut", [["get", "rowClickable", ["loc", [null, [9, 15], [9, 27]]]]], [], []], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [10, 8], [10, 13]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [11, 15], [11, 27]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [12, 16], [12, 29]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [13, 20], [13, 37]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [14, 18], [14, 33]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [15, 14], [15, 25]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [16, 15], [16, 38]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [17, 11], [17, 30]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [18, 11], [18, 30]]]], "componentName", "FOLVSettingExampleObjectListView", "enableFilters", true, "filters", ["subexpr", "@mut", [["get", "filters", ["loc", [null, [21, 10], [21, 17]]]]], [], []], "applyFilters", ["subexpr", "action", ["applyFilters"], [], ["loc", [null, [22, 15], [22, 38]]]], "resetFilters", ["subexpr", "action", ["resetFilters"], [], ["loc", [null, [23, 15], [23, 38]]]]], ["loc", [null, [1, 0], [24, 2]]]]],
       locals: [],
       templates: []
     };
@@ -53456,7 +53931,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+bf39a7b7"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+edba0481"});
 }
 
 /* jshint ignore:end */
