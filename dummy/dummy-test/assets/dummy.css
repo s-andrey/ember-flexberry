@@ -5180,6 +5180,16 @@ ui.button.ui-clear:hover {
 .ui.ui-add.button:hover i.icon.plus:before {
   color: #7dd4b4;
 }
+.ui.ui-clear-settings.button {
+  padding: 0px;
+  height: 30px;
+  width: 30px;
+  border: 1px solid #7ba7d9;
+  text-align: right;
+}
+.ui.ui-clear-settings.button:hover {
+  background: #FFFFFF;
+}
 .right.pointing.ui.icon.dropdown.button:hover i.icon.list.layout:before {
   color: #FFFFFF;
 }
@@ -10426,13 +10436,13 @@ div.item-minus {
 ---------------------*/
 /* browsers require these rules separate */
 .ui.input input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #999999;
 }
 .ui.input input::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #999999;
 }
 .ui.input input::-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.4);
+  color: #999999;
 }
 /*******************************
             States
@@ -10835,6 +10845,15 @@ input {
 ::-ms-reveal {
   width: 0;
   height: 0;
+}
+.ui.form input.ember-view.ember-text-field:-ms-input-placeholder {
+  color: #999999;
+}
+.ui.form textarea.ember-view.ember-text-area:-ms-input-placeholder {
+  color: #999999;
+}
+.ember-view.ui.dropdown div.default.text {
+  color: #999999;
 }
 /*!
  * # Semantic UI - Label
@@ -18241,6 +18260,29 @@ input[type=checkbox]:indeterminate:after {
 .ui.form textarea,
 .ui.form input[type="checkbox"] {
   margin: 5px;
+}
+.ui.form .olv-toolbar-info-modal-dialog-content textarea {
+  background: white;
+}
+.center.aligned.ui.grid div {
+  margin: 0px 0px 10px 0px;
+}
+.ui.button.olv-toolbar-info-modal-dialog-ok-button {
+  padding: 0.8571em 1.284em 0.8571em;
+}
+.ui.button.flexberry-file-error-modal-dialog-ok-button {
+  padding: 0.8571em 1.284em 0.8571em;
+}
+.center.aligned.ui.grid .button {
+  background: white;
+  color: #4f73b0;
+  border: 1px solid #4f73b0;
+  opacity: 1;
+}
+.center.aligned.ui.grid .button:hover {
+  background: #7dd4b4;
+  color: white;
+  border: 1px solid #7dd4b4;
 }
 select {
   color: #7ba7d9;
@@ -29999,6 +30041,13 @@ a.ui.card:hover,
   color: #7ba7d9;
   border-left: none;
 }
+/* Readonly checkbox */
+.ui.checkbox.flexberry-checkbox.read-only {
+  opacity: 0.5;
+}
+.ui.checkbox {
+  width: 17px;
+}
 /*!
  * # Semantic UI - Dimmer
  * http://github.com/semantic-org/semantic-ui/
@@ -37178,7 +37227,7 @@ html.ios body {
   box-shadow: none!important;
   border-radius: 5px !important;
 }
-body.pushable {
+.pushable {
   overflow: hidden;
 }
 .pushable > .pusher:after {
@@ -39150,7 +39199,7 @@ img.item-minus {
 }
 #example .flexberry-content {
   padding: 1em 0;
-  border: none;
+  height: 100%;
 }
 #example .full.height {
   width: 100%;
@@ -39159,6 +39208,7 @@ img.item-minus {
 #example-mobile .flexberry-content {
   padding: 0px 10px 2em 10px;
   border-bottom: none;
+  height: 100%;
 }
 .flexberry-word-break {
   word-break: break-all !important;
