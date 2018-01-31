@@ -37227,7 +37227,7 @@ html.ios body {
   box-shadow: none!important;
   border-radius: 5px !important;
 }
-body.pushable {
+.pushable {
   overflow: hidden;
 }
 .pushable > .pusher:after {
@@ -39199,7 +39199,7 @@ img.item-minus {
 }
 #example .flexberry-content {
   padding: 1em 0;
-  border: none;
+  height: 100%;
 }
 #example .full.height {
   width: 100%;
@@ -39208,6 +39208,7 @@ img.item-minus {
 #example-mobile .flexberry-content {
   padding: 0px 10px 2em 10px;
   border-bottom: none;
+  height: 100%;
 }
 .flexberry-word-break {
   word-break: break-all !important;

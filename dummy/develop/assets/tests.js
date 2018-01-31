@@ -22722,23 +22722,6 @@ define('dummy/tests/unit/utils/string-test.jshint', ['exports'], function (expor
     assert.ok(true, 'unit/utils/string-test.js should pass jshint.');
   });
 });
-define('dummy/tests/views/application.jscs-test', ['exports'], function (exports) {
-  'use strict';
-
-  module('JSCS - views');
-  test('views/application.js should pass jscs', function () {
-    ok(true, 'views/application.js should pass jscs.');
-  });
-});
-define('dummy/tests/views/application.jshint', ['exports'], function (exports) {
-  'use strict';
-
-  QUnit.module('JSHint - views/application.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'views/application.js should pass jshint.');
-  });
-});
 /* jshint ignore:start */
 
 require('dummy/tests/test-helper');

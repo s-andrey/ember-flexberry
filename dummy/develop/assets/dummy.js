@@ -581,40 +581,30 @@ define('dummy/controllers/application', ['exports', 'ember', 'dummy/config/envir
 
     actions: {
       /**
+        Call `updateWidthTrigger` for `objectlistviewEventsService`.
+         @method actions.updateWidth
+      */
+      updateWidth: function updateWidth() {
+        this.get('objectlistviewEventsService').updateWidthTrigger();
+      },
+
+      /**
         Toggles application sitemap's side bar.
          @method actions.toggleSidebar
       */
       toggleSidebar: function toggleSidebar() {
         var sidebar = _ember['default'].$('.ui.sidebar.main.menu');
-        var objectlistviewEventsService = this.get('objectlistviewEventsService');
-        sidebar.sidebar({
-          closable: false,
-          dimPage: false,
-          onHide: function onHide() {
-            _ember['default'].$('.sidebar.icon.text-menu-show').removeClass('hidden');
-            _ember['default'].$('.sidebar.icon.text-menu-hide').addClass('hidden');
-          },
-          onHidden: function onHidden() {
-            objectlistviewEventsService.updateWidthTrigger();
-          },
-          onShow: function onShow() {
-            objectlistviewEventsService.updateWidthTrigger();
-          }
-        }).sidebar('toggle');
+        sidebar.sidebar('toggle');
 
         if (_ember['default'].$('.inverted.vertical.main.menu').hasClass('visible')) {
           _ember['default'].$('.sidebar.icon.text-menu-show').removeClass('hidden');
           _ember['default'].$('.sidebar.icon.text-menu-hide').addClass('hidden');
           _ember['default'].$('.bgw-opacity').addClass('hidden');
+          _ember['default'].$('.full.height').css({ transition: 'width 0.45s ease-in-out 0s', width: '100%' });
         } else {
           _ember['default'].$('.sidebar.icon.text-menu-show').addClass('hidden');
           _ember['default'].$('.sidebar.icon.text-menu-hide').removeClass('hidden');
           _ember['default'].$('.bgw-opacity').removeClass('hidden');
-        }
-
-        if (_ember['default'].$('.inverted.vertical.main.menu').hasClass('visible')) {
-          _ember['default'].$('.full.height').css({ transition: 'width 0.45s ease-in-out 0s', width: '100%' });
-        } else {
           _ember['default'].$('.full.height').css({ transition: 'width 0.3s ease-in-out 0s', width: 'calc(100% - ' + sidebar.width() + 'px)' });
         }
       },
@@ -624,20 +614,7 @@ define('dummy/controllers/application', ['exports', 'ember', 'dummy/config/envir
          @method actions.toggleSidebarMobile
       */
       toggleSidebarMobile: function toggleSidebarMobile() {
-        var sidebar = _ember['default'].$('.ui.sidebar.main.menu');
-        var objectlistviewEventsService = this.get('objectlistviewEventsService');
-        sidebar.sidebar({
-          onHide: function onHide() {
-            _ember['default'].$('.sidebar.icon.text-menu-show').removeClass('hidden');
-            _ember['default'].$('.sidebar.icon.text-menu-hide').addClass('hidden');
-          },
-          onHidden: function onHidden() {
-            objectlistviewEventsService.updateWidthTrigger();
-          },
-          onShow: function onShow() {
-            objectlistviewEventsService.updateWidthTrigger();
-          }
-        }).sidebar('toggle');
+        _ember['default'].$('.ui.sidebar.main.menu').sidebar('toggle');
 
         if (_ember['default'].$('.inverted.vertical.main.menu').hasClass('visible')) {
           _ember['default'].$('.sidebar.icon.text-menu-show').removeClass('hidden');
@@ -19688,7 +19665,7 @@ define("dummy/templates/application", ["exports"], function (exports) {
                 "column": 2
               },
               "end": {
-                "line": 13,
+                "line": 20,
                 "column": 2
               }
             },
@@ -19729,7 +19706,7 @@ define("dummy/templates/application", ["exports"], function (exports) {
             morphs[3] = dom.createMorphAt(fragment, 3, 3, contextualElement);
             return morphs;
           },
-          statements: [["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [7, 13], [7, 29]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.sitemap.application-version.title"], [], ["loc", [null, [9, 12], [9, 71]]]]], ["inline", "t", ["forms.application.sitemap.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [10, 74], [10, 86]]]]], [], []]], ["loc", [null, [10, 6], [10, 88]]]], ["inline", "render", ["sitemap", ["get", "sitemap", ["loc", [null, [12, 23], [12, 30]]]]], [], ["loc", [null, [12, 4], [12, 32]]]]],
+          statements: [["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [14, 13], [14, 29]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.sitemap.application-version.title"], [], ["loc", [null, [16, 12], [16, 71]]]]], ["inline", "t", ["forms.application.sitemap.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [17, 74], [17, 86]]]]], [], []]], ["loc", [null, [17, 6], [17, 88]]]], ["inline", "render", ["sitemap", ["get", "sitemap", ["loc", [null, [19, 23], [19, 30]]]]], [], ["loc", [null, [19, 4], [19, 32]]]]],
           locals: [],
           templates: []
         };
@@ -19745,7 +19722,7 @@ define("dummy/templates/application", ["exports"], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 93,
+              "line": 100,
               "column": 0
             }
           },
@@ -20051,7 +20028,7 @@ define("dummy/templates/application", ["exports"], function (exports) {
           dom.insertBoundary(fragment, 0);
           return morphs;
         },
-        statements: [["block", "ui-sidebar", [], ["class", "inverted vertical main menu"], 0, null, ["loc", [null, [5, 2], [13, 17]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.header.menu.sitemap-button.title"], [], ["loc", [null, [21, 20], [21, 78]]]]], ["element", "action", ["toggleSidebar"], [], ["loc", [null, [19, 15], [19, 41]]]], ["inline", "t", ["forms.application.header.menu.sitemap-button.caption"], [], ["loc", [null, [22, 14], [22, 74]]]], ["inline", "t", ["forms.application.header.menu.show-menu.caption"], [], ["loc", [null, [23, 78], [23, 133]]]], ["inline", "t", ["forms.application.header.menu.hide-menu.caption"], [], ["loc", [null, [23, 186], [23, 241]]]], ["inline", "t", ["forms.application.header.menu.hide-menu.caption"], [], ["loc", [null, [24, 108], [24, 163]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.sitemap.application-name.title"], [], ["loc", [null, [32, 14], [32, 70]]]]], ["inline", "t", ["application-name"], [], ["loc", [null, [35, 78], [35, 102]]]], ["attribute", "class", ["concat", ["ui form ", ["get", "objectlistviewEventsService.loadingState", ["loc", [null, [39, 26], [39, 66]]]]]]], ["content", "outlet", ["loc", [null, [45, 14], [45, 24]]]], ["inline", "outlet", ["modal"], [], ["loc", [null, [53, 4], [53, 22]]]], ["inline", "t", ["forms.application.footer.application-name"], [], ["loc", [null, [59, 10], [59, 59]]]], ["inline", "t", ["forms.application.header.menu.user-settings-service-checkbox.caption"], [], ["loc", [null, [63, 12], [63, 88]]]], ["inline", "flexberry-checkbox", [], ["class", "toggle", "value", ["subexpr", "@mut", [["get", "userSettingsService.isUserSettingsServiceEnabled", ["loc", [null, [67, 18], [67, 66]]]]], [], []]], ["loc", [null, [65, 10], [68, 12]]]], ["inline", "t", ["forms.application.header.menu.language-dropdown.caption"], [], ["loc", [null, [72, 12], [72, 75]]]], ["inline", "flexberry-dropdown", [], ["class", "compact", "items", ["subexpr", "@mut", [["get", "locales", ["loc", [null, [76, 18], [76, 25]]]]], [], []], "value", ["subexpr", "@mut", [["get", "i18n.locale", ["loc", [null, [77, 18], [77, 29]]]]], [], []], "placeholder", ["subexpr", "t", ["forms.application.header.menu.language-dropdown.placeholder"], [], ["loc", [null, [78, 24], [78, 89]]]], "direction", "upward"], ["loc", [null, [74, 10], [80, 12]]]], ["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [84, 19], [84, 35]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.footer.application-version.title"], [], ["loc", [null, [86, 18], [86, 76]]]]], ["inline", "t", ["forms.application.footer.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [87, 81], [87, 93]]]]], [], []]], ["loc", [null, [87, 14], [87, 95]]]]],
+        statements: [["block", "ui-sidebar", [], ["class", "inverted vertical main menu", "ui_context", ".ember-application > .ember-view", "closable", false, "dimPage", false, "onShow", ["subexpr", "action", ["updateWidth"], [], ["loc", [null, [10, 11], [10, 33]]]], "onHidden", ["subexpr", "action", ["updateWidth"], [], ["loc", [null, [11, 13], [11, 35]]]]], 0, null, ["loc", [null, [5, 2], [20, 17]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.header.menu.sitemap-button.title"], [], ["loc", [null, [28, 20], [28, 78]]]]], ["element", "action", ["toggleSidebar"], [], ["loc", [null, [26, 15], [26, 41]]]], ["inline", "t", ["forms.application.header.menu.sitemap-button.caption"], [], ["loc", [null, [29, 14], [29, 74]]]], ["inline", "t", ["forms.application.header.menu.show-menu.caption"], [], ["loc", [null, [30, 78], [30, 133]]]], ["inline", "t", ["forms.application.header.menu.hide-menu.caption"], [], ["loc", [null, [30, 186], [30, 241]]]], ["inline", "t", ["forms.application.header.menu.hide-menu.caption"], [], ["loc", [null, [31, 108], [31, 163]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.sitemap.application-name.title"], [], ["loc", [null, [39, 14], [39, 70]]]]], ["inline", "t", ["application-name"], [], ["loc", [null, [42, 78], [42, 102]]]], ["attribute", "class", ["concat", ["ui form ", ["get", "objectlistviewEventsService.loadingState", ["loc", [null, [46, 26], [46, 66]]]]]]], ["content", "outlet", ["loc", [null, [52, 14], [52, 24]]]], ["inline", "outlet", ["modal"], [], ["loc", [null, [60, 4], [60, 22]]]], ["inline", "t", ["forms.application.footer.application-name"], [], ["loc", [null, [66, 10], [66, 59]]]], ["inline", "t", ["forms.application.header.menu.user-settings-service-checkbox.caption"], [], ["loc", [null, [70, 12], [70, 88]]]], ["inline", "flexberry-checkbox", [], ["class", "toggle", "value", ["subexpr", "@mut", [["get", "userSettingsService.isUserSettingsServiceEnabled", ["loc", [null, [74, 18], [74, 66]]]]], [], []]], ["loc", [null, [72, 10], [75, 12]]]], ["inline", "t", ["forms.application.header.menu.language-dropdown.caption"], [], ["loc", [null, [79, 12], [79, 75]]]], ["inline", "flexberry-dropdown", [], ["class", "compact", "items", ["subexpr", "@mut", [["get", "locales", ["loc", [null, [83, 18], [83, 25]]]]], [], []], "value", ["subexpr", "@mut", [["get", "i18n.locale", ["loc", [null, [84, 18], [84, 29]]]]], [], []], "placeholder", ["subexpr", "t", ["forms.application.header.menu.language-dropdown.placeholder"], [], ["loc", [null, [85, 24], [85, 89]]]], "direction", "upward"], ["loc", [null, [81, 10], [87, 12]]]], ["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [91, 19], [91, 35]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.footer.application-version.title"], [], ["loc", [null, [93, 18], [93, 76]]]]], ["inline", "t", ["forms.application.footer.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [94, 81], [94, 93]]]]], [], []]], ["loc", [null, [94, 14], [94, 95]]]]],
         locals: [],
         templates: [child0]
       };
@@ -20070,7 +20047,7 @@ define("dummy/templates/application", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 94,
+            "line": 101,
             "column": 0
           }
         },
@@ -20093,7 +20070,7 @@ define("dummy/templates/application", ["exports"], function (exports) {
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "if", [["get", "isInAcceptanceTestMode", ["loc", [null, [1, 6], [1, 28]]]]], [], 0, 1, ["loc", [null, [1, 0], [93, 7]]]]],
+      statements: [["block", "if", [["get", "isInAcceptanceTestMode", ["loc", [null, [1, 6], [1, 28]]]]], [], 0, 1, ["loc", [null, [1, 0], [100, 7]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -50080,7 +50057,7 @@ define("dummy/templates/mobile/application", ["exports"], function (exports) {
                 "column": 0
               },
               "end": {
-                "line": 13,
+                "line": 18,
                 "column": 0
               }
             },
@@ -50121,7 +50098,7 @@ define("dummy/templates/mobile/application", ["exports"], function (exports) {
             morphs[3] = dom.createMorphAt(fragment, 3, 3, contextualElement);
             return morphs;
           },
-          statements: [["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [7, 11], [7, 27]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.sitemap.application-version.title"], [], ["loc", [null, [9, 10], [9, 69]]]]], ["inline", "t", ["forms.application.sitemap.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [10, 72], [10, 84]]]]], [], []]], ["loc", [null, [10, 4], [10, 86]]]], ["inline", "render", ["sitemap", ["get", "sitemap", ["loc", [null, [12, 21], [12, 28]]]]], [], ["loc", [null, [12, 2], [12, 30]]]]],
+          statements: [["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [12, 11], [12, 27]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.sitemap.application-version.title"], [], ["loc", [null, [14, 10], [14, 69]]]]], ["inline", "t", ["forms.application.sitemap.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [15, 72], [15, 84]]]]], [], []]], ["loc", [null, [15, 4], [15, 86]]]], ["inline", "render", ["sitemap", ["get", "sitemap", ["loc", [null, [17, 21], [17, 28]]]]], [], ["loc", [null, [17, 2], [17, 30]]]]],
           locals: [],
           templates: []
         };
@@ -50137,7 +50114,7 @@ define("dummy/templates/mobile/application", ["exports"], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 81,
+              "line": 86,
               "column": 0
             }
           },
@@ -50378,7 +50355,7 @@ define("dummy/templates/mobile/application", ["exports"], function (exports) {
           dom.insertBoundary(fragment, 0);
           return morphs;
         },
-        statements: [["block", "ui-sidebar", [], ["class", "mobile inverted vertical main menu"], 0, null, ["loc", [null, [5, 0], [13, 15]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.header.menu.sitemap-button.title"], [], ["loc", [null, [20, 16], [20, 74]]]]], ["element", "action", ["toggleSidebarMobile"], [], ["loc", [null, [18, 11], [18, 43]]]], ["inline", "t", ["forms.application.header.menu.user-settings-service-checkbox.caption"], [], ["loc", [null, [26, 12], [26, 88]]]], ["inline", "flexberry-checkbox", [], ["class", "toggle", "value", ["subexpr", "@mut", [["get", "userSettingsService.isUserSettingsServiceEnabled", ["loc", [null, [30, 18], [30, 66]]]]], [], []]], ["loc", [null, [28, 10], [31, 12]]]], ["inline", "t", ["forms.application.header.menu.language-dropdown.caption"], [], ["loc", [null, [35, 12], [35, 75]]]], ["inline", "flexberry-dropdown", [], ["class", "compact", "items", ["subexpr", "@mut", [["get", "locales", ["loc", [null, [39, 18], [39, 25]]]]], [], []], "value", ["subexpr", "@mut", [["get", "i18n.locale", ["loc", [null, [40, 18], [40, 29]]]]], [], []], "placeholder", ["subexpr", "t", ["forms.application.header.menu.language-dropdown.placeholder"], [], ["loc", [null, [41, 24], [41, 89]]]]], ["loc", [null, [37, 10], [42, 12]]]], ["attribute", "class", ["concat", ["ui form ", ["get", "objectlistviewEventsService.loadingState", ["loc", [null, [49, 24], [49, 64]]]]]]], ["content", "outlet", ["loc", [null, [54, 12], [54, 22]]]], ["inline", "outlet", ["modal"], [], ["loc", [null, [62, 2], [62, 20]]]], ["inline", "t", ["forms.application.footer.application-name"], [], ["loc", [null, [68, 8], [68, 57]]]], ["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [72, 17], [72, 33]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.footer.application-version.title"], [], ["loc", [null, [74, 16], [74, 74]]]]], ["inline", "t", ["forms.application.footer.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [75, 79], [75, 91]]]]], [], []]], ["loc", [null, [75, 12], [75, 93]]]]],
+        statements: [["block", "ui-sidebar", [], ["class", "mobile inverted vertical main menu", "ui_context", ".ember-application > .ember-view", "onShow", ["subexpr", "action", ["updateWidth"], [], ["loc", [null, [8, 9], [8, 31]]]], "onHidden", ["subexpr", "action", ["updateWidth"], [], ["loc", [null, [9, 11], [9, 33]]]]], 0, null, ["loc", [null, [5, 0], [18, 15]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.header.menu.sitemap-button.title"], [], ["loc", [null, [25, 16], [25, 74]]]]], ["element", "action", ["toggleSidebarMobile"], [], ["loc", [null, [23, 11], [23, 43]]]], ["inline", "t", ["forms.application.header.menu.user-settings-service-checkbox.caption"], [], ["loc", [null, [31, 12], [31, 88]]]], ["inline", "flexberry-checkbox", [], ["class", "toggle", "value", ["subexpr", "@mut", [["get", "userSettingsService.isUserSettingsServiceEnabled", ["loc", [null, [35, 18], [35, 66]]]]], [], []]], ["loc", [null, [33, 10], [36, 12]]]], ["inline", "t", ["forms.application.header.menu.language-dropdown.caption"], [], ["loc", [null, [40, 12], [40, 75]]]], ["inline", "flexberry-dropdown", [], ["class", "compact", "items", ["subexpr", "@mut", [["get", "locales", ["loc", [null, [44, 18], [44, 25]]]]], [], []], "value", ["subexpr", "@mut", [["get", "i18n.locale", ["loc", [null, [45, 18], [45, 29]]]]], [], []], "placeholder", ["subexpr", "t", ["forms.application.header.menu.language-dropdown.placeholder"], [], ["loc", [null, [46, 24], [46, 89]]]]], ["loc", [null, [42, 10], [47, 12]]]], ["attribute", "class", ["concat", ["ui form ", ["get", "objectlistviewEventsService.loadingState", ["loc", [null, [54, 24], [54, 64]]]]]]], ["content", "outlet", ["loc", [null, [59, 12], [59, 22]]]], ["inline", "outlet", ["modal"], [], ["loc", [null, [67, 2], [67, 20]]]], ["inline", "t", ["forms.application.footer.application-name"], [], ["loc", [null, [73, 8], [73, 57]]]], ["attribute", "href", ["get", "addonVersionHref", ["loc", [null, [77, 17], [77, 33]]]]], ["attribute", "title", ["subexpr", "t", ["forms.application.footer.application-version.title"], [], ["loc", [null, [79, 16], [79, 74]]]]], ["inline", "t", ["forms.application.footer.application-version.caption"], ["version", ["subexpr", "@mut", [["get", "addonVersion", ["loc", [null, [80, 79], [80, 91]]]]], [], []]], ["loc", [null, [80, 12], [80, 93]]]]],
         locals: [],
         templates: [child0]
       };
@@ -50397,7 +50374,7 @@ define("dummy/templates/mobile/application", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 82,
+            "line": 87,
             "column": 0
           }
         },
@@ -50420,7 +50397,7 @@ define("dummy/templates/mobile/application", ["exports"], function (exports) {
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "if", [["get", "isInAcceptanceTestMode", ["loc", [null, [1, 6], [1, 28]]]]], [], 0, 1, ["loc", [null, [1, 0], [81, 7]]]]],
+      statements: [["block", "if", [["get", "isInAcceptanceTestMode", ["loc", [null, [1, 6], [1, 28]]]]], [], 0, 1, ["loc", [null, [1, 0], [86, 7]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -53887,18 +53864,6 @@ define('dummy/utils/serialize-sorting-param', ['exports', 'ember-flexberry/utils
 define('dummy/validators/local/datetime', ['exports', 'ember-flexberry/validators/local/datetime'], function (exports, _emberFlexberryValidatorsLocalDatetime) {
   exports['default'] = _emberFlexberryValidatorsLocalDatetime['default'];
 });
-define('dummy/views/application', ['exports', 'ember'], function (exports, _ember) {
-
-  /**
-    Override wrapper tag name to disable wrapper.
-  
-    The sidebar, as per Semantic-UI's documentation,
-    need to be directly below the body element.
-   */
-  exports['default'] = _ember['default'].Component.extend({
-    tagName: ''
-  });
-});
 /* jshint ignore:start */
 
 
@@ -53931,7 +53896,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+edba0481"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+694b9abe"});
 }
 
 /* jshint ignore:end */
