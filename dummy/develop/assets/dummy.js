@@ -886,6 +886,11 @@ define('dummy/controllers/application', ['exports', 'ember', 'dummy/config/envir
               caption: i18n.t('forms.application.sitemap.components-examples.flexberry-groupedit.configurate-row-example.caption'),
               title: i18n.t('forms.application.sitemap.components-examples.flexberry-groupedit.configurate-row-example.title'),
               children: null
+            }, {
+              link: 'components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute',
+              caption: i18n.t('forms.application.sitemap.components-examples.flexberry-groupedit.groupedit-with-lookup-with-computed-atribute.caption'),
+              title: i18n.t('forms.application.sitemap.components-examples.flexberry-groupedit.groupedit-with-lookup-with-computed-atribute.title'),
+              children: null
             }]
           }, {
             link: null,
@@ -3510,6 +3515,136 @@ define('dummy/controllers/components-examples/flexberry-groupedit/configurate-ro
 
   });
 });
+define('dummy/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute', ['exports', 'ember', 'ember-flexberry/controllers/edit-form', 'ember-flexberry/mixins/edit-form-controller-operations-indication', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryControllersEditForm, _emberFlexberryMixinsEditFormControllerOperationsIndication, _emberFlexberryData) {
+  var StringPredicate = _emberFlexberryData.Query.StringPredicate;
+  exports['default'] = _emberFlexberryControllersEditForm['default'].extend(_emberFlexberryMixinsEditFormControllerOperationsIndication['default'], {
+    /**
+      Route name for transition after close edit form.
+       @property parentRoute
+      @type String
+      @default 'ember-flexberry-dummy-suggestion-list'
+     */
+    parentRoute: 'components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute',
+
+    /**
+      Name of model.comments edit route.
+       @property commentsEditRoute
+      @type String
+      @default 'ember-flexberry-dummy-comment-edit'
+     */
+    commentsEditRoute: 'ember-flexberry-dummy-comment-edit',
+
+    /**
+      Name of model.comments edit route.
+       @property commentsEditRoute
+      @type String
+      @default 'ember-flexberry-dummy-comment-edit'
+     */
+    checkboxValue: false,
+    fieldvalue: 'Vasya',
+
+    lookupReadonly: _ember['default'].observer('checkboxValue', function () {
+      if (!_ember['default'].isNone(this.get('computedProperties.dynamicProperties.readonly'))) {
+        if (this.get('checkboxValue')) {
+          this.set('computedProperties.dynamicProperties.readonly', true);
+        } else {
+          this.set('computedProperties.dynamicProperties.readonly', false);
+        }
+      }
+
+      return this.get('checkboxValue');
+    }),
+
+    lookupLimitFunction: _ember['default'].observer('fieldvalue', function () {
+      if (!_ember['default'].isNone(this.get('computedProperties.dynamicProperties.lookupLimitPredicate'))) {
+        this.set('computedProperties.dynamicProperties.lookupLimitPredicate', new StringPredicate('name').contains(this.get('fieldvalue')));
+      }
+    }),
+
+    /**
+      Method to get type and attributes of a component,
+      which will be embeded in object-list-view cell.
+       @method getCellComponent.
+      @param {Object} attr Attribute of projection property related to current table cell.
+      @param {String} bindingPath Path to model property related to current table cell.
+      @param {DS.Model} modelClass Model class of data record related to current table row.
+      @return {Object} Object containing name & properties of component, which will be used to render current table cell.
+      { componentName: 'my-component',  componentProperties: { ... } }.
+     */
+    getCellComponent: function getCellComponent(attr, bindingPath, model) {
+      var cellComponent = this._super.apply(this, arguments);
+      var limitFunction = new StringPredicate('name').contains('Vasya');
+      if (attr.kind === 'belongsTo') {
+        switch (model.modelName + '+' + bindingPath) {
+          case 'ember-flexberry-dummy-vote+author':
+            cellComponent.componentProperties = {
+              choose: 'showLookupDialog',
+              remove: 'removeLookupValue',
+              displayAttributeName: 'name',
+              required: true,
+              relationName: 'author',
+              projection: 'ApplicationUserL',
+              autocomplete: true,
+              lookupLimitPredicate: limitFunction,
+              computedProperties: { thisController: this },
+              readonly: false
+            };
+            break;
+
+          case 'ember-flexberry-dummy-comment+author':
+            cellComponent.componentProperties = {
+              choose: 'showLookupDialog',
+              remove: 'removeLookupValue',
+              displayAttributeName: 'name',
+              required: true,
+              relationName: 'author',
+              projection: 'ApplicationUserL',
+              autocomplete: true
+            };
+            break;
+
+        }
+      }
+
+      return cellComponent;
+    },
+
+    actions: {
+      configurateFilesRow: function configurateFilesRow(rowConfig, record) {
+        _ember['default'].set(rowConfig, 'customClass', 'positive ');
+        var readonlyColumns = [];
+        if (record.get('order') === 1) {
+          readonlyColumns.push('order');
+          readonlyColumns.push('file');
+        }
+
+        _ember['default'].set(rowConfig, 'readonlyColumns', readonlyColumns);
+      },
+
+      configurateVotesRow: function configurateVotesRow(rowConfig, record) {
+        var readonlyColumns = [];
+        if (record.get('author.name') === 'Иван') {
+          readonlyColumns.push('author');
+        }
+
+        _ember['default'].set(rowConfig, 'readonlyColumns', readonlyColumns);
+      }
+    }
+  });
+});
+define('dummy/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute', ['exports', 'ember-flexberry/controllers/list-form', 'dummy/mixins/list-form-controller-operations-indication'], function (exports, _emberFlexberryControllersListForm, _dummyMixinsListFormControllerOperationsIndication) {
+  exports['default'] = _emberFlexberryControllersListForm['default'].extend(_dummyMixinsListFormControllerOperationsIndication['default'], {
+    /**
+      Name of related edit form route.
+       @property editFormRoute
+      @type String
+      @default 'ember-flexberry-dummy-suggestion-edit'
+     */
+    editFormRoute: 'components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute',
+
+    exportExcelProjection: 'SuggestionL'
+  });
+});
 define('dummy/controllers/components-examples/flexberry-groupedit/model-update-example', ['exports', 'ember-flexberry/controllers/edit-form'], function (exports, _emberFlexberryControllersEditForm) {
   exports['default'] = _emberFlexberryControllersEditForm['default'].extend({
     /**
@@ -3892,6 +4027,7 @@ define('dummy/controllers/components-examples/flexberry-groupedit/settings-examp
 
       if (attr.kind === 'belongsTo' && bindingPath === 'master') {
         cellComponent.componentProperties = {
+          componentName: 'GroupEditSettingExampleMaster',
           projection: 'MasterL',
           displayAttributeName: 'text',
           title: 'Master',
@@ -3902,6 +4038,28 @@ define('dummy/controllers/components-examples/flexberry-groupedit/settings-examp
       }
 
       return cellComponent;
+    },
+
+    /**
+      Lookup events service.
+    */
+    lookupEvents: _ember['default'].inject.service('lookup-events'),
+
+    actions: {
+      /**
+        Handles click on lookup's choose button.
+      */
+      showLookupDialog: function showLookupDialog() {
+        // Create new master & add to model.
+        var master = this.get('store').createRecord('components-examples/flexberry-groupedit/shared/master', { text: 'Master text' });
+        var deteils = this.get('model.details');
+
+        deteils.forEach(function (item) {
+          item.set('master', master);
+        });
+
+        this.get('lookupEvents').lookupDialogOnHiddenTrigger('GroupEditSettingExampleMaster');
+      }
     }
   });
 });
@@ -7591,7 +7749,8 @@ define('dummy/controllers/ember-flexberry-dummy-localization-list', ['exports', 
     editFormRoute: 'ember-flexberry-dummy-localization-edit'
   });
 });
-define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'ember', 'ember-flexberry/controllers/edit-form', 'ember-flexberry/mixins/edit-form-controller-operations-indication'], function (exports, _ember, _emberFlexberryControllersEditForm, _emberFlexberryMixinsEditFormControllerOperationsIndication) {
+define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'ember', 'ember-flexberry/controllers/edit-form', 'ember-flexberry/mixins/edit-form-controller-operations-indication', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryControllersEditForm, _emberFlexberryMixinsEditFormControllerOperationsIndication, _emberFlexberryData) {
+  var StringPredicate = _emberFlexberryData.Query.StringPredicate;
   exports['default'] = _emberFlexberryControllersEditForm['default'].extend(_emberFlexberryMixinsEditFormControllerOperationsIndication['default'], {
     /**
       Route name for transition after close edit form.
@@ -7620,6 +7779,7 @@ define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'e
       { componentName: 'my-component',  componentProperties: { ... } }.
      */
     getCellComponent: function getCellComponent(attr, bindingPath, model) {
+      var limitFunction = new StringPredicate('name').contains('ва');
       var cellComponent = this._super.apply(this, arguments);
       if (attr.kind === 'belongsTo') {
         switch (model.modelName + '+' + bindingPath) {
@@ -7632,9 +7792,8 @@ define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'e
               relationName: 'author',
               projection: 'ApplicationUserL',
               autocomplete: true,
-              lookupWindowCustomProperties: function lookupWindowCustomProperties() {
-                return { filterButton: true, refreshButton: true };
-              }
+              lookupLimitPredicate: limitFunction,
+              readonly: true
             };
             break;
 
@@ -11423,6 +11582,10 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
               'configurate-row-example': {
                 'caption': 'Configurate rows',
                 'title': ''
+              },
+              'groupedit-with-lookup-with-computed-atribute': {
+                'caption': 'Computed attributes LookUp  in GroupEdit',
+                'title': ''
               }
             },
             'flexberry-lookup': {
@@ -11687,7 +11850,9 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
         'comments-caption': 'Comments',
         'type-validation-message-caption': 'Type is required',
         'author-validation-message-caption': 'Author is required',
-        'editor-validation-message-caption': 'Editor is required'
+        'editor-validation-message-caption': 'Editor is required',
+        'readonly-groupedit-with-lookup-with-computed-atribute-field': 'Readonly for LookUp "Application User" in GroupEdit "User votes"',
+        'limit-function-groupedit-with-lookup-with-computed-atribute-field': 'Limitations for LookUp "Application User" in GroupEdit "User votes"'
       },
 
       'ember-flexberry-dummy-toggler-example-master-e': {
@@ -12424,6 +12589,10 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
               'configurate-row-example': {
                 'caption': 'Настройка строк',
                 'title': ''
+              },
+              'groupedit-with-lookup-with-computed-atribute': {
+                'caption': 'Computed атрибуты LookUp в GroupEdit',
+                'title': ''
               }
             },
             'flexberry-lookup': {
@@ -12688,7 +12857,9 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
         'comments-caption': 'Комментарии',
         'type-validation-message-caption': 'Заполните тип предложения',
         'author-validation-message-caption': 'Заполните поле "Автор"',
-        'editor-validation-message-caption': 'Заполните поле "Редактор"'
+        'editor-validation-message-caption': 'Заполните поле "Редактор"',
+        'readonly-groupedit-with-lookup-with-computed-atribute-field': 'Readonly для LookUp "Пользователь приложения" в GroupEdit "Голоса пользователей"',
+        'limit-function-groupedit-with-lookup-with-computed-atribute-field': 'Ограничения для LookUp "Пользователь приложения" в GroupEdit "Голоса пользователей"'
       },
 
       'ember-flexberry-dummy-toggler-example-master-e': {
@@ -15057,6 +15228,9 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('components-acceptance-tests/flexberry-objectlistview/folv-filter');
     this.route('components-acceptance-tests/flexberry-objectlistview/custom-filter');
 
+    this.route('components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute');
+    this.route('components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute', { path: 'components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute/:id' });
+
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-list-with-checked-checkbox');
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox', { path: 'components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox/:id' });
     this.route('components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox.new', { path: 'components-acceptance-tests/flexberry-checkbox/ember-flexberry-dummy-suggestion-edit-with-checked-checkbox/new' });
@@ -15998,6 +16172,114 @@ define('dummy/routes/components-examples/flexberry-groupedit/configurate-row-exa
       var aggregator = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator', { details: arrRec });
       return aggregator;
     }
+  });
+});
+define('dummy/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute', ['exports', 'ember-flexberry/routes/edit-form', 'ember-flexberry/mixins/edit-form-route-operations-indication'], function (exports, _emberFlexberryRoutesEditForm, _emberFlexberryMixinsEditFormRouteOperationsIndication) {
+  exports['default'] = _emberFlexberryRoutesEditForm['default'].extend(_emberFlexberryMixinsEditFormRouteOperationsIndication['default'], {
+    /**
+      Name of model projection to be used as record's properties limitation.
+       @property modelProjection
+      @type String
+      @default 'SuggestionE'
+     */
+    modelProjection: 'SuggestionE',
+
+    /**
+    developerUserSettings.
+    {
+    <componentName>: {
+      <settingName>: {
+          colsOrder: [ { propName :<colName>, hide: true|false }, ... ],
+          sorting: [{ propName: <colName>, direction: 'asc'|'desc' }, ... ],
+          colsWidths: [ <colName>:<colWidth>, ... ],
+        },
+        ...
+      },
+      ...
+    }
+    For default userSetting use empty name ('').
+    <componentName> may contain any of properties: colsOrder, sorting, colsWidth or being empty.
+     @property developerUserSettings
+    @type Object
+    @default {}
+    */
+    developerUserSettings: {
+      suggestionUserVotesGroupEdit: {
+        'DEFAULT': {
+          'columnWidths': [{ 'propName': 'OlvRowToolbar', 'fixed': true, 'width': 65 }, { 'propName': 'voteType', 'width': 133 }, { 'propName': 'author', 'width': 348 }, { 'propName': 'author.eMail', 'width': 531 }],
+          'sorting': [{ 'propName': 'author', 'direction': 'asc', 'attributePath': 'author.name' }]
+        }
+      },
+      filesGroupEdit: {
+        'DEFAULT': {
+          'columnWidths': [{ 'propName': 'OlvRowToolbar', 'fixed': true, 'width': 65 }, { 'propName': 'order', 'width': 140 }, { 'propName': 'file', 'width': 893 }],
+          'colsOrder': [{ 'propName': 'file' }, { 'propName': 'order' }],
+          'sorting': [{ 'propName': 'order', 'direction': 'desc' }]
+        }
+      },
+      suggestionCommentsGroupEdit: {
+        'DEFAULT': {
+          'columnWidths': [{ 'propName': 'OlvRowToolbar', 'fixed': true, 'width': 65 }, { 'propName': 'votes', 'fixed': true }],
+          'sorting': [{ 'propName': 'votes', 'direction': 'asc' }, { 'propName': 'moderated', 'direction': 'desc' }, { 'propName': 'text', 'direction': 'asc' }]
+        }
+      }
+    },
+
+    /**
+      Name of model to be used as form's record type.
+       @property modelName
+      @type String
+      @default 'ember-flexberry-dummy-suggestion'
+     */
+    modelName: 'ember-flexberry-dummy-suggestion'
+
+  });
+});
+define('dummy/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute', ['exports', 'ember-flexberry/routes/list-form', 'dummy/mixins/list-form-route-operations-indication'], function (exports, _emberFlexberryRoutesListForm, _dummyMixinsListFormRouteOperationsIndication) {
+  exports['default'] = _emberFlexberryRoutesListForm['default'].extend(_dummyMixinsListFormRouteOperationsIndication['default'], {
+    /**
+     Name of model projection to be used as record's properties limitation.
+      @property modelProjection
+     @type String
+     @default 'SuggestionL'
+     */
+    modelProjection: 'SuggestionL',
+
+    /**
+    developerUserSettings.
+    Format:
+    {
+    <componentName>: {
+      <settingName>: {
+          colsOrder: [ { propName :<colName>, hide: true|false }, ... ],
+          sorting: [{ propName: <colName>, direction: "asc"|"desc" }, ... ],
+          colsWidths: [ <colName>:<colWidth>, ... ],
+        },
+        ...
+      },
+      ...
+    }
+    For default userSetting use empty name ('').
+    <componentName> may contain any of properties: colsOrder, sorting, colsWidth or being empty.
+     @property developerUserSettings
+    @type Object
+    @default {}
+    */
+    developerUserSettings: {
+      SuggestionObjectListView: {
+        'DEFAULT': {
+          'columnWidths': [{ 'propName': 'OlvRowToolbar', 'fixed': true, 'width': 86 }, { 'propName': 'OlvRowMenu', 'fixed': true, 'width': 68 }]
+        }
+      }
+    },
+
+    /**
+      Name of model to be used as list's records types.
+       @property modelName
+      @type String
+      @default 'ember-flexberry-dummy-suggestion'
+     */
+    modelName: 'ember-flexberry-dummy-suggestion'
   });
 });
 define('dummy/routes/components-examples/flexberry-groupedit/model-update-example', ['exports', 'ember-flexberry/routes/edit-form'], function (exports, _emberFlexberryRoutesEditForm) {
@@ -23096,6 +23378,696 @@ define("dummy/templates/components-examples/flexberry-groupedit/configurate-row-
         return morphs;
       },
       statements: [["inline", "t", ["forms.components-examples.flexberry-groupedit.configurate-row-example.caption"], [], ["loc", [null, [1, 22], [1, 107]]]], ["inline", "flexberry-groupedit", [], ["componentName", "aggregatorDetailsGroupedit", "content", ["subexpr", "@mut", [["get", "model.details", ["loc", [null, [6, 16], [6, 29]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection.attributes.details", ["loc", [null, [7, 24], [7, 58]]]]], [], []], "placeholder", ["subexpr", "@mut", [["get", "placeholder", ["loc", [null, [8, 20], [8, 31]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [9, 17], [9, 25]]]]], [], []], "allowColumnResize", false, "createNewButton", true, "deleteButton", true, "showAsteriskInRow", true, "showCheckBoxInRow", true, "showDeleteButtonInRow", true, "rowClickable", false, "immediateDelete", false, "editOnSeperateRoute", false, "searchForContentChange", ["subexpr", "@mut", [["get", "searchForContentChange", ["loc", [null, [19, 31], [19, 53]]]]], [], []], "orderable", false, "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [21, 17], [21, 25]]]]], [], []], "configurateRow", ["subexpr", "action", ["configurateRow"], [], ["loc", [null, [22, 23], [22, 48]]]]], ["loc", [null, [4, 4], [23, 8]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.4.6",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 30,
+                "column": 8
+              },
+              "end": {
+                "line": 32,
+                "column": 8
+              }
+            },
+            "moduleName": "dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("          ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("button");
+            dom.setAttribute(el1, "type", "submit");
+            dom.setAttribute(el1, "class", "ui button save-button");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var element2 = dom.childAt(fragment, [1]);
+            var morphs = new Array(2);
+            morphs[0] = dom.createElementMorph(element2);
+            morphs[1] = dom.createMorphAt(element2, 0, 0);
+            return morphs;
+          },
+          statements: [["element", "action", ["save"], [], ["loc", [null, [31, 62], [31, 79]]]], ["inline", "t", ["forms.edit-form.save-button-text"], [], ["loc", [null, [31, 80], [31, 120]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      var child1 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.4.6",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 33,
+                "column": 8
+              },
+              "end": {
+                "line": 35,
+                "column": 8
+              }
+            },
+            "moduleName": "dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("          ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("button");
+            dom.setAttribute(el1, "type", "submit");
+            dom.setAttribute(el1, "class", "ui button save-close-button");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var element1 = dom.childAt(fragment, [1]);
+            var morphs = new Array(2);
+            morphs[0] = dom.createElementMorph(element1);
+            morphs[1] = dom.createMorphAt(element1, 0, 0);
+            return morphs;
+          },
+          statements: [["element", "action", ["saveAndClose"], [], ["loc", [null, [34, 68], [34, 93]]]], ["inline", "t", ["forms.edit-form.saveAndClose-button-text"], [], ["loc", [null, [34, 94], [34, 142]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      var child2 = (function () {
+        return {
+          meta: {
+            "fragmentReason": false,
+            "revision": "Ember@2.4.6",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 36,
+                "column": 8
+              },
+              "end": {
+                "line": 38,
+                "column": 8
+              }
+            },
+            "moduleName": "dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.hbs"
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("          ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("button");
+            dom.setAttribute(el1, "type", "submit");
+            dom.setAttribute(el1, "class", "ui button save-del-button");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var element0 = dom.childAt(fragment, [1]);
+            var morphs = new Array(2);
+            morphs[0] = dom.createElementMorph(element0);
+            morphs[1] = dom.createMorphAt(element0, 0, 0);
+            return morphs;
+          },
+          statements: [["element", "action", ["delete"], [], ["loc", [null, [37, 66], [37, 85]]]], ["inline", "t", ["forms.edit-form.delete-button-text"], [], ["loc", [null, [37, 86], [37, 128]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "fragmentReason": false,
+          "revision": "Ember@2.4.6",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 29,
+              "column": 6
+            },
+            "end": {
+              "line": 39,
+              "column": 6
+            }
+          },
+          "moduleName": "dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.hbs"
+        },
+        isEmpty: false,
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(3);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          morphs[1] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          morphs[2] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["block", "unless", [["subexpr", "and", [["get", "hasParentRoute", ["loc", [null, [30, 23], [30, 37]]]], ["subexpr", "not", [["get", "saveBeforeRouteLeave", ["loc", [null, [30, 43], [30, 63]]]]], [], ["loc", [null, [30, 38], [30, 64]]]]], [], ["loc", [null, [30, 18], [30, 65]]]]], [], 0, null, ["loc", [null, [30, 8], [32, 19]]]], ["block", "unless", [["subexpr", "and", [["get", "hasParentRoute", ["loc", [null, [33, 23], [33, 37]]]], ["subexpr", "not", [["get", "saveBeforeRouteLeave", ["loc", [null, [33, 43], [33, 63]]]]], [], ["loc", [null, [33, 38], [33, 64]]]]], [], ["loc", [null, [33, 18], [33, 65]]]]], [], 1, null, ["loc", [null, [33, 8], [35, 19]]]], ["block", "unless", [["subexpr", "and", [["get", "model.isNew", ["loc", [null, [36, 23], [36, 34]]]], ["subexpr", "or", [["subexpr", "not", [["get", "hasParentRoute", ["loc", [null, [36, 44], [36, 58]]]]], [], ["loc", [null, [36, 39], [36, 59]]]], ["subexpr", "and", [["get", "hasParentRoute", ["loc", [null, [36, 65], [36, 79]]]], ["get", "saveBeforeRouteLeave", ["loc", [null, [36, 80], [36, 100]]]]], [], ["loc", [null, [36, 60], [36, 101]]]]], [], ["loc", [null, [36, 35], [36, 102]]]]], [], ["loc", [null, [36, 18], [36, 103]]]]], [], 2, null, ["loc", [null, [36, 8], [38, 19]]]]],
+        locals: [],
+        templates: [child0, child1, child2]
+      };
+    })();
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 189,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("h3");
+        dom.setAttribute(el1, "class", "ui header");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "sixteen wide");
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "flexberry-edit-panel");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("button");
+        dom.setAttribute(el4, "type", "submit");
+        dom.setAttribute(el4, "class", "ui button close-button");
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element3 = dom.childAt(fragment, [2]);
+        var element4 = dom.childAt(element3, [9, 1]);
+        var element5 = dom.childAt(element4, [3]);
+        var element6 = dom.childAt(element3, [11]);
+        var element7 = dom.childAt(element3, [13]);
+        var element8 = dom.childAt(element3, [15]);
+        var element9 = dom.childAt(element3, [17]);
+        var element10 = dom.childAt(element3, [19]);
+        var element11 = dom.childAt(element3, [21]);
+        var element12 = dom.childAt(element3, [23]);
+        var element13 = dom.childAt(element3, [25]);
+        var element14 = dom.childAt(element3, [27]);
+        var element15 = dom.childAt(element3, [29]);
+        var element16 = dom.childAt(element3, [31]);
+        var element17 = dom.childAt(element3, [33]);
+        var element18 = dom.childAt(element3, [35]);
+        var morphs = new Array(53);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 0, 0);
+        morphs[1] = dom.createMorphAt(element3, 1, 1);
+        morphs[2] = dom.createMorphAt(element3, 3, 3);
+        morphs[3] = dom.createMorphAt(element3, 5, 5);
+        morphs[4] = dom.createMorphAt(dom.childAt(element3, [7, 1]), 1, 1);
+        morphs[5] = dom.createMorphAt(element4, 1, 1);
+        morphs[6] = dom.createElementMorph(element5);
+        morphs[7] = dom.createMorphAt(element5, 0, 0);
+        morphs[8] = dom.createAttrMorph(element6, 'class');
+        morphs[9] = dom.createMorphAt(element6, 1, 1);
+        morphs[10] = dom.createMorphAt(element6, 3, 3);
+        morphs[11] = dom.createAttrMorph(element7, 'class');
+        morphs[12] = dom.createMorphAt(element7, 1, 1);
+        morphs[13] = dom.createMorphAt(element7, 3, 3);
+        morphs[14] = dom.createAttrMorph(element8, 'class');
+        morphs[15] = dom.createMorphAt(dom.childAt(element8, [1]), 0, 0);
+        morphs[16] = dom.createMorphAt(element8, 3, 3);
+        morphs[17] = dom.createMorphAt(element8, 5, 5);
+        morphs[18] = dom.createAttrMorph(element9, 'class');
+        morphs[19] = dom.createMorphAt(element9, 1, 1);
+        morphs[20] = dom.createMorphAt(element9, 3, 3);
+        morphs[21] = dom.createAttrMorph(element10, 'class');
+        morphs[22] = dom.createMorphAt(dom.childAt(element10, [1]), 0, 0);
+        morphs[23] = dom.createMorphAt(element10, 3, 3);
+        morphs[24] = dom.createMorphAt(element10, 5, 5);
+        morphs[25] = dom.createAttrMorph(element11, 'class');
+        morphs[26] = dom.createMorphAt(dom.childAt(element11, [1]), 0, 0);
+        morphs[27] = dom.createMorphAt(element11, 3, 3);
+        morphs[28] = dom.createMorphAt(element11, 5, 5);
+        morphs[29] = dom.createAttrMorph(element12, 'class');
+        morphs[30] = dom.createMorphAt(dom.childAt(element12, [1]), 0, 0);
+        morphs[31] = dom.createMorphAt(element12, 3, 3);
+        morphs[32] = dom.createMorphAt(element12, 5, 5);
+        morphs[33] = dom.createAttrMorph(element13, 'class');
+        morphs[34] = dom.createMorphAt(dom.childAt(element13, [1]), 0, 0);
+        morphs[35] = dom.createMorphAt(element13, 3, 3);
+        morphs[36] = dom.createMorphAt(element13, 5, 5);
+        morphs[37] = dom.createAttrMorph(element14, 'class');
+        morphs[38] = dom.createMorphAt(dom.childAt(element14, [1]), 0, 0);
+        morphs[39] = dom.createMorphAt(element14, 3, 3);
+        morphs[40] = dom.createMorphAt(element14, 5, 5);
+        morphs[41] = dom.createMorphAt(dom.childAt(element15, [1]), 0, 0);
+        morphs[42] = dom.createMorphAt(element15, 3, 3);
+        morphs[43] = dom.createMorphAt(dom.childAt(element16, [1]), 0, 0);
+        morphs[44] = dom.createMorphAt(element16, 3, 3);
+        morphs[45] = dom.createAttrMorph(element17, 'class');
+        morphs[46] = dom.createMorphAt(dom.childAt(element17, [1]), 0, 0);
+        morphs[47] = dom.createMorphAt(element17, 3, 3);
+        morphs[48] = dom.createMorphAt(element17, 5, 5);
+        morphs[49] = dom.createAttrMorph(element18, 'class');
+        morphs[50] = dom.createMorphAt(dom.childAt(element18, [1]), 0, 0);
+        morphs[51] = dom.createMorphAt(element18, 3, 3);
+        morphs[52] = dom.createMorphAt(element18, 5, 5);
+        return morphs;
+      },
+      statements: [["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.caption"], [], ["loc", [null, [1, 22], [1, 81]]]], ["inline", "ui-message", [], ["type", "success", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormSuccessMessage", ["loc", [null, [6, 12], [6, 34]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formSuccessMessageCaption", ["loc", [null, [7, 12], [7, 37]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formSuccessMessage", ["loc", [null, [8, 12], [8, 30]]]]], [], []], "onShow", ["subexpr", "action", ["onSuccessMessageShow"], [], ["loc", [null, [9, 11], [9, 42]]]], "onHide", ["subexpr", "action", ["onSuccessMessageHide"], [], ["loc", [null, [10, 11], [10, 42]]]]], ["loc", [null, [3, 2], [11, 4]]]], ["inline", "ui-message", [], ["type", "error", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormErrorMessage", ["loc", [null, [15, 12], [15, 32]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formErrorMessageCaption", ["loc", [null, [16, 12], [16, 35]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formErrorMessage", ["loc", [null, [17, 12], [17, 28]]]]], [], []], "onShow", ["subexpr", "action", ["onErrorMessageShow"], [], ["loc", [null, [18, 11], [18, 40]]]], "onHide", ["subexpr", "action", ["onErrorMessageHide"], [], ["loc", [null, [19, 11], [19, 40]]]]], ["loc", [null, [12, 2], [20, 4]]]], ["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [21, 26], [21, 31]]]]], [], []]], ["loc", [null, [21, 2], [21, 33]]]], ["inline", "flexberry-validationsummary", [], ["errors", ["subexpr", "@mut", [["get", "model.errors", ["loc", [null, [24, 43], [24, 55]]]]], [], []]], ["loc", [null, [24, 6], [24, 57]]]], ["block", "unless", [["get", "readonly", ["loc", [null, [29, 16], [29, 24]]]]], [], 0, null, ["loc", [null, [29, 6], [39, 17]]]], ["element", "action", ["close"], [], ["loc", [null, [40, 59], [40, 77]]]], ["inline", "t", ["forms.edit-form.close-button-text"], [], ["loc", [null, [40, 78], [40, 119]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.address", ["loc", [null, [43, 25], [43, 45]]]], "error", ""], [], ["loc", [null, [43, 20], [43, 58]]]]]]], ["inline", "flexberry-field", [], ["value", ["subexpr", "@mut", [["get", "model.address", ["loc", [null, [45, 12], [45, 25]]]]], [], []], "label", ["subexpr", "t", ["forms.ember-flexberry-dummy-suggestion-edit.address-caption"], [], ["loc", [null, [46, 12], [46, 77]]]], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [47, 15], [47, 23]]]]], [], []]], ["loc", [null, [44, 4], [48, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.address", ["loc", [null, [49, 40], [49, 60]]]]], [], []], "pointing", "pointing"], ["loc", [null, [49, 4], [49, 82]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.text", ["loc", [null, [51, 25], [51, 42]]]], "error", ""], [], ["loc", [null, [51, 20], [51, 55]]]]]]], ["inline", "flexberry-field", [], ["value", ["subexpr", "@mut", [["get", "model.text", ["loc", [null, [53, 12], [53, 22]]]]], [], []], "label", ["subexpr", "t", ["forms.ember-flexberry-dummy-suggestion-edit.text-caption"], [], ["loc", [null, [54, 12], [54, 74]]]], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [55, 15], [55, 23]]]]], [], []]], ["loc", [null, [52, 4], [56, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.text", ["loc", [null, [57, 40], [57, 57]]]]], [], []], "pointing", "pointing"], ["loc", [null, [57, 4], [57, 79]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.date", ["loc", [null, [59, 25], [59, 42]]]], "error", ""], [], ["loc", [null, [59, 20], [59, 55]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.date-caption"], [], ["loc", [null, [60, 11], [60, 75]]]], ["inline", "flexberry-datepicker", [], ["value", ["subexpr", "@mut", [["get", "model.date", ["loc", [null, [62, 12], [62, 22]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [63, 15], [63, 23]]]]], [], []]], ["loc", [null, [61, 4], [64, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.date", ["loc", [null, [65, 40], [65, 57]]]]], [], []], "pointing", "pointing"], ["loc", [null, [65, 4], [65, 79]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.votes", ["loc", [null, [67, 25], [67, 43]]]], "error", ""], [], ["loc", [null, [67, 20], [67, 56]]]]]]], ["inline", "flexberry-field", [], ["value", ["subexpr", "@mut", [["get", "model.votes", ["loc", [null, [69, 12], [69, 23]]]]], [], []], "label", ["subexpr", "t", ["forms.ember-flexberry-dummy-suggestion-edit.votes-caption"], [], ["loc", [null, [70, 12], [70, 75]]]], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [71, 15], [71, 23]]]]], [], []]], ["loc", [null, [68, 4], [72, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.votes", ["loc", [null, [73, 40], [73, 58]]]]], [], []], "pointing", "pointing"], ["loc", [null, [73, 4], [73, 80]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.moderated", ["loc", [null, [75, 25], [75, 47]]]], "error", ""], [], ["loc", [null, [75, 20], [75, 60]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.moderated-caption"], [], ["loc", [null, [76, 11], [76, 80]]]], ["inline", "flexberry-checkbox", [], ["value", ["subexpr", "@mut", [["get", "model.moderated", ["loc", [null, [78, 12], [78, 27]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [79, 15], [79, 23]]]]], [], []]], ["loc", [null, [77, 4], [80, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.moderated", ["loc", [null, [81, 40], [81, 62]]]]], [], []], "pointing", "pointing"], ["loc", [null, [81, 4], [81, 84]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.type", ["loc", [null, [83, 25], [83, 42]]]], "error", ""], [], ["loc", [null, [83, 20], [83, 55]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.type-caption"], [], ["loc", [null, [84, 11], [84, 75]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.type", ["loc", [null, [86, 12], [86, 22]]]]], [], []], "relatedModel", ["subexpr", "@mut", [["get", "model", ["loc", [null, [87, 19], [87, 24]]]]], [], []], "relationName", "type", "projection", "SuggestionTypeL", "displayAttributeName", "name", "title", ["subexpr", "t", ["forms.ember-flexberry-dummy-suggestion-edit.type-caption"], [], ["loc", [null, [91, 12], [91, 74]]]], "choose", ["subexpr", "action", ["showLookupDialog"], [], ["loc", [null, [92, 13], [92, 40]]]], "remove", ["subexpr", "action", ["removeLookupValue"], [], ["loc", [null, [93, 13], [93, 41]]]], "dropdown", true, "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [95, 15], [95, 23]]]]], [], []], "direction", "upward", "componentName", "SuggestionEditType"], ["loc", [null, [85, 4], [98, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.type", ["loc", [null, [99, 40], [99, 57]]]]], [], []], "pointing", "pointing"], ["loc", [null, [99, 4], [99, 79]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.author", ["loc", [null, [101, 25], [101, 44]]]], "error", ""], [], ["loc", [null, [101, 20], [101, 57]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.author-caption"], [], ["loc", [null, [102, 11], [102, 77]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.author", ["loc", [null, [104, 12], [104, 24]]]]], [], []], "relatedModel", ["subexpr", "@mut", [["get", "model", ["loc", [null, [105, 19], [105, 24]]]]], [], []], "relationName", "author", "projection", "ApplicationUserL", "displayAttributeName", "name", "title", ["subexpr", "t", ["forms.ember-flexberry-dummy-suggestion-edit.author-caption"], [], ["loc", [null, [109, 12], [109, 76]]]], "choose", ["subexpr", "action", ["showLookupDialog"], [], ["loc", [null, [110, 13], [110, 40]]]], "remove", ["subexpr", "action", ["removeLookupValue"], [], ["loc", [null, [111, 13], [111, 41]]]], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [112, 15], [112, 23]]]]], [], []], "componentName", "SuggestionEditAuthor"], ["loc", [null, [103, 4], [114, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.author", ["loc", [null, [115, 40], [115, 59]]]]], [], []], "pointing", "pointing"], ["loc", [null, [115, 4], [115, 81]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.editor1", ["loc", [null, [117, 25], [117, 45]]]], "error", ""], [], ["loc", [null, [117, 20], [117, 58]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.editor1-caption"], [], ["loc", [null, [118, 11], [118, 78]]]], ["inline", "flexberry-lookup", [], ["value", ["subexpr", "@mut", [["get", "model.editor1", ["loc", [null, [120, 12], [120, 25]]]]], [], []], "relatedModel", ["subexpr", "@mut", [["get", "model", ["loc", [null, [121, 19], [121, 24]]]]], [], []], "relationName", "editor1", "projection", "ApplicationUserL", "displayAttributeName", "name", "title", ["subexpr", "t", ["forms.ember-flexberry-dummy-suggestion-edit.editor1-caption"], [], ["loc", [null, [125, 12], [125, 77]]]], "choose", ["subexpr", "action", ["showLookupDialog"], [], ["loc", [null, [126, 13], [126, 40]]]], "remove", ["subexpr", "action", ["removeLookupValue"], [], ["loc", [null, [127, 13], [127, 41]]]], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [128, 15], [128, 23]]]]], [], []], "componentName", "SuggestionEditEditor1"], ["loc", [null, [119, 4], [130, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.editor1", ["loc", [null, [131, 40], [131, 60]]]]], [], []], "pointing", "pointing"], ["loc", [null, [131, 4], [131, 82]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.files", ["loc", [null, [133, 25], [133, 43]]]], "error", ""], [], ["loc", [null, [133, 20], [133, 56]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.files-caption"], [], ["loc", [null, [134, 11], [134, 76]]]], ["inline", "flexberry-groupedit", [], ["componentName", "filesGroupEdit", "content", ["subexpr", "@mut", [["get", "model.files", ["loc", [null, [137, 14], [137, 25]]]]], [], []], "mainModelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [138, 26], [138, 41]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection.attributes.files", ["loc", [null, [139, 22], [139, 54]]]]], [], []], "orderable", true, "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [141, 15], [141, 23]]]]], [], []], "configurateRow", ["subexpr", "action", ["configurateFilesRow"], [], ["loc", [null, [142, 21], [142, 51]]]]], ["loc", [null, [135, 4], [143, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.files", ["loc", [null, [144, 40], [144, 58]]]]], [], []], "pointing", "pointing"], ["loc", [null, [144, 4], [144, 80]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.readonly-groupedit-with-lookup-with-computed-atribute-field"], [], ["loc", [null, [147, 11], [147, 122]]]], ["inline", "flexberry-checkbox", [], ["value", ["subexpr", "@mut", [["get", "checkboxValue", ["loc", [null, [149, 12], [149, 25]]]]], [], []]], ["loc", [null, [148, 4], [150, 6]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.limit-function-groupedit-with-lookup-with-computed-atribute-field"], [], ["loc", [null, [153, 11], [153, 128]]]], ["inline", "flexberry-field", [], ["value", ["subexpr", "@mut", [["get", "fieldvalue", ["loc", [null, [155, 12], [155, 22]]]]], [], []]], ["loc", [null, [154, 4], [156, 6]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.userVotes", ["loc", [null, [158, 25], [158, 47]]]], "error", ""], [], ["loc", [null, [158, 20], [158, 60]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.userVotes-caption"], [], ["loc", [null, [159, 11], [159, 80]]]], ["inline", "flexberry-groupedit", [], ["componentName", "suggestionUserVotesGroupEdit", "content", ["subexpr", "@mut", [["get", "model.userVotes", ["loc", [null, [162, 14], [162, 29]]]]], [], []], "mainModelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [163, 26], [163, 41]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection.attributes.userVotes", ["loc", [null, [164, 22], [164, 58]]]]], [], []], "orderable", true, "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [166, 15], [166, 23]]]]], [], []], "configurateRow", ["subexpr", "action", ["configurateVotesRow"], [], ["loc", [null, [167, 21], [167, 51]]]]], ["loc", [null, [160, 4], [168, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.userVotes", ["loc", [null, [169, 40], [169, 62]]]]], [], []], "pointing", "pointing"], ["loc", [null, [169, 4], [169, 84]]]], ["attribute", "class", ["concat", ["field ", ["subexpr", "if", [["get", "model.errors.comments", ["loc", [null, [171, 25], [171, 46]]]], "error", ""], [], ["loc", [null, [171, 20], [171, 59]]]]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-edit.comments-caption"], [], ["loc", [null, [172, 11], [172, 79]]]], ["inline", "flexberry-groupedit", [], ["componentName", "suggestionCommentsGroupEdit", "content", ["subexpr", "@mut", [["get", "model.comments", ["loc", [null, [175, 14], [175, 28]]]]], [], []], "mainModelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [176, 26], [176, 41]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "modelProjection.attributes.comments", ["loc", [null, [177, 22], [177, 57]]]]], [], []], "rowClickable", true, "rowClick", "rowClick", "editOnSeparateRoute", true, "editFormRoute", ["subexpr", "@mut", [["get", "commentsEditRoute", ["loc", [null, [181, 20], [181, 37]]]]], [], []], "saveBeforeRouteLeave", true, "orderable", true, "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [184, 15], [184, 23]]]]], [], []]], ["loc", [null, [173, 4], [185, 6]]]], ["inline", "flexberry-validationmessage", [], ["error", ["subexpr", "@mut", [["get", "model.errors.comments", ["loc", [null, [186, 40], [186, 61]]]]], [], []], "pointing", "pointing"], ["loc", [null, [186, 4], [186, 83]]]]],
+      locals: [],
+      templates: [child0]
+    };
+  })());
+});
+define("dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "fragmentReason": {
+          "name": "missing-wrapper",
+          "problems": ["wrong-type", "multiple-nodes"]
+        },
+        "revision": "Ember@2.4.6",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 52,
+            "column": 0
+          }
+        },
+        "moduleName": "dummy/templates/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.hbs"
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("h3");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("form");
+        dom.setAttribute(el1, "class", "ui form flexberry-vertical-form");
+        dom.setAttribute(el1, "role", "form");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "field");
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [4]);
+        var morphs = new Array(5);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
+        morphs[2] = dom.createMorphAt(element0, 1, 1);
+        morphs[3] = dom.createMorphAt(element0, 3, 3);
+        morphs[4] = dom.createMorphAt(dom.childAt(element0, [5]), 1, 1);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["inline", "flexberry-error", [], ["error", ["subexpr", "@mut", [["get", "error", ["loc", [null, [1, 24], [1, 29]]]]], [], []]], ["loc", [null, [1, 0], [1, 31]]]], ["inline", "t", ["forms.ember-flexberry-dummy-suggestion-list.caption"], [], ["loc", [null, [2, 4], [2, 63]]]], ["inline", "ui-message", [], ["type", "success", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormSuccessMessage", ["loc", [null, [7, 12], [7, 34]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formSuccessMessageCaption", ["loc", [null, [8, 12], [8, 37]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formSuccessMessage", ["loc", [null, [9, 12], [9, 30]]]]], [], []], "onShow", ["subexpr", "action", ["onSuccessMessageShow"], [], ["loc", [null, [10, 11], [10, 42]]]], "onHide", ["subexpr", "action", ["onSuccessMessageHide"], [], ["loc", [null, [11, 11], [11, 42]]]]], ["loc", [null, [4, 2], [12, 4]]]], ["inline", "ui-message", [], ["type", "error", "closeable", true, "visible", ["subexpr", "@mut", [["get", "showFormErrorMessage", ["loc", [null, [16, 12], [16, 32]]]]], [], []], "caption", ["subexpr", "@mut", [["get", "formErrorMessageCaption", ["loc", [null, [17, 12], [17, 35]]]]], [], []], "message", ["subexpr", "@mut", [["get", "formErrorMessage", ["loc", [null, [18, 12], [18, 28]]]]], [], []], "onShow", ["subexpr", "action", ["onErrorMessageShow"], [], ["loc", [null, [19, 11], [19, 40]]]], "onHide", ["subexpr", "action", ["onErrorMessageHide"], [], ["loc", [null, [20, 11], [20, 40]]]]], ["loc", [null, [13, 2], [21, 4]]]], ["inline", "flexberry-objectlistview", [], ["editFormRoute", ["subexpr", "@mut", [["get", "editFormRoute", ["loc", [null, [24, 18], [24, 31]]]]], [], []], "showCheckBoxInRow", true, "modelName", "ember-flexberry-dummy-suggestion", "modelProjection", ["subexpr", "@mut", [["get", "modelProjection", ["loc", [null, [27, 20], [27, 35]]]]], [], []], "content", ["subexpr", "@mut", [["get", "model", ["loc", [null, [28, 12], [28, 17]]]]], [], []], "createNewButton", false, "refreshButton", true, "exportExcelButton", true, "sorting", ["subexpr", "@mut", [["get", "computedSorting", ["loc", [null, [32, 12], [32, 27]]]]], [], []], "orderable", true, "sortByColumn", ["subexpr", "action", ["sortByColumn"], [], ["loc", [null, [34, 17], [34, 40]]]], "addColumnToSorting", ["subexpr", "action", ["addColumnToSorting"], [], ["loc", [null, [35, 23], [35, 52]]]], "pages", ["subexpr", "@mut", [["get", "pages", ["loc", [null, [36, 10], [36, 15]]]]], [], []], "perPageValue", ["subexpr", "@mut", [["get", "perPageValue", ["loc", [null, [37, 17], [37, 29]]]]], [], []], "perPageValues", ["subexpr", "@mut", [["get", "perPageValues", ["loc", [null, [38, 18], [38, 31]]]]], [], []], "recordsTotalCount", ["subexpr", "@mut", [["get", "recordsTotalCount", ["loc", [null, [39, 22], [39, 39]]]]], [], []], "hasPreviousPage", ["subexpr", "@mut", [["get", "hasPreviousPage", ["loc", [null, [40, 20], [40, 35]]]]], [], []], "hasNextPage", ["subexpr", "@mut", [["get", "hasNextPage", ["loc", [null, [41, 16], [41, 27]]]]], [], []], "previousPage", ["subexpr", "action", ["previousPage"], [], ["loc", [null, [42, 17], [42, 40]]]], "gotoPage", ["subexpr", "action", ["gotoPage"], [], ["loc", [null, [43, 13], [43, 32]]]], "nextPage", ["subexpr", "action", ["nextPage"], [], ["loc", [null, [44, 13], [44, 32]]]], "componentName", "SuggestionObjectListView", "showDeleteMenuItemInRow", true, "showEditMenuItemInRow", true, "deleteButton", true], ["loc", [null, [23, 2], [49, 4]]]]],
       locals: [],
       templates: []
     };
@@ -53896,7 +54868,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+086ac24f"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+a5d21273"});
 }
 
 /* jshint ignore:end */
