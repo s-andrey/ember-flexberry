@@ -11024,6 +11024,13 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
                 }
               }
             }
+          },
+          'SuggestionMainModelProjectionTest': {
+            'userVotes': {
+              'voteType': {
+                'caption': 'Temp text for test'
+              }
+            }
           }
         }
       },
@@ -13166,6 +13173,63 @@ define('dummy/mixins/list-form-route-operations-indication', ['exports', 'ember'
 /**
   @module ember-flexberry-dummy
 */
+define('dummy/models/aggregator', ['exports', 'ember-data', 'ember-flexberry-data'], function (exports, _emberData, _emberFlexberryData) {
+
+  var Model = _emberFlexberryData.Projection.Model.extend({
+    // This property is for flexberry-groupedit component.
+    // Inverse relationship is necessary here.
+    details: _emberData['default'].hasMany('components-examples/flexberry-groupedit/shared/detail', {
+      inverse: 'aggregator',
+      async: false
+    })
+  });
+
+  // Edit form projection.
+  Model.defineProjection('AggregatorE', 'aggregator', {
+    details: _emberFlexberryData.Projection.hasMany('components-examples/flexberry-groupedit/shared/detail', 'Details', {
+      flag: _emberFlexberryData.Projection.attr('Flagsdfadf'),
+      text: _emberFlexberryData.Projection.attr('Textadsfasd'),
+      date: _emberFlexberryData.Projection.attr('Date'),
+      enumeration: _emberFlexberryData.Projection.attr('Enumeration'),
+      file: _emberFlexberryData.Projection.attr('File'),
+      master: _emberFlexberryData.Projection.belongsTo('components-examples/flexberry-groupedit/shared/master', 'Master', {
+        text: _emberFlexberryData.Projection.attr('Text', {
+          hidden: true
+        })
+      }, {
+        displayMemberPath: 'text'
+      })
+    })
+  });
+
+  // Edit form projection for test 'configurate row'.
+  Model.defineProjection('ConfigurateRowView', 'components-examples/flexberry-groupedit/shared/aggregator', {
+    details: _emberFlexberryData.Projection.hasMany('components-examples/flexberry-groupedit/shared/detail', 'Details', {
+      flag: _emberFlexberryData.Projection.attr('Flag'),
+      text: _emberFlexberryData.Projection.attr('Text')
+    })
+  });
+
+  // Projection for testing displaying changes on GE after manual model update.
+  Model.defineProjection('ManualModelUpdateView', 'components-examples/flexberry-groupedit/shared/aggregator', {
+    details: _emberFlexberryData.Projection.hasMany('components-examples/flexberry-groupedit/shared/detail', 'Details', {
+      flag: _emberFlexberryData.Projection.attr('Flag'),
+      text: _emberFlexberryData.Projection.attr('Text'),
+      date: _emberFlexberryData.Projection.attr('Date'),
+      enumeration: _emberFlexberryData.Projection.attr('Enumeration'),
+      file: _emberFlexberryData.Projection.attr('File'),
+      master: _emberFlexberryData.Projection.belongsTo('components-examples/flexberry-groupedit/shared/master', 'Master', {
+        text: _emberFlexberryData.Projection.attr('Text', {
+          hidden: true
+        })
+      }, {
+        displayMemberPath: 'text'
+      })
+    })
+  });
+
+  exports['default'] = Model;
+});
 define('dummy/models/components-examples/flexberry-checkbox/settings-example/base', ['exports', 'ember-data', 'ember-flexberry-data'], function (exports, _emberData, _emberFlexberryData) {
 
   var Model = _emberFlexberryData.Projection.Model.extend({
@@ -13998,6 +14062,13 @@ define('dummy/models/ember-flexberry-dummy-suggestion', ['exports', 'ember', 'em
     })
   });
 
+  // Edit form projection.
+  Model.defineProjection('SuggestionMainModelProjectionTest', 'ember-flexberry-dummy-suggestion', {
+    userVotes: _emberFlexberryData.Projection.hasMany('ember-flexberry-dummy-vote', 'User votes', {
+      voteType: _emberFlexberryData.Projection.attr('Vote type')
+    })
+  });
+
   // List form projection.
   Model.defineProjection('SuggestionL', 'ember-flexberry-dummy-suggestion', {
     address: _emberFlexberryData.Projection.attr('Address'),
@@ -14817,6 +14888,7 @@ define('dummy/router', ['exports', 'ember', 'dummy/config/environment'], functio
     this.route('components-acceptance-tests/flexberry-lookup/settings-example-actions');
     this.route('components-acceptance-tests/flexberry-lookup/settings-example-relation-name');
     this.route('components-acceptance-tests/flexberry-lookup/settings-example-limit-function');
+
     this.route('components-acceptance-tests/flexberry-objectlistview/base-operations');
     this.route('components-acceptance-tests/flexberry-objectlistview/folv-paging');
     this.route('components-acceptance-tests/flexberry-objectlistview/date-format');
@@ -22688,7 +22760,7 @@ define("dummy/templates/components-examples/flexberry-groupedit/settings-example
               "column": 4
             },
             "end": {
-              "line": 29,
+              "line": 30,
               "column": 4
             }
           },
@@ -22713,7 +22785,7 @@ define("dummy/templates/components-examples/flexberry-groupedit/settings-example
           morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
           return morphs;
         },
-        statements: [["inline", "flexberry-groupedit", [], ["componentName", "aggregatorDetailsGroupedit", "content", ["subexpr", "@mut", [["get", "model.details", ["loc", [null, [11, 16], [11, 29]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "detailsProjection", ["loc", [null, [12, 24], [12, 41]]]]], [], []], "placeholder", ["subexpr", "@mut", [["get", "placeholder", ["loc", [null, [13, 20], [13, 31]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [14, 17], [14, 25]]]]], [], []], "tableStriped", ["subexpr", "@mut", [["get", "tableStriped", ["loc", [null, [15, 21], [15, 33]]]]], [], []], "createNewButton", ["subexpr", "@mut", [["get", "createNewButton", ["loc", [null, [16, 24], [16, 39]]]]], [], []], "deleteButton", ["subexpr", "@mut", [["get", "deleteButton", ["loc", [null, [17, 21], [17, 33]]]]], [], []], "allowColumnResize", ["subexpr", "@mut", [["get", "allowColumnResize", ["loc", [null, [18, 26], [18, 43]]]]], [], []], "showAsteriskInRow", ["subexpr", "@mut", [["get", "showAsteriskInRow", ["loc", [null, [19, 26], [19, 43]]]]], [], []], "showCheckBoxInRow", ["subexpr", "@mut", [["get", "showCheckBoxInRow", ["loc", [null, [20, 26], [20, 43]]]]], [], []], "showDeleteButtonInRow", ["subexpr", "@mut", [["get", "showDeleteButtonInRow", ["loc", [null, [21, 30], [21, 51]]]]], [], []], "showEditMenuItemInRow", ["subexpr", "@mut", [["get", "showEditMenuItemInRow", ["loc", [null, [22, 30], [22, 51]]]]], [], []], "showDeleteMenuItemInRow", ["subexpr", "@mut", [["get", "showDeleteMenuItemInRow", ["loc", [null, [23, 32], [23, 55]]]]], [], []], "useSingleColumn", ["subexpr", "@mut", [["get", "useSingleColumn", ["loc", [null, [24, 24], [24, 39]]]]], [], []], "singleColumnHeaderTitle", ["subexpr", "@mut", [["get", "singleColumnHeaderTitle", ["loc", [null, [25, 32], [25, 55]]]]], [], []], "rowClickable", ["subexpr", "@mut", [["get", "rowClickable", ["loc", [null, [26, 21], [26, 33]]]]], [], []], "immediateDelete", ["subexpr", "@mut", [["get", "immediateDelete", ["loc", [null, [27, 24], [27, 39]]]]], [], []]], ["loc", [null, [9, 6], [28, 8]]]]],
+        statements: [["inline", "flexberry-groupedit", [], ["componentName", "aggregatorDetailsGroupedit", "content", ["subexpr", "@mut", [["get", "model.details", ["loc", [null, [11, 16], [11, 29]]]]], [], []], "modelProjection", ["subexpr", "@mut", [["get", "detailsProjection", ["loc", [null, [12, 24], [12, 41]]]]], [], []], "placeholder", ["subexpr", "@mut", [["get", "placeholder", ["loc", [null, [13, 20], [13, 31]]]]], [], []], "readonly", ["subexpr", "@mut", [["get", "readonly", ["loc", [null, [14, 17], [14, 25]]]]], [], []], "tableStriped", ["subexpr", "@mut", [["get", "tableStriped", ["loc", [null, [15, 21], [15, 33]]]]], [], []], "createNewButton", ["subexpr", "@mut", [["get", "createNewButton", ["loc", [null, [16, 24], [16, 39]]]]], [], []], "deleteButton", ["subexpr", "@mut", [["get", "deleteButton", ["loc", [null, [17, 21], [17, 33]]]]], [], []], "allowColumnResize", ["subexpr", "@mut", [["get", "allowColumnResize", ["loc", [null, [18, 26], [18, 43]]]]], [], []], "showAsteriskInRow", ["subexpr", "@mut", [["get", "showAsteriskInRow", ["loc", [null, [19, 26], [19, 43]]]]], [], []], "showCheckBoxInRow", ["subexpr", "@mut", [["get", "showCheckBoxInRow", ["loc", [null, [20, 26], [20, 43]]]]], [], []], "showDeleteButtonInRow", ["subexpr", "@mut", [["get", "showDeleteButtonInRow", ["loc", [null, [21, 30], [21, 51]]]]], [], []], "showEditMenuItemInRow", ["subexpr", "@mut", [["get", "showEditMenuItemInRow", ["loc", [null, [22, 30], [22, 51]]]]], [], []], "showDeleteMenuItemInRow", ["subexpr", "@mut", [["get", "showDeleteMenuItemInRow", ["loc", [null, [23, 32], [23, 55]]]]], [], []], "useSingleColumn", ["subexpr", "@mut", [["get", "useSingleColumn", ["loc", [null, [24, 24], [24, 39]]]]], [], []], "singleColumnHeaderTitle", ["subexpr", "@mut", [["get", "singleColumnHeaderTitle", ["loc", [null, [25, 32], [25, 55]]]]], [], []], "rowClickable", ["subexpr", "@mut", [["get", "rowClickable", ["loc", [null, [26, 21], [26, 33]]]]], [], []], "immediateDelete", ["subexpr", "@mut", [["get", "immediateDelete", ["loc", [null, [27, 24], [27, 39]]]]], [], []], "orderable", true], ["loc", [null, [9, 6], [29, 8]]]]],
         locals: [],
         templates: []
       };
@@ -22732,7 +22804,7 @@ define("dummy/templates/components-examples/flexberry-groupedit/settings-example
             "column": 0
           },
           "end": {
-            "line": 32,
+            "line": 33,
             "column": 0
           }
         },
@@ -22778,7 +22850,7 @@ define("dummy/templates/components-examples/flexberry-groupedit/settings-example
         morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2, 1]), 1, 1);
         return morphs;
       },
-      statements: [["inline", "t", ["forms.components-examples.flexberry-groupedit.settings-example.caption"], [], ["loc", [null, [1, 22], [1, 100]]]], ["block", "settings-example", [], ["controllerProperties", ["subexpr", "@mut", [["get", "this", ["loc", [null, [5, 27], [5, 31]]]]], [], []], "componentSettingsMetadata", ["subexpr", "@mut", [["get", "componentSettingsMetadata", ["loc", [null, [6, 32], [6, 57]]]]], [], []], "componentTemplateText", ["subexpr", "@mut", [["get", "componentTemplateText", ["loc", [null, [7, 28], [7, 49]]]]], [], []]], 0, null, ["loc", [null, [4, 4], [29, 25]]]]],
+      statements: [["inline", "t", ["forms.components-examples.flexberry-groupedit.settings-example.caption"], [], ["loc", [null, [1, 22], [1, 100]]]], ["block", "settings-example", [], ["controllerProperties", ["subexpr", "@mut", [["get", "this", ["loc", [null, [5, 27], [5, 31]]]]], [], []], "componentSettingsMetadata", ["subexpr", "@mut", [["get", "componentSettingsMetadata", ["loc", [null, [6, 32], [6, 57]]]]], [], []], "componentTemplateText", ["subexpr", "@mut", [["get", "componentTemplateText", ["loc", [null, [7, 28], [7, 49]]]]], [], []]], 0, null, ["loc", [null, [4, 4], [30, 25]]]]],
       locals: [],
       templates: [child0]
     };
@@ -53384,7 +53456,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+48b9f818"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+bf39a7b7"});
 }
 
 /* jshint ignore:end */
