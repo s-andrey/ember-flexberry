@@ -15,6 +15,8 @@ export default {
       caption: 'An error has occurred',
       'show-more': 'Show more',
       retry: 'Retry',
+      error: 'Error',
+      'ember-data-request': 'Server is not available, check the connection to the server',
     },
 
     'i-i-s-caseberry-logging-objects-application-log-l': {
@@ -168,7 +170,8 @@ export default {
 
     'groupedit-toolbar': {
       'add-button-text': 'Add',
-      'delete-button-text': 'Delete'
+      'delete-button-text': 'Delete',
+      'clear-settings-button-text': 'Restore default settings'
     },
 
     'colsconfig-dialog-content': {

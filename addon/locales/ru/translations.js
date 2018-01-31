@@ -15,6 +15,8 @@ export default {
       caption: 'Произошла ошибка',
       'show-more': 'Подробно',
       retry: 'Повторить попытку',
+      error: 'Ошибка',
+      'ember-data-request': 'Сервер недоступен, необходимо проверить соединение с сервером',
     },
 
     'i-i-s-caseberry-logging-objects-application-log-l': {
@@ -169,7 +171,8 @@ export default {
 
     'groupedit-toolbar': {
       'add-button-text': 'Добавить',
-      'delete-button-text': 'Удалить'
+      'delete-button-text': 'Удалить',
+      'clear-settings-button-text': 'Восстановить настройки по умолчанию'
     },
 
     'colsconfig-dialog-content': {
