@@ -7749,8 +7749,7 @@ define('dummy/controllers/ember-flexberry-dummy-localization-list', ['exports', 
     editFormRoute: 'ember-flexberry-dummy-localization-edit'
   });
 });
-define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'ember', 'ember-flexberry/controllers/edit-form', 'ember-flexberry/mixins/edit-form-controller-operations-indication', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryControllersEditForm, _emberFlexberryMixinsEditFormControllerOperationsIndication, _emberFlexberryData) {
-  var StringPredicate = _emberFlexberryData.Query.StringPredicate;
+define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'ember', 'ember-flexberry/controllers/edit-form', 'ember-flexberry/mixins/edit-form-controller-operations-indication'], function (exports, _ember, _emberFlexberryControllersEditForm, _emberFlexberryMixinsEditFormControllerOperationsIndication) {
   exports['default'] = _emberFlexberryControllersEditForm['default'].extend(_emberFlexberryMixinsEditFormControllerOperationsIndication['default'], {
     /**
       Route name for transition after close edit form.
@@ -7779,7 +7778,6 @@ define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'e
       { componentName: 'my-component',  componentProperties: { ... } }.
      */
     getCellComponent: function getCellComponent(attr, bindingPath, model) {
-      var limitFunction = new StringPredicate('name').contains('ва');
       var cellComponent = this._super.apply(this, arguments);
       if (attr.kind === 'belongsTo') {
         switch (model.modelName + '+' + bindingPath) {
@@ -7791,9 +7789,7 @@ define('dummy/controllers/ember-flexberry-dummy-suggestion-edit', ['exports', 'e
               required: true,
               relationName: 'author',
               projection: 'ApplicationUserL',
-              autocomplete: true,
-              lookupLimitPredicate: limitFunction,
-              readonly: true
+              autocomplete: true
             };
             break;
 
@@ -54868,7 +54864,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+d5c547b2"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://flexberry-ember-dummy.azurewebsites.net","backendUrls":{"root":"https://flexberry-ember-dummy.azurewebsites.net","api":"https://flexberry-ember-dummy.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://flexberry-ember-dummy.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.10.0+47291725"});
 }
 
 /* jshint ignore:end */
