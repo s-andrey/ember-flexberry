@@ -40,6 +40,16 @@
 }
 .flexberry-colsconfig td > .input {
   width: 100%;
+  display: table-row;
+}
+.flexberry-colsconfig th > .input {
+  display: table-row;
+}
+.flexberry-colsconfig th > .input input.setting-name {
+  width: 250px;
+}
+.flexberry-colsconfig th .ui.action.input .ui.button {
+  display: inline-flex;
 }
 /**
  * Fix semantic-ui style for flexberry-menu.
@@ -10854,6 +10864,11 @@ input {
 }
 .ember-view.ui.dropdown div.default.text {
   color: #999999;
+}
+.flexberry-file.mobile .flexberry-file-grid {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 /*!
  * # Semantic UI - Label
@@ -24440,9 +24455,6 @@ div.ui.secondary.menu.no-margin.nav-bar .right.menu {
 .ui.large.table {
   font-size: 1.1em;
 }
-tr {
-  cursor: pointer;
-}
 .oveflow-text {
   overflow: hidden;
 }
@@ -24480,6 +24492,19 @@ table.object-list-view.selectable thead {
 .ui.fixed.table th.object-list-view-operations {
   text-overflow: clip;
   white-space: normal;
+}
+.ui.celled.table.object-list-view tr td.object-list-view-helper-column.hidden + td {
+  border-left: none;
+}
+.inline.fields.filter .filter-operation {
+  width: 70px;
+}
+.inline.fields.filter .filter-value {
+  width: 95%;
+  padding-left: 5px;
+}
+.inline.fields.filter .ui {
+  width: 100%;
 }
 /* Views */
 /*!
@@ -30045,9 +30070,6 @@ a.ui.card:hover,
 .ui.checkbox.flexberry-checkbox.read-only {
   opacity: 0.5;
 }
-.ui.checkbox {
-  width: 17px;
-}
 /*!
  * # Semantic UI - Dimmer
  * http://github.com/semantic-org/semantic-ui/
@@ -33169,6 +33191,9 @@ select.ui.dropdown {
 }
 .ui.modal > ui.table {
   margin-bottom: 0;
+}
+.ui.modal .content h2.ui.header {
+  word-wrap: break-word;
 }
 /*!
  * # Semantic UI - Nag
