@@ -547,6 +547,725 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-
     assert.ok(true, 'acceptance/components/flexberry-objectlistview/execute-folv-test.js should pass jshint.');
   });
 });
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check empty filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/custom-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'empty';
+    var filtreInsertParametr = '';
+    _ember['default'].run(function () {
+      var builder = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Eq, '');
+      store.query(modelName, builder.build()).then(function (result) {
+        var arr = result.toArray();
+
+        // Add an object with an empty address, if it is not present.
+        if (arr.length === 0) {
+          (function () {
+            var newRecords = _ember['default'].A();
+            var user = newRecords.pushObject(store.createRecord('ember-flexberry-dummy-application-user', { name: 'Random name fot empty filther test',
+              eMail: 'Random eMail fot empty filther test' }));
+            var type = newRecords.pushObject(store.createRecord('ember-flexberry-dummy-suggestion-type', { name: 'Random name fot empty filther test' }));
+
+            newRecords.forEach(function (item) {
+              item.save();
+            });
+
+            var done = assert.async();
+            window.setTimeout(function () {
+              _ember['default'].run(function () {
+                newRecords = _ember['default'].A();
+                newRecords.pushObject(store.createRecord(modelName, { type: type, author: user, editor1: user }));
+                newRecords.forEach(function (item) {
+                  item.save();
+                });
+              });
+              done();
+            }, 1000);
+          })();
+        }
+      });
+
+      visit(path + '?perPage=500');
+      andThen(function () {
+        assert.equal(currentPath(), path);
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address === undefined) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-empty-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check filter by enter click', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'eq';
+    var filtreInsertParametr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter by enter click function.
+          var refreshFunction = function refreshFunction() {
+            var input = _ember['default'].$('.ember-text-field')[0];
+            input.focus();
+            keyEvent(input, 'keydown', 13);
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address !== filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-by-enther-click-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check filter renders', function (store, assert, app) {
+    assert.expect(34);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+
+    _ember['default'].run(function () {
+      visit(path);
+      andThen(function () {
+        assert.equal(currentPath(), path);
+
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $filterRemoveButton = $filterButtonDiv.children('.removeFilter-button');
+        var $filterButtonIcon = $filterButton.children('i');
+
+        var $table = _ember['default'].$('.object-list-view');
+        var $tableTbody = $table.children('tbody');
+        var $tableRows = $tableTbody.children('tr');
+
+        // Check filtre button div.
+        assert.strictEqual($filterButtonDiv.prop('tagName'), 'DIV', 'Filtre button\'s wrapper is a <div>');
+        assert.strictEqual($filterButtonDiv.hasClass('ui icon buttons'), true, 'Filtre button\'s wrapper has \'ui icon buttons\' css-class');
+        assert.strictEqual($filterButtonDiv.hasClass('filter-active'), true, 'Filtre button\'s wrapper has \'filter-active\' css-class');
+        assert.strictEqual($filterButtonDiv.length === 1, true, 'Component has filter button');
+
+        // Check filtre button.
+        assert.strictEqual($filterButton.length === 1, true, 'Filtre button has inner button block');
+        assert.strictEqual($filterButton.hasClass('ui button'), true, 'Filtre button\'s wrapper has \'ui button\' css-class');
+        assert.strictEqual($filterButton[0].title, 'Добавить фильтр', 'Filtre button has title');
+        assert.strictEqual($filterButton.prop('tagName'), 'BUTTON', 'Component\'s inner button block is a <button>');
+
+        // Check button's icon <i>.
+        assert.strictEqual($filterButtonIcon.length === 1, true, 'Filtre button\'s title has icon block');
+        assert.strictEqual($filterButtonIcon.prop('tagName'), 'I', 'Filtre button\'s icon block is a <i>');
+        assert.strictEqual($filterButtonIcon.hasClass('filter icon'), true, 'Filtre button\'s icon block has \'filter icon\' css-class');
+
+        // Check filtre remove button.
+        assert.strictEqual($filterRemoveButton.length === 0, true, 'Component hasn\'t remove filter button');
+
+        // Check filtre row.
+        assert.strictEqual($tableRows.length === 5, true, 'Filtre row aren\'t active');
+
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        $tableRows = $tableTbody.children('tr');
+
+        // Check filtre row afther filter active.
+        assert.strictEqual($tableRows.length === 7, true, 'Filtre row aren\'t active');
+
+        var filtreInsertOperation = 'ge';
+        var filtreInsertParametr = 'A value that will never be told';
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+            $filterButton = $filterButtonDiv.children('.button.active');
+            $filterButtonIcon = $filterButton.children('i');
+            $filterRemoveButton = $filterButtonDiv.children('.removeFilter-button');
+            var $filterRemoveButtonIcon = $filterRemoveButton.children('i');
+
+            // Check filtre button div.
+            assert.strictEqual($filterButtonDiv.prop('tagName'), 'DIV', 'Filtre button\'s wrapper is a <div>');
+            assert.strictEqual($filterButtonDiv.hasClass('ui icon buttons'), true, 'Filtre button\'s wrapper has \'ui icon buttons\' css-class');
+            assert.strictEqual($filterButtonDiv.hasClass('filter-active'), true, 'Filtre button\'s wrapper has \'filter-active\' css-class');
+            assert.strictEqual($filterButtonDiv.length === 1, true, 'Component has filter button');
+
+            // Check filtre button.
+            assert.strictEqual($filterButton.length === 1, true, 'Filtre button has inner button block');
+            assert.strictEqual($filterButton.hasClass('ui button'), true, 'Filtre button\'s wrapper has \'ui button\' css-class');
+            assert.strictEqual($filterButton[0].title, 'Добавить фильтр', 'Filtre button has title');
+            assert.strictEqual($filterButton.prop('tagName'), 'BUTTON', 'Component\'s inner button block is a <button>');
+
+            // Check button's icon <i>.
+            assert.strictEqual($filterButtonIcon.length === 1, true, 'Filtre button\'s title has icon block');
+            assert.strictEqual($filterButtonIcon.prop('tagName'), 'I', 'Filtre button\'s icon block is a <i>');
+            assert.strictEqual($filterButtonIcon.hasClass('filter icon'), true, 'Filtre button\'s icon block has \'filter icon\' css-class');
+
+            // Check filtre remove button.
+            assert.strictEqual($filterRemoveButton.length === 1, true, 'Filtre remove button has inner button block');
+            assert.strictEqual($filterRemoveButton.hasClass('ui button'), true, 'Filtre remove button\'s wrapper has \'ui button\' css-class');
+            assert.strictEqual($filterRemoveButton[0].title, 'Сбросить фильтр', 'Filtre remove button has title');
+            assert.strictEqual($filterRemoveButton.prop('tagName'), 'BUTTON', 'Component\'s inner button block is a <button>');
+
+            // Check remove button's icon <i>.
+            assert.strictEqual($filterRemoveButtonIcon.length === 1, true, 'Filtre button\'s title has icon block');
+            assert.strictEqual($filterRemoveButtonIcon.prop('tagName'), 'I', 'Filtre button\'s icon block is a <i>');
+            assert.strictEqual($filterRemoveButtonIcon.hasClass('remove icon'), true, 'Filtre button\'s icon block has \'remove icon\' css-class');
+
+            // Deactivate filtre row.
+            $filterButton.click();
+
+            // Apply filter.
+            var done2 = assert.async();
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+              $tableRows = $tableTbody.children('tr');
+
+              // Check filtre row afther filter deactivate.
+              assert.strictEqual($tableRows.length === 1, true, 'Filtre row aren\'t deactivate');
+              done2();
+            });
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-render-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check filter', function (store, assert, app) {
+    assert.expect(2);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperationArr = ['eq', undefined, 'eq', 'eq', 'eq', 'eq'];
+    var filtreInsertValueArr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertValueArr = [arr.objectAt(0).get('address'), undefined, arr.objectAt(0).get('votes'), arr.objectAt(0).get('moderated'), arr.objectAt(0).get('type.name'), arr.objectAt(0).get('author.name')];
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterObjectListView)($objectListView, filtreInsertOperationArr, filtreInsertValueArr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function ($list) {
+            var filtherResult = controller.model.content;
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check ge filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'ge';
+    var filtreInsertParametr = undefined;
+
+    visit(path + '?perPage=500');
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('votes') - 1;
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 2, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var votes = filtherResult[0]._data.votes;
+              if (votes <= filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-ge-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check le filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'le';
+    var filtreInsertParametr = undefined;
+
+    visit(path + '?perPage=500');
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('votes') + 1;
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 2, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var votes = filtherResult[0]._data.votes;
+              if (votes >= filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-le-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check like filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'like';
+    var filtreInsertParametr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+        filtreInsertParametr = filtreInsertParametr.slice(1, filtreInsertParametr.length);
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address.lastIndexOf(filtreInsertParametr) === -1) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-like-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check neq filter', function (store, assert, app) {
+    assert.expect(3);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = 'neq';
+    var filtreInsertParametr = undefined;
+
+    visit(path + '?perPage=500');
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address === filtreInsertParametr) {
+                successful = false;
+              }
+            }
+
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-neq-filter-test.js should pass jshint.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryData) {
+
+  (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check without operation filter', function (store, assert, app) {
+    assert.expect(4);
+    var path = 'components-acceptance-tests/flexberry-objectlistview/folv-filter';
+    var modelName = 'ember-flexberry-dummy-suggestion';
+    var filtreInsertOperation = '';
+    var filtreInsertParametr = undefined;
+
+    visit(path);
+    andThen(function () {
+      assert.equal(currentPath(), path);
+      var builder2 = new _emberFlexberryData.Query.Builder(store).from(modelName).where('address', _emberFlexberryData.Query.FilterOperator.Neq, '').top(1);
+      store.query(modelName, builder2.build()).then(function (result) {
+        var arr = result.toArray();
+        filtreInsertParametr = arr.objectAt(0).get('address');
+        filtreInsertParametr = filtreInsertParametr.slice(1, filtreInsertParametr.length);
+      }).then(function () {
+        var $filterButtonDiv = _ember['default'].$('.buttons.filter-active');
+        var $filterButton = $filterButtonDiv.children('button');
+        var $objectListView = _ember['default'].$('.object-list-view');
+
+        // Activate filtre row.
+        $filterButton.click();
+
+        (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.filterCollumn)($objectListView, 0, filtreInsertOperation, filtreInsertParametr).then(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done1 = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var filtherResult = controller.model.content;
+            var successful = true;
+            for (var i = 0; i < filtherResult.length; i++) {
+              var address = filtherResult[i]._data.address;
+              if (address.lastIndexOf(filtreInsertParametr) === -1) {
+                successful = false;
+              }
+            }
+
+            var dropdown = _ember['default'].$('.flexberry-dropdown')[0];
+            assert.equal(dropdown.innerText, 'like', 'Filter select like operation if it is not specified');
+            assert.equal(filtherResult.length >= 1, true, 'Filtered list is not empty');
+            assert.equal(successful, true, 'Filter successfully worked');
+            done1();
+          });
+        });
+      });
+    });
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - acceptance/components/flexberry-objectlistview/filther');
+  test('acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js should pass jscs', function () {
+    ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'acceptance/components/flexberry-objectlistview/filther/folv-without-operation-filter-test.js should pass jshint.');
+  });
+});
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-check-all-at-all-page-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions) {
 
   var olvContainerClass = '.object-list-view-container';
@@ -1107,7 +1826,6 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-getCellC
       (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingLocales)('en', app).then(function () {
 
         var olvContainerClass = '.object-list-view-container';
-        var trTableClass = 'table.object-list-view tbody tr';
 
         var controller = app.__container__.lookup('controller:' + currentRouteName());
 
@@ -1147,8 +1865,16 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-getCellC
 
         var timeout = 500;
         _ember['default'].run.later(function () {
+          // Apply filter function.
+          var refreshFunction = function refreshFunction() {
+            var refreshButton = _ember['default'].$('.refresh-button')[0];
+            refreshButton.click();
+          };
+
+          // Apply filter.
           var done = assert.async();
-          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($refreshButton, olvContainerClass, trTableClass).then(function ($list) {
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            var $list = _ember['default'].$(olvContainerClass);
             assert.ok($list, 'list loaded');
 
             // Date format most be DD.MM.YYYY, hh:mm:ss.
@@ -1162,7 +1888,8 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-getCellC
             var done2 = assert.async();
             _ember['default'].run.later(function () {
               var done1 = assert.async();
-              (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($refreshButton, olvContainerClass, trTableClass).then(function ($list) {
+              (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+                var $list = _ember['default'].$(olvContainerClass);
                 assert.ok($list, 'list loaded');
 
                 // Date format most be II (example Sep 4 1986).
@@ -1348,7 +2075,7 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-open-new
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-paging-dropdown-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry-data/utils/generate-unique-id'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryDataUtilsGenerateUniqueId) {
 
   (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check paging dropdown', function (store, assert, app) {
-    assert.expect(7);
+    assert.expect(6);
     var path = 'components-acceptance-tests/flexberry-objectlistview/folv-paging';
     var modelName = 'ember-flexberry-dummy-suggestion-type';
     var uuid = (0, _emberFlexberryDataUtilsGenerateUniqueId['default'])();
@@ -1363,38 +2090,47 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-paging-d
         andThen(function () {
           assert.equal(currentPath(), path);
 
-          var $folvPerPageButton = _ember['default'].$('.flexberry-dropdown.compact');
-          var $menu = _ember['default'].$('.menu', $folvPerPageButton);
-          var trTableBody = function trTableBody() {
-            return $(_ember['default'].$('table.object-list-view tbody tr')).length.toString();
+          var $choosedIthem = undefined;
+          var trTableBody = undefined;
+          var activeItem = undefined;
+
+          // Refresh function.
+          var refreshFunction = function refreshFunction() {
+            var $folvPerPageButton = _ember['default'].$('.flexberry-dropdown.compact');
+            var $menu = _ember['default'].$('.menu', $folvPerPageButton);
+            trTableBody = function () {
+              return $(_ember['default'].$('table.object-list-view tbody tr')).length.toString();
+            };
+
+            activeItem = function () {
+              return $(_ember['default'].$('.item.active.selected', $menu)).attr('data-value');
+            };
+
+            // The list should be more than 5 items.
+            assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
+            $folvPerPageButton.click();
+            var timeout = 500;
+            _ember['default'].run.later(function () {
+              var menuIsVisible = $menu.hasClass('visible');
+              assert.strictEqual(menuIsVisible, true, 'menu is visible');
+              $choosedIthem = _ember['default'].$('.item', $menu);
+              $choosedIthem[1].click();
+            }, timeout);
           };
 
-          var activeItem = function activeItem() {
-            return $(_ember['default'].$('.item.active.selected', $menu)).attr('data-value');
-          };
+          var controller = app.__container__.lookup('controller:' + currentRouteName());
+          var done = assert.async();
+          (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
+            assert.equal(activeItem(), $($choosedIthem[1]).attr('data-value'), 'equal');
 
-          // The list should be more than 5 items.
-          assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
-          $folvPerPageButton.click();
-          var timeout = 500;
-          _ember['default'].run.later(function () {
-            var menuIsVisible = $menu.hasClass('visible');
-            assert.strictEqual(menuIsVisible, true, 'menu is visible');
-            var $choosedIthem = _ember['default'].$('.item', $menu);
-            var done = assert.async();
-            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($choosedIthem[1], '.object-list-view-container', 'table.object-list-view tbody tr').then(function ($list) {
-              assert.ok($list);
-              assert.equal(activeItem(), $($choosedIthem[1]).attr('data-value'), 'equal');
-
-              // The list should be more than 10 items
-              assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
-            })['catch'](function (reason) {
-              throw new Error(reason);
-            })['finally'](function () {
-              (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.deleteRecords)(store, modelName, uuid, assert);
-              done();
-            });
-          }, timeout);
+            // The list should be more than 10 items
+            assert.equal(activeItem(), trTableBody(), 'equal perPage and visible element count');
+          })['catch'](function (reason) {
+            throw new Error(reason);
+          })['finally'](function () {
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.deleteRecords)(store, modelName, uuid, assert);
+            done();
+          });
         });
       });
     });
@@ -1475,12 +2211,9 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-paging-n
 });
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-clear-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry/locales/ru/translations'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryLocalesRuTranslations) {
 
-  var olvContainerClass = '.object-list-view-container';
-  var trTableClass = 'table.object-list-view tbody tr';
-
   // Need to add sort by multiple columns.
   (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check sorting clear', function (store, assert, app) {
-    assert.expect(9);
+    assert.expect(8);
     var path = 'components-acceptance-tests/flexberry-objectlistview/base-operations';
     visit(path);
     andThen(function () {
@@ -1503,13 +2236,18 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 
             // Check sortihg icon in the first column. Sorting icon is not added.
             assert.equal($thead.children[0].children.length, 1, 'no sorting icon in the first column');
+
+            // Refresh function.
+            var refreshFunction = function refreshFunction() {
+              $thead.click();
+            };
+
             var done1 = assert.async();
-            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($thead, olvContainerClass, trTableClass).then(function ($list) {
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
               var $thead = _ember['default'].$('th.dt-head-left', $olv)[0];
               var $ord = _ember['default'].$('.object-list-view-order-icon', $thead);
               var $divOrd = _ember['default'].$('div', $ord);
 
-              assert.ok($list);
               assert.equal($divOrd.attr('title'), _ember['default'].get(_emberFlexberryLocalesRuTranslations['default'], 'components.object-list-view.sort-ascending'), 'title is Order ascending');
               assert.equal(_ember['default'].$.trim($divOrd.text()), String.fromCharCode('9650') + '1', 'sorting symbol added');
 
@@ -1562,12 +2300,9 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 });
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-test', ['exports', 'ember', 'dummy/tests/acceptance/components/flexberry-objectlistview/execute-folv-test', 'dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', 'ember-flexberry/locales/ru/translations'], function (exports, _ember, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions, _emberFlexberryLocalesRuTranslations) {
 
-  var olvContainerClass = '.object-list-view-container';
-  var trTableClass = 'table.object-list-view tbody tr';
-
   // Need to add sort by multiple columns.
   (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewExecuteFolvTest.executeTest)('check sorting', function (store, assert, app) {
-    assert.expect(11);
+    assert.expect(9);
     var path = 'components-acceptance-tests/flexberry-objectlistview/base-operations';
     visit(path);
     andThen(function () {
@@ -1590,13 +2325,18 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 
             // Check sortihg icon in the first column. Sorting icon is not added.
             assert.equal($thead.children[0].children.length, 1, 'no sorting icon in the first column');
+
+            // Refresh function.
+            var refreshFunction = function refreshFunction() {
+              $thead.click();
+            };
+
             var done1 = assert.async();
-            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($thead, olvContainerClass, trTableClass).then(function ($list) {
+            (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
               var $thead = _ember['default'].$('th.dt-head-left', $olv)[0];
               var $ord = _ember['default'].$('.object-list-view-order-icon', $thead);
               var $divOrd = _ember['default'].$('div', $ord);
 
-              assert.ok($list);
               assert.equal($divOrd.attr('title'), _ember['default'].get(_emberFlexberryLocalesRuTranslations['default'], 'components.object-list-view.sort-ascending'), 'title is Order ascending');
               assert.equal(_ember['default'].$.trim($divOrd.text()), String.fromCharCode('9650') + '1', 'sorting symbol added');
 
@@ -1604,12 +2344,10 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
               (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.checkSortingList)(store, projectionName, $olv, 'address asc').then(function (isTrue) {
                 assert.ok(isTrue, 'sorting applied');
                 var done3 = assert.async();
-                (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.loadingList)($thead, olvContainerClass, trTableClass).then(function ($list) {
+                (0, _dummyTestsAcceptanceComponentsFlexberryObjectlistviewFolvTestsFunctions.refreshListByFunction)(refreshFunction, controller).then(function () {
                   var $thead = _ember['default'].$('th.dt-head-left', $olv)[0];
                   var $ord = _ember['default'].$('.object-list-view-order-icon', $thead);
                   var $divOrd = _ember['default'].$('div', $ord);
-
-                  assert.ok($list);
 
                   assert.equal($divOrd.attr('title'), _ember['default'].get(_emberFlexberryLocalesRuTranslations['default'], 'components.object-list-view.sort-descending'), 'title is Order descending');
                   assert.equal(_ember['default'].$.trim($divOrd.text()), String.fromCharCode('9660') + '1', 'sorting symbol changed');
@@ -1652,10 +2390,13 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-sorting-
 });
 define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-functions', ['exports', 'ember', 'ember-flexberry-data'], function (exports, _ember, _emberFlexberryData) {
   exports.loadingList = loadingList;
+  exports.refreshListByFunction = refreshListByFunction;
   exports.checkSortingList = checkSortingList;
   exports.addRecords = addRecords;
   exports.deleteRecords = deleteRecords;
   exports.loadingLocales = loadingLocales;
+  exports.filterObjectListView = filterObjectListView;
+  exports.filterCollumn = filterCollumn;
 
   // Function for waiting list loading.
 
@@ -1685,6 +2426,75 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-fu
           window.clearInterval(checkIntervalId);
           checkIntervalSucceed = true;
           resolve($list);
+        }, checkInterval);
+      });
+
+      // Set wait timeout.
+      _ember['default'].run(function () {
+        window.setTimeout(function () {
+          if (checkIntervalSucceed) {
+            return;
+          }
+
+          // Time is out.
+          // Stop intervals & reject promise.
+          window.clearInterval(checkIntervalId);
+          reject('editForm load operation is timed out');
+        }, timeout);
+      });
+    });
+  }
+
+  /**
+    Function for waiting list loading afther refresh by function at acceptance test.
+  
+    @public
+    @method refreshListByFunction
+    @param {Function} refreshFunction Method options.
+    @param {Object} controlle Current form controller.
+  
+    For use:
+      Form controller must have the following code:
+        ```js
+          loadCount: 0
+        ```
+  
+      Form router must have the following code:
+        ```js
+          onModelLoadingAlways(data) {
+            let loadCount = this.get('controller.loadCount') + 1;
+            this.set('controller.loadCount', loadCount);
+          }
+        ```
+   */
+
+  function refreshListByFunction(refreshFunction, controller) {
+    return new _ember['default'].RSVP.Promise(function (resolve, reject) {
+      var checkIntervalId = undefined;
+      var checkIntervalSucceed = false;
+      var checkInterval = 500;
+      var renderInterval = 100;
+      var timeout = 10000;
+
+      var $lastLoadCount = controller.loadCount;
+      refreshFunction();
+
+      _ember['default'].run(function () {
+        checkIntervalId = window.setInterval(function () {
+          var loadCount = controller.loadCount;
+          if (loadCount === $lastLoadCount) {
+
+            // Data isn't loaded yet.
+            return;
+          }
+
+          // Data is loaded, wait to render.
+          // Stop interval & resolve promise.
+          window.setTimeout(function () {
+            window.clearInterval(checkIntervalId);
+            checkIntervalSucceed = true;
+            resolve();
+          }, renderInterval);
         }, checkInterval);
       });
 
@@ -1780,6 +2590,55 @@ define('dummy/tests/acceptance/components/flexberry-objectlistview/folv-tests-fu
       var timeout = 500;
       _ember['default'].run.later(function () {
         resolve({ msg: 'ok' });
+      }, timeout);
+    });
+  }
+
+  // Function for filter object-list-view by list of operations and values.
+
+  function filterObjectListView(objectListView, operations, filterValues) {
+    var tableBody = objectListView.children('tbody');
+    var tableRow = _ember['default'].$(tableBody.children('tr'));
+    var tableColumns = _ember['default'].$(tableRow[0]).children('td');
+
+    var promises = _ember['default'].A();
+
+    for (var i = 0; i < tableColumns.length; i++) {
+      if (operations[i]) {
+        promises.push(filterCollumn(objectListView, i, operations[i], filterValues[i]));
+      }
+    }
+
+    return _ember['default'].RSVP.Promise.all(promises);
+  }
+
+  // Function for filter object-list-view at one column by operations and values.
+
+  function filterCollumn(objectListView, columnNumber, operation, filterValue) {
+    return new _ember['default'].RSVP.Promise(function (resolve) {
+      var tableBody = objectListView.children('tbody');
+      var tableRow = tableBody.children('tr');
+
+      var filterOperation = _ember['default'].$(tableRow[0]).find('.flexberry-dropdown')[columnNumber];
+      var filterValueCell = _ember['default'].$(tableRow[1]).children('td')[columnNumber];
+
+      // Select an existing item.
+      _ember['default'].$(filterOperation).dropdown('set selected', operation);
+
+      var dropdown = _ember['default'].$(filterValueCell).find('.flexberry-dropdown');
+      var textbox = _ember['default'].$(filterValueCell).find('.ember-text-field');
+
+      if (textbox.length !== 0) {
+        fillIn(textbox, filterValue);
+      }
+
+      if (dropdown.length !== 0) {
+        dropdown.dropdown('set selected', filterValue);
+      }
+
+      var timeout = 300;
+      _ember['default'].run.later(function () {
+        resolve();
       }, timeout);
     });
   }
@@ -2364,7 +3223,7 @@ define('dummy/tests/acceptance/edit-form-validation-test/validation-datepicker-t
 
         // Open datepicker calendar.
         $validationDateField.click();
-        var $validationDateButton = _ember['default'].$('.available');
+        var $validationDateButton = _ember['default'].$('.available:not(.active)');
         $validationDateButton = _ember['default'].$($validationDateButton[18]);
 
         // Select date.
@@ -3283,6 +4142,23 @@ define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlist
     assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/base-operations.js should pass jshint.');
   });
 });
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests/flexberry-objectlistview');
+  test('controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jshint.');
+  });
+});
 define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/date-format.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -3298,6 +4174,23 @@ define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlist
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/date-format.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-acceptance-tests/flexberry-objectlistview');
+  test('controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs', function () {
+    ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jshint.');
   });
 });
 define('dummy/tests/controllers/components-acceptance-tests/flexberry-objectlistview/folv-paging.jscs-test', ['exports'], function (exports) {
@@ -3504,6 +4397,74 @@ define('dummy/tests/controllers/components-examples/flexberry-groupedit/configur
     assert.ok(true, 'controllers/components-examples/flexberry-groupedit/configurate-row-example.js should pass jshint.');
   });
 });
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-groupedit');
+  test('controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-groupedit');
+  test('controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-groupedit');
+  test('controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-groupedit');
+  test('controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jshint.');
+  });
+});
 define('dummy/tests/controllers/components-examples/flexberry-groupedit/model-update-example.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -3604,6 +4565,23 @@ define('dummy/tests/controllers/components-examples/flexberry-lookup/dropdown-mo
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'controllers/components-examples/flexberry-lookup/dropdown-mode-example.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-lookup');
+  test('controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js should pass jshint.');
   });
 });
 define('dummy/tests/controllers/components-examples/flexberry-lookup/limit-function-example.jscs-test', ['exports'], function (exports) {
@@ -8197,7 +9175,7 @@ define('dummy/tests/integration/components/flexberry-field-test.jshint', ['expor
     assert.ok(true, 'integration/components/flexberry-field-test.js should pass jshint.');
   });
 });
-define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports', 'ember', 'ember-qunit', 'dummy/tests/helpers/start-app', 'dummy/models/components-examples/flexberry-groupedit/shared/aggregator', 'ember-flexberry/services/user-settings'], function (exports, _ember, _emberQunit, _dummyTestsHelpersStartApp, _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator, _emberFlexberryServicesUserSettings) {
+define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports', 'ember', 'ember-qunit', 'dummy/tests/helpers/start-app', 'ember-flexberry/services/user-settings', 'dummy/models/components-examples/flexberry-groupedit/shared/aggregator', 'dummy/models/ember-flexberry-dummy-suggestion', 'ember-flexberry/components/flexberry-base-component'], function (exports, _ember, _emberQunit, _dummyTestsHelpersStartApp, _emberFlexberryServicesUserSettings, _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator, _dummyModelsEmberFlexberryDummySuggestion, _emberFlexberryComponentsFlexberryBaseComponent) {
 
   var App = undefined;
 
@@ -8215,13 +9193,111 @@ define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports'
         isUserSettingsServiceEnabled: false
       });
     },
+
     afterEach: function afterEach() {
+      // Restore base component's reference to current controller to its initial state.
+      _emberFlexberryComponentsFlexberryBaseComponent['default'].prototype.currentController = null;
+
       _ember['default'].run(App, 'destroy');
     }
   });
 
-  (0, _emberQunit.test)('it renders', function (assert) {
+  (0, _emberQunit.test)('ember-grupedit element by default test', function (assert) {
     var _this = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this.set('model', model);
+      _this.set('componentName', testComponentName);
+      _this.set('searchForContentChange', true);
+      _this.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      // Add record.
+      var $component = _this.$().children();
+      var $componentGroupEditToolbar = $component.children('.groupedit-toolbar');
+      var $componentButtons = $componentGroupEditToolbar.children('.ui.button');
+      var $componentButtonAdd = $($componentButtons[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $componentObjectListViewFirstCellAsterisk = _ember['default'].$('.asterisk', $component);
+
+        // Check object-list-view <i>.
+        assert.strictEqual($componentObjectListViewFirstCellAsterisk.length === 1, true, 'Component has inner object-list-view-operations blocks');
+        assert.strictEqual($componentObjectListViewFirstCellAsterisk.prop('tagName'), 'I', 'Component\'s inner component block is a <i>');
+        assert.strictEqual($componentObjectListViewFirstCellAsterisk.hasClass('asterisk'), true, 'Component\'s inner object-list-view has \'asterisk\' css-class');
+        assert.strictEqual($componentObjectListViewFirstCellAsterisk.hasClass('small'), true, 'Component\'s inner object-list-view has \'small\' css-class');
+        assert.strictEqual($componentObjectListViewFirstCellAsterisk.hasClass('red'), true, 'Component\'s inner oobject-list-view has \'red\' css-class');
+        assert.strictEqual($componentObjectListViewFirstCellAsterisk.hasClass('icon'), true, 'Component\'s inner object-list-view has \'icon\' css-class');
+
+        var $componentObjectListViewFirstCell = _ember['default'].$('.object-list-view-helper-column', $component);
+        var $flexberryCheckbox = _ember['default'].$('.flexberry-checkbox', $componentObjectListViewFirstCell);
+
+        assert.ok($flexberryCheckbox, 'Component has flexberry-checkbox in first cell blocks');
+
+        var $minusButton = _ember['default'].$('.minus', $componentObjectListViewFirstCell);
+
+        assert.strictEqual($minusButton.length === 0, true, 'Component hasn\'t delete button in first cell');
+
+        var $editMenuButton = _ember['default'].$('.button.right', $component);
+
+        assert.strictEqual($editMenuButton.length === 0, true, 'Component hasn\'t edit menu in last cell');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('it renders', function (assert) {
+    var _this2 = this;
 
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.on('myAction', function(val) { ... });
@@ -8231,9 +9307,9 @@ define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports'
     _ember['default'].run(function () {
       var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
 
-      _this.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
-      _this.set('model', model);
-      _this.render(_ember['default'].HTMLBars.template((function () {
+      _this2.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this2.set('model', model);
+      _this2.render(_ember['default'].HTMLBars.template((function () {
         return {
           meta: {
             'fragmentReason': {
@@ -8280,7 +9356,7 @@ define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports'
   });
 
   (0, _emberQunit.test)('it properly rerenders', function (assert) {
-    var _this2 = this;
+    var _this3 = this;
 
     var store = App.__container__.lookup('service:store');
 
@@ -8288,11 +9364,11 @@ define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports'
       var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
       var testComponentName = 'my-test-component-to-count-rerender';
 
-      _this2.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
-      _this2.set('model', model);
-      _this2.set('componentName', testComponentName);
-      _this2.set('searchForContentChange', true);
-      _this2.render(_ember['default'].HTMLBars.template((function () {
+      _this3.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this3.set('model', model);
+      _this3.set('componentName', testComponentName);
+      _this3.set('searchForContentChange', true);
+      _this3.render(_ember['default'].HTMLBars.template((function () {
         return {
           meta: {
             'fragmentReason': {
@@ -8335,35 +9411,1638 @@ define('dummy/tests/integration/components/flexberry-groupedit-test', ['exports'
           templates: []
         };
       })()));
-      assert.equal(_this2.$('.object-list-view').find('tr').length, 2);
+      assert.equal(_this3.$('.object-list-view').find('tr').length, 2);
 
       // Add record.
-      var detailModel = _this2.get('model.details');
+      var detailModel = _this3.get('model.details');
       detailModel.addObject(store.createRecord('components-examples/flexberry-groupedit/shared/detail', { text: '1' }));
       detailModel.addObject(store.createRecord('components-examples/flexberry-groupedit/shared/detail', { text: '2' }));
 
       wait().then(function () {
-        assert.equal(_this2.$('.object-list-view').find('tr').length, 3);
+        assert.equal(_this3.$('.object-list-view').find('tr').length, 3);
 
         // Add record.
         detailModel.addObject(store.createRecord('components-examples/flexberry-groupedit/shared/detail', { text: '3' }));
         wait().then(function () {
-          assert.equal(_this2.$('.object-list-view').find('tr').length, 4);
+          assert.equal(_this3.$('.object-list-view').find('tr').length, 4);
 
           // Delete record.
-          _this2.get('model.details').get('firstObject').deleteRecord();
+          _this3.get('model.details').get('firstObject').deleteRecord();
           wait().then(function () {
-            assert.equal(_this2.$('.object-list-view').find('tr').length, 3);
+            assert.equal(_this3.$('.object-list-view').find('tr').length, 3);
 
             // Disable search for changes flag and add record.
-            _this2.set('searchForContentChange', false);
+            _this3.set('searchForContentChange', false);
             detailModel.addObject(store.createRecord('components-examples/flexberry-groupedit/shared/detail', { text: '4' }));
             wait().then(function () {
-              assert.equal(_this2.$('.object-list-view').find('tr').length, 3);
+              assert.equal(_this3.$('.object-list-view').find('tr').length, 3);
             });
           });
         });
       });
+    });
+  });
+
+  (0, _emberQunit.test)('it properly rerenders', function (assert) {
+    var _this4 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this4.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this4.set('model', model);
+      _this4.set('componentName', testComponentName);
+      _this4.set('searchForContentChange', true);
+      _this4.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+      assert.equal(_this4.$('.object-list-view').find('tr').length, 2);
+
+      // Add record.
+      var detailModel = _this4.get('model.details');
+      detailModel.addObject(store.createRecord('components-examples/flexberry-groupedit/shared/detail'));
+      detailModel.addObject(store.createRecord('components-examples/flexberry-groupedit/shared/detail'));
+
+      wait().then(function () {
+        assert.equal(_this4.$('.object-list-view').find('tr').length, 3);
+
+        var $component = _this4.$().children();
+        var $componentGroupEditToolbar = $component.children('.groupedit-toolbar');
+        var $componentButtons = $componentGroupEditToolbar.children('.ui.button');
+        var $componentButtonAdd = $($componentButtons[0]);
+
+        _ember['default'].run(function () {
+          $componentButtonAdd.click();
+        });
+
+        wait().then(function () {
+          assert.equal(_this4.$('.object-list-view').find('tr').length, 4, 'details add properly');
+
+          var $componentCheckBoxs = _ember['default'].$('.flexberry-checkbox', $component);
+          var $componentFirstCheckBox = $($componentCheckBoxs[0]);
+          var $componentFirstCheckBoxInput = $componentFirstCheckBox.children('.flexberry-checkbox-input');
+
+          _ember['default'].run(function () {
+            $componentFirstCheckBox.click();
+            $componentFirstCheckBoxInput.click();
+          });
+
+          wait().then(function () {
+            var $componentButtonRemove = $($componentButtons[1]);
+
+            _ember['default'].run(function () {
+              $componentButtonRemove.click();
+            });
+
+            assert.equal(_this4.$('.object-list-view').find('tr').length, 3, 'details remove properly');
+          });
+        });
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('it properly rerenders by default', function (assert) {
+    var _this5 = this;
+
+    assert.expect(72);
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this5.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this5.set('model', model);
+      _this5.set('componentName', testComponentName);
+      _this5.set('searchForContentChange', true);
+      _this5.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      assert.equal(_this5.$('.object-list-view').find('tr').length, 2);
+
+      var $detailsAtributes = _this5.get('proj.attributes.details.attributes');
+      var $detailsAtributesArray = Object.keys($detailsAtributes);
+
+      var $component = _this5.$().children();
+      var $componentGroupEditToolbar = $component.children('.groupedit-toolbar');
+
+      // Check groupedit-toolbar <div>.
+      assert.strictEqual($componentGroupEditToolbar.length === 1, true, 'Component has inner groupedit-toolbar block');
+      assert.strictEqual($componentGroupEditToolbar.prop('tagName'), 'DIV', 'Component\'s inner component block is a <div>');
+      assert.strictEqual($componentGroupEditToolbar.hasClass('ember-view'), true, 'Component\'s inner groupedit-toolbar block has \'ember-view\' css-class');
+      assert.strictEqual($componentGroupEditToolbar.hasClass('groupedit-toolbar'), true, 'Component inner has \'groupedit-toolbar\' css-class');
+
+      var $componentButtons = $componentGroupEditToolbar.children('.ui.button');
+
+      // Check button count.
+      assert.strictEqual($componentButtons.length === 3, true, 'Component has inner two button blocks');
+
+      var $componentButtonAdd = $($componentButtons[0]);
+
+      // Check buttonAdd <button>.
+      assert.strictEqual($componentButtonAdd.length === 1, true, 'Component has inner button block');
+      assert.strictEqual($componentButtonAdd.prop('tagName'), 'BUTTON', 'Component\'s inner groupedit block is a <button>');
+      assert.strictEqual($componentButtonAdd.hasClass('ui'), true, 'Component\'s inner groupedit block has \'ui\' css-class');
+      assert.strictEqual($componentButtonAdd.hasClass('button'), true, 'Component\'s inner groupedit block has \'button\' css-class');
+
+      var $componentButtonAddIcon = $componentButtonAdd.children('i');
+
+      // Check buttonAddIcon <i>.
+      assert.strictEqual($componentButtonAddIcon.length === 1, true, 'Component has inner button block');
+      assert.strictEqual($componentButtonAddIcon.prop('tagName'), 'I', 'Component\'s inner groupedit block is a <i>');
+      assert.strictEqual($componentButtonAddIcon.hasClass('plus'), true, 'Component\'s inner groupedit block has \'plus\' css-class');
+      assert.strictEqual($componentButtonAddIcon.hasClass('icon'), true, 'Component\'s inner groupedit block has \'icon\' css-class');
+
+      var $componentButtonRemove = $($componentButtons[1]);
+
+      // Check buttonRemove <button>.
+      assert.strictEqual($componentButtonRemove.length === 1, true, 'Component has inner button block');
+      assert.strictEqual($componentButtonRemove.prop('tagName'), 'BUTTON', 'Component\'s inner groupedit block is a <button>');
+      assert.strictEqual($componentButtonRemove.hasClass('ui'), true, 'Component\'s inner groupedit block has \'ui\' css-class');
+      assert.strictEqual($componentButtonRemove.hasClass('button'), true, 'Component\'s inner groupedit block has \'button\' css-class');
+      assert.strictEqual($componentButtonRemove.hasClass('disabled'), true, 'Component\'s inner groupedit block has \'disabled\' css-class');
+
+      var $componentButtonDefauldSetting = $($componentButtons[2]);
+
+      // Check buttonRemove <button>.
+      assert.strictEqual($componentButtonDefauldSetting.length === 1, true, 'Component has inner button block');
+      assert.strictEqual($componentButtonDefauldSetting.prop('tagName'), 'BUTTON', 'Component\'s inner groupedit block is a <button>');
+      assert.strictEqual($componentButtonDefauldSetting.hasClass('ui'), true, 'Component\'s inner groupedit block has \'ui\' css-class');
+      assert.strictEqual($componentButtonDefauldSetting.hasClass('button'), true, 'Component\'s inner groupedit block has \'button\' css-class');
+
+      var $componentButtonRemoveIcon = $componentButtonRemove.children('i');
+
+      // Check componentButtonRemove <i>.
+      assert.strictEqual($componentButtonRemoveIcon.length === 1, true, 'Component has inner button block');
+      assert.strictEqual($componentButtonRemoveIcon.prop('tagName'), 'I', 'Component\'s inner groupedit block is a <i>');
+      assert.strictEqual($componentButtonRemoveIcon.hasClass('minus'), true, 'Component\'s inner groupedit block has \'minus\' css-class');
+      assert.strictEqual($componentButtonRemoveIcon.hasClass('icon'), true, 'Component\'s inner groupedit block has \'icon\' css-class');
+
+      var $componentListViewContainer = $component.children('.object-list-view-container');
+
+      // Check list-view-container <div>.
+      assert.strictEqual($componentListViewContainer.length === 1, true, 'Component has inner list-view-container block');
+      assert.strictEqual($componentListViewContainer.prop('tagName'), 'DIV', 'Component\'s inner component block is a <div>');
+      assert.strictEqual($componentListViewContainer.hasClass('ember-view'), true, 'Component\'s inner list-view-container block has \'ember-view\' css-class');
+      assert.strictEqual($componentListViewContainer.hasClass('object-list-view-container'), true, 'Component has \'object-list-view-container\' css-class');
+
+      var $componentJCLRgrips = $componentListViewContainer.children('.JCLRgrips');
+
+      // Check JCLRgrips <div>.
+      assert.strictEqual($componentJCLRgrips.length === 1, true, 'Component has inner JCLRgrips blocks');
+      assert.strictEqual($componentJCLRgrips.prop('tagName'), 'DIV', 'Component\'s inner component block is a <div>');
+      assert.strictEqual($componentJCLRgrips.hasClass('JCLRgrips'), true, 'Component\'s inner list-view-container block has \'JCLRgrios\' css-class');
+
+      var $componentJCLRgrip = $componentJCLRgrips.children('.JCLRgrip');
+
+      // Check JCLRgrip <div>.
+      assert.strictEqual($componentJCLRgrip.length === 7, true, 'Component has inner JCLRgrip blocks');
+
+      var $componentJCLRgripFirst = $($componentJCLRgrip[0]);
+
+      // Check first JCLRgrip <div>.
+      assert.strictEqual($componentJCLRgripFirst.prop('tagName'), 'DIV', 'Component\'s inner component block is a <div>');
+      assert.strictEqual($componentJCLRgripFirst.hasClass('JCLRgrip'), true, 'Component\'s inner list-view-container block has \'JCLRgrios\' css-class');
+
+      var $componentJCLRgripLast = $($componentJCLRgrip[6]);
+
+      // Check last JCLRgrip <div>.
+      assert.strictEqual($componentJCLRgripLast.length === 1, true, 'Component has inner JCLRgrips blocks');
+      assert.strictEqual($componentJCLRgripLast.prop('tagName'), 'DIV', 'Component\'s inner component block is a <div>');
+      assert.strictEqual($componentJCLRgripLast.hasClass('JCLRgrip'), true, 'Component\'s inner list-view-container block has \'JCLRgrios\' css-class');
+      assert.strictEqual($componentJCLRgripLast.hasClass('JCLRLastGrip'), true, 'Component\'s inner list-view-container block has \'JCLRLastGrip\' css-class');
+
+      var $componentObjectListView = $componentListViewContainer.children('.object-list-view');
+
+      // Check object-list-view <div>.
+      assert.strictEqual($componentObjectListView.length === 1, true, 'Component has inner object-list-view blocks');
+      assert.strictEqual($componentObjectListView.prop('tagName'), 'TABLE', 'Component\'s inner component block is a <table>');
+      assert.strictEqual($componentObjectListView.hasClass('object-list-view'), true, 'Component has \'object-list-view\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('ui'), true, 'Component\'s inner object-list-view block has \'ui\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('unstackable'), true, 'Component\'s inner object-list-view block has \'unstackable\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('celled'), true, 'Component\'s inner object-list-view block has \'celled\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('striped'), true, 'Component\'s inner object-list-view block has \'striped\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('table'), true, 'Component\'s inner object-list-view block has \'table\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('fixed'), true, 'Component\'s inner object-list-view block has \'fixed\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('JColResizer'), true, 'Component\'s inner object-list-view block has \'JColResizer\' css-class');
+      assert.strictEqual($componentObjectListView.hasClass('rowClickable'), false, 'Component\'s inner object-list-view block has \'striped\' css-class');
+
+      var $componentObjectListViewThead = $componentObjectListView.children('thead');
+      var $componentObjectListViewTr = $componentObjectListViewThead.children('tr');
+      var $componentObjectListViewThFirstCell = $componentObjectListViewTr.children('.object-list-view-operations');
+
+      // Check object-list-view <th>.
+      assert.strictEqual($componentObjectListViewThFirstCell.length === 1, true, 'Component has inner object-list-view-operations blocks');
+      assert.strictEqual($componentObjectListViewThFirstCell.prop('tagName'), 'TH', 'Component\'s inner component block is a <th>');
+      assert.strictEqual($componentObjectListViewThFirstCell.hasClass('object-list-view-operations'), true, 'Component has \'object-list-view-operations\' css-class');
+      assert.strictEqual($componentObjectListViewThFirstCell.hasClass('collapsing'), true, 'Component has \'collapsing\' css-class');
+
+      var $componentObjectListViewThs = $componentObjectListViewTr.children('.dt-head-left');
+
+      // Check object-list-view <th>.
+      assert.strictEqual($componentObjectListViewThs.length === 6, true, 'Component has inner object-list-view-operations blocks');
+
+      var $componentObjectListViewTh = $($componentObjectListViewThs[0]);
+
+      // Check object-list-view <th>.
+      assert.strictEqual($componentObjectListViewTh.length === 1, true, 'Component has inner object-list-view-operations blocks');
+      assert.strictEqual($componentObjectListViewTh.prop('tagName'), 'TH', 'Component\'s inner component block is a <th>');
+      assert.strictEqual($componentObjectListViewTh.hasClass('dt-head-left'), true, 'Component has \'object-list-view-operations\' css-class');
+      assert.strictEqual($componentObjectListViewTh.hasClass('me'), true, 'Component\'s inner object-list-view-operations has \'collapsing\' css-class');
+      assert.strictEqual($componentObjectListViewTh.hasClass('class'), true, 'Component\'s inner object-list-view-operations has \'collapsing\' css-class');
+
+      for (var index = 0; index < 6; ++index) {
+        assert.strictEqual($componentObjectListViewThs[index].innerText.trim().toLowerCase(), $detailsAtributesArray[index], 'title ok');
+      }
+
+      var $componentObjectListViewThDiv = $componentObjectListViewTh.children('div');
+      var $componentObjectListViewThDivSpan = $componentObjectListViewThDiv.children('span');
+
+      // Check object-list-view <span>.
+      assert.strictEqual($componentObjectListViewThDivSpan.length === 1, true, 'Component has inner <span> blocks');
+
+      var $componentObjectListViewBody = $componentObjectListView.children('tbody');
+      $componentObjectListViewTr = $componentObjectListViewBody.children('tr');
+      var $componentObjectListViewTd = $componentObjectListViewTr.children('td');
+      var $componentObjectListViewTdInner = $componentObjectListViewTd[0];
+
+      // Check object-list-view <td>.
+      assert.strictEqual($componentObjectListViewTd.length === 1, true, 'Component has inner object-list-view-operations blocks');
+      assert.strictEqual($componentObjectListViewTd.prop('tagName'), 'TD', 'Component\'s inner component block is a <th>');
+      assert.strictEqual($componentObjectListViewTdInner.innerText, 'Нет данных', 'Component\'s inner component block is a <th>');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit placeholder test', function (assert) {
+    var _this6 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this6.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this6.set('model', model);
+      _this6.set('componentName', testComponentName);
+
+      var tempText = 'Temp text.';
+
+      _this6.set('placeholder', tempText);
+      _this6.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'placeholder', ['subexpr', '@mut', [['get', 'placeholder', ['loc', [null, [6, 22], [6, 33]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentObjectListView = _ember['default'].$('.object-list-view');
+      var $componentObjectListViewBody = $componentObjectListView.children('tbody');
+
+      assert.strictEqual($componentObjectListViewBody.text().trim(), tempText, 'Component has placeholder: ' + tempText);
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit striped test', function (assert) {
+    var _this7 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this7.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this7.set('model', model);
+      _this7.set('componentName', testComponentName);
+      _this7.set('searchForContentChange', true);
+      _this7.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'tableStriped', false], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentObjectListView = _ember['default'].$('.object-list-view');
+
+      // Check object-list-view <div>.
+      assert.strictEqual($componentObjectListView.hasClass('striped'), false, 'Component\'s inner object-list-view block has \'striped\' css-class');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit off defaultSettingsButton, createNewButton and deleteButton test', function (assert) {
+    var _this8 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this8.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this8.set('model', model);
+      _this8.set('componentName', testComponentName);
+      _this8.set('searchForContentChange', true);
+      _this8.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 12,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'createNewButton', false, 'deleteButton', false, 'showCheckBoxInRow', false, 'showAsteriskInRow', false, 'defaultSettingsButton', false], ['loc', [null, [2, 8], [12, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $component = _this8.$().children();
+      var $componentButtons = _ember['default'].$('.ui.button', $component);
+
+      assert.strictEqual($componentButtons.length === 0, true, 'Component hasn\'t inner two button blocks');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit allowColumnResize test', function (assert) {
+    var _this9 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this9.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this9.set('model', model);
+      _this9.set('componentName', testComponentName);
+      _this9.set('searchForContentChange', true);
+      _this9.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 9,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showEditMenuItemInRow', true, 'allowColumnResize', false], ['loc', [null, [2, 8], [9, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentJCLRgrips = $(_ember['default'].$('.JCLRgrips')[0]);
+
+      // Check JCLRgrips <div>.
+      assert.strictEqual($componentJCLRgrips.length === 0, true, 'Component hasn\'t inner JCLRgrips blocks');
+
+      var $componentObjectListView = $(_ember['default'].$('.object-list-view')[0]);
+
+      // Check object-list-view <div>.
+      assert.strictEqual($componentObjectListView.hasClass('JColResizer'), false, 'Component\'s inner object-list-view block hasn\'t \'JColResizer\' css-class');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit showAsteriskInRow test', function (assert) {
+    var _this10 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this10.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this10.set('model', model);
+      _this10.set('componentName', testComponentName);
+      _this10.set('searchForContentChange', true);
+      _this10.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showAsteriskInRow', false], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      // Add record.
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $componentObjectListViewFirstCell = _ember['default'].$('.asterisk');
+
+        // Check object-list-view <i>.
+        assert.strictEqual($componentObjectListViewFirstCell.length === 0, true, 'Component has small red asterisk blocks');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit showCheckBoxInRow test', function (assert) {
+    var _this11 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this11.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this11.set('model', model);
+      _this11.set('componentName', testComponentName);
+      _this11.set('searchForContentChange', true);
+      _this11.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showCheckBoxInRow', false], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      // Add record.
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $flexberryCheckbox = _ember['default'].$('.flexberry-checkbox');
+
+        assert.ok($flexberryCheckbox, false, 'Component hasn\'t flexberry-checkbox in first cell');
+
+        var $componentObjectListViewEditMenu = _ember['default'].$('.button.right.pointing');
+
+        assert.strictEqual($componentObjectListViewEditMenu.length === 0, true, 'Component hasn\'t edit menu in last cell');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit showDeleteButtonInRow test', function (assert) {
+    var _this12 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this12.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this12.set('model', model);
+      _this12.set('componentName', testComponentName);
+      _this12.set('searchForContentChange', true);
+      _this12.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showDeleteButtonInRow', true], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $componentObjectListViewFirstCell = _ember['default'].$('.object-list-view-helper-column');
+        var $minusButton = _ember['default'].$('.minus', $componentObjectListViewFirstCell);
+
+        assert.strictEqual($minusButton.length === 1, true, 'Component has delete button in first cell');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit showEditMenuItemInRow test', function (assert) {
+    var _this13 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this13.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this13.set('model', model);
+      _this13.set('componentName', testComponentName);
+      _this13.set('searchForContentChange', true);
+      _this13.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showEditMenuItemInRow', true], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $component = _this13.$().children();
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $editMenuButton = _ember['default'].$('.button.right', $component);
+        var $editMenuItem = _ember['default'].$('.item', $editMenuButton);
+
+        assert.strictEqual($editMenuItem.length === 1, true, 'Component has edit menu item in last cell');
+
+        var $editMenuItemIcon = $editMenuItem.children('.edit');
+
+        assert.strictEqual($editMenuItemIcon.length === 1, true, 'Component has only edit menu item in last cell');
+        assert.strictEqual($editMenuItemIcon.prop('tagName'), 'I', 'Component\'s inner component block is a <i>');
+        assert.strictEqual($editMenuItemIcon.hasClass('edit'), true, 'Component\'s inner object-list-view has \'edit\' css-class');
+        assert.strictEqual($editMenuItemIcon.hasClass('icon'), true, 'Component\'s inner object-list-view has \'icon\' css-class');
+
+        var $editMenuItemSpan = $editMenuItem.children('span');
+        assert.strictEqual($editMenuItemSpan.text().trim(), 'Редактировать запись', 'Component has edit menu item in last cell');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit showDeleteMenuItemInRow test', function (assert) {
+    var _this14 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this14.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this14.set('model', model);
+      _this14.set('componentName', testComponentName);
+      _this14.set('searchForContentChange', true);
+      _this14.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showDeleteMenuItemInRow', true], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $component = _this14.$().children();
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $editMenuButton = _ember['default'].$('.button.right', $component);
+        var $editMenuItem = _ember['default'].$('.item', $editMenuButton);
+
+        assert.strictEqual($editMenuItem.length === 1, true, 'Component has delete menu item in last cell');
+
+        var $editMenuItemIcon = $editMenuItem.children('.trash');
+
+        assert.strictEqual($editMenuItemIcon.length === 1, true, 'Component has only edit menu item in last cell');
+        assert.strictEqual($editMenuItemIcon.prop('tagName'), 'I', 'Component\'s inner component block is a <i>');
+        assert.strictEqual($editMenuItemIcon.hasClass('trash'), true, 'Component\'s inner object-list-view has \'edit\' css-class');
+        assert.strictEqual($editMenuItemIcon.hasClass('icon'), true, 'Component\'s inner object-list-view has \'icon\' css-class');
+
+        var $editMenuItemSpan = $editMenuItem.children('span');
+        assert.strictEqual($editMenuItemSpan.text().trim(), 'Удалить запись', 'Component has delete menu item in last cell');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit showEditMenuItemInRow and showDeleteMenuItemInRow test', function (assert) {
+    var _this15 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this15.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this15.set('model', model);
+      _this15.set('componentName', testComponentName);
+      _this15.set('searchForContentChange', true);
+      _this15.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 9,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'showEditMenuItemInRow', true, 'showDeleteMenuItemInRow', true], ['loc', [null, [2, 8], [9, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $component = _this15.$().children();
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $componentButtonAdd.click();
+      });
+
+      wait().then(function () {
+        var $editMenuButton = _ember['default'].$('.button.right', $component);
+        var $editMenuItem = _ember['default'].$('.item', $editMenuButton);
+
+        assert.strictEqual($editMenuItem.length === 2, true, 'Component has edit menu and delete menu item in last cell');
+
+        var $editMenuItemIcon = $editMenuItem.children('.edit');
+
+        assert.strictEqual($editMenuItemIcon.length === 1, true, 'Component has edit menu item in last cell');
+        assert.strictEqual($editMenuItemIcon.prop('tagName'), 'I', 'Component\'s inner component block is a <i>');
+        assert.strictEqual($editMenuItemIcon.hasClass('edit'), true, 'Component\'s inner object-list-view has \'edit\' css-class');
+        assert.strictEqual($editMenuItemIcon.hasClass('icon'), true, 'Component\'s inner object-list-view has \'icon\' css-class');
+
+        $editMenuItemIcon = $editMenuItem.children('.trash');
+
+        assert.strictEqual($editMenuItemIcon.length === 1, true, 'Component has edit menu item in last cell');
+        assert.strictEqual($editMenuItemIcon.prop('tagName'), 'I', 'Component\'s inner component block is a <i>');
+        assert.strictEqual($editMenuItemIcon.hasClass('trash'), true, 'Component\'s inner object-list-view has \'edit\' css-class');
+        assert.strictEqual($editMenuItemIcon.hasClass('icon'), true, 'Component\'s inner object-list-view has \'icon\' css-class');
+
+        var $editMenuItemSpan = $editMenuItem.children('span');
+        assert.strictEqual($editMenuItemSpan.text().trim(), 'Редактировать записьУдалить запись', 'Component has edit menu and delete menu item in last cell');
+      });
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit rowClickable test', function (assert) {
+    var _this16 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this16.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this16.set('model', model);
+      _this16.set('componentName', testComponentName);
+      _this16.set('searchForContentChange', true);
+      _this16.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'searchForContentChange', ['subexpr', '@mut', [['get', 'searchForContentChange', ['loc', [null, [6, 33], [6, 55]]]]], [], []], 'rowClickable', true], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentObjectListView = _ember['default'].$('.object-list-view');
+
+      // Check object-list-view <div>.
+      assert.strictEqual($componentObjectListView.hasClass('selectable'), true, 'Component\'s inner object-list-view block has \'selectable\' css-class');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit buttonClass test', function (assert) {
+    var _this17 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+      var tempButtonClass = 'temp button class';
+
+      _this17.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this17.set('model', model);
+      _this17.set('componentName', testComponentName);
+      _this17.set('buttonClass', tempButtonClass);
+      _this17.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'rowClickable', true, 'buttonClass', ['subexpr', '@mut', [['get', 'buttonClass', ['loc', [null, [7, 22], [7, 33]]]]], [], []]], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentButtonAdd = $(_ember['default'].$('.ui.button')[0]);
+
+      assert.strictEqual($componentButtonAdd.hasClass(tempButtonClass), true, 'Button has class ' + tempButtonClass);
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit customTableClass test', function (assert) {
+    var _this18 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+      var myCustomTableClass = 'tempcustomTableClass';
+
+      _this18.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this18.set('model', model);
+      _this18.set('componentName', testComponentName);
+      _this18.set('customTableClass', myCustomTableClass);
+      _this18.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 8,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'rowClickable', true, 'customTableClass', ['subexpr', '@mut', [['get', 'customTableClass', ['loc', [null, [7, 27], [7, 43]]]]], [], []]], ['loc', [null, [2, 8], [8, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentObjectListView = _ember['default'].$('.object-list-view');
+
+      assert.strictEqual($componentObjectListView.hasClass(myCustomTableClass), true, 'Table has class ' + myCustomTableClass);
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit orderable test', function (assert) {
+    var _this19 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this19.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this19.set('model', model);
+      _this19.set('componentName', testComponentName);
+      _this19.set('orderable', true);
+      _this19.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'orderable', ['subexpr', '@mut', [['get', 'orderable', ['loc', [null, [6, 20], [6, 29]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentObjectListView = _ember['default'].$('.object-list-view');
+      var $componentObjectListViewTh = $componentObjectListView.children('thead').children('tr').children('th');
+      var $componentOlvFirstHead = $($componentObjectListViewTh[1]);
+
+      _ember['default'].run(function () {
+        $componentOlvFirstHead.click();
+      });
+
+      var $componentOlvFirstDiv = $componentOlvFirstHead.children('div');
+      var $orderIcon = $componentOlvFirstDiv.children('div');
+
+      assert.strictEqual($orderIcon.length === 1, true, 'Table has order');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit menuInRowAdditionalItems without standart element test', function (assert) {
+    var _this20 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+      var tempMenuInRowAdditionalItems = [{
+        icon: 'remove icon',
+        title: 'Temp menu item',
+        actionName: 'tempAction'
+      }];
+
+      _this20.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this20.set('model', model);
+      _this20.set('componentName', testComponentName);
+      _this20.set('menuInRowAdditionalItems', tempMenuInRowAdditionalItems);
+      _this20.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'menuInRowAdditionalItems', ['subexpr', '@mut', [['get', 'menuInRowAdditionalItems', ['loc', [null, [6, 35], [6, 59]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $addButton = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $addButton.click();
+      });
+
+      var componentOLVMenu = _ember['default'].$('.button.right');
+      var componentOLVMenuItem = componentOLVMenu.children('div').children('.item');
+
+      assert.strictEqual(componentOLVMenuItem.length === 1, true, 'Component OLVMenuItem has only adding item');
+      assert.strictEqual(componentOLVMenuItem.text().trim() === 'Temp menu item', true, 'Component OLVMenuItem text is \'Temp menu item\'');
+
+      var componentOLVMenuItemIcon = componentOLVMenuItem.children('.icon');
+
+      assert.strictEqual(componentOLVMenuItemIcon.hasClass('icon'), true, 'Component OLVMenuItemIcon has class icon');
+      assert.strictEqual(componentOLVMenuItemIcon.hasClass('remove'), true, 'Component OLVMenuItemIcon has class remove');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit menuInRowAdditionalItems with standart element test', function (assert) {
+    var _this21 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+      var tempMenuInRowAdditionalItems = [{
+        icon: 'remove icon',
+        title: 'Temp menu item',
+        actionName: 'tempAction'
+      }];
+
+      _this21.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('AggregatorE'));
+      _this21.set('model', model);
+      _this21.set('componentName', testComponentName);
+      _this21.set('menuInRowAdditionalItems', tempMenuInRowAdditionalItems);
+      _this21.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 9,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []], 'menuInRowAdditionalItems', ['subexpr', '@mut', [['get', 'menuInRowAdditionalItems', ['loc', [null, [6, 35], [6, 59]]]]], [], []], 'showEditMenuItemInRow', true, 'showDeleteMenuItemInRow', true], ['loc', [null, [2, 8], [9, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $addButton = $(_ember['default'].$('.ui.button')[0]);
+
+      _ember['default'].run(function () {
+        $addButton.click();
+      });
+
+      var componentOLVMenu = _ember['default'].$('.button.right');
+      var componentOLVMenuItem = componentOLVMenu.children('div').children('.item');
+
+      assert.strictEqual(componentOLVMenuItem.length === 3, true, 'Component OLVMenuItem has standart and adding items');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit model projection test', function (assert) {
+    var _this22 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('components-examples/flexberry-groupedit/shared/aggregator');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this22.set('proj', _dummyModelsComponentsExamplesFlexberryGroupeditSharedAggregator['default'].projections.get('ConfigurateRowView'));
+      _this22.set('model', model);
+      _this22.set('componentName', testComponentName);
+      _this22.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 6,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['content', ['subexpr', '@mut', [['get', 'model.details', ['loc', [null, [3, 18], [3, 31]]]]], [], []], 'componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [4, 24], [4, 37]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.details', ['loc', [null, [5, 26], [5, 49]]]]], [], []]], ['loc', [null, [2, 8], [6, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var componentOLV = _ember['default'].$('.object-list-view');
+      var componentOLVThead = componentOLV.children('thead').children('tr').children('th');
+
+      assert.strictEqual(componentOLVThead.length === 3, true, 'Component has \'ConfigurateRowView\' projection');
+    });
+  });
+
+  (0, _emberQunit.test)('ember-grupedit main model projection test', function (assert) {
+    var _this23 = this;
+
+    var store = App.__container__.lookup('service:store');
+
+    _ember['default'].run(function () {
+      var model = store.createRecord('ember-flexberry-dummy-suggestion');
+      var testComponentName = 'my-test-component-to-count-rerender';
+
+      _this23.set('proj', _dummyModelsEmberFlexberryDummySuggestion['default'].projections.get('SuggestionMainModelProjectionTest'));
+      _this23.set('model', model);
+      _this23.set('componentName', testComponentName);
+      _this23.render(_ember['default'].HTMLBars.template((function () {
+        return {
+          meta: {
+            'fragmentReason': {
+              'name': 'missing-wrapper',
+              'problems': ['wrong-type']
+            },
+            'revision': 'Ember@2.4.6',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 1,
+                'column': 0
+              },
+              'end': {
+                'line': 7,
+                'column': 10
+              }
+            }
+          },
+          isEmpty: false,
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('\n        ');
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment('');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+            dom.insertBoundary(fragment, null);
+            return morphs;
+          },
+          statements: [['inline', 'flexberry-groupedit', [], ['componentName', ['subexpr', '@mut', [['get', 'componentName', ['loc', [null, [3, 24], [3, 37]]]]], [], []], 'content', ['subexpr', '@mut', [['get', 'model.userVotes', ['loc', [null, [4, 18], [4, 33]]]]], [], []], 'modelProjection', ['subexpr', '@mut', [['get', 'proj.attributes.userVotes', ['loc', [null, [5, 26], [5, 51]]]]], [], []], 'mainModelProjection', ['subexpr', '@mut', [['get', 'proj', ['loc', [null, [6, 30], [6, 34]]]]], [], []]], ['loc', [null, [2, 8], [7, 10]]]]],
+          locals: [],
+          templates: []
+        };
+      })()));
+
+      var $componentObjectListView = _ember['default'].$('.object-list-view');
+      var $componentObjectListViewTh = $componentObjectListView.children('thead').children('tr').children('th');
+      var $componentOlvFirstHead = $componentObjectListViewTh[1];
+
+      assert.strictEqual($componentOlvFirstHead.innerText === 'Vote type', true, 'Header has text \'Vote type\'');
     });
   });
 });
@@ -13858,6 +16537,23 @@ define('dummy/tests/mixins/list-form-route-operations-indication.jshint', ['expo
     assert.ok(true, 'mixins/list-form-route-operations-indication.js should pass jshint.');
   });
 });
+define('dummy/tests/models/aggregator.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - models');
+  test('models/aggregator.js should pass jscs', function () {
+    ok(true, 'models/aggregator.js should pass jscs.');
+  });
+});
+define('dummy/tests/models/aggregator.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - models/aggregator.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/aggregator.js should pass jshint.');
+  });
+});
 define('dummy/tests/models/components-examples/flexberry-checkbox/settings-example/base.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -14725,6 +17421,23 @@ define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/
     assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/base-operations.js should pass jshint.');
   });
 });
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests/flexberry-objectlistview');
+  test('routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/custom-filter.js should pass jshint.');
+  });
+});
 define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/date-format.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -14740,6 +17453,23 @@ define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/date-format.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-acceptance-tests/flexberry-objectlistview');
+  test('routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs', function () {
+    ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-acceptance-tests/flexberry-objectlistview/folv-filter.js should pass jshint.');
   });
 });
 define('dummy/tests/routes/components-acceptance-tests/flexberry-objectlistview/folv-paging.jscs-test', ['exports'], function (exports) {
@@ -14929,6 +17659,74 @@ define('dummy/tests/routes/components-examples/flexberry-groupedit/configurate-r
     assert.ok(true, 'routes/components-examples/flexberry-groupedit/configurate-row-example.js should pass jshint.');
   });
 });
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-groupedit');
+  test('routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-groupedit');
+  test('routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-groupedit');
+  test('routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-groupedit');
+  test('routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jshint.');
+  });
+});
 define('dummy/tests/routes/components-examples/flexberry-groupedit/model-update-example.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -15029,6 +17827,23 @@ define('dummy/tests/routes/components-examples/flexberry-lookup/dropdown-mode-ex
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/components-examples/flexberry-lookup/dropdown-mode-example.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-lookup');
+  test('routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-lookup/hierarchy-olv-in-lookup-example.js should pass jshint.');
   });
 });
 define('dummy/tests/routes/components-examples/flexberry-lookup/limit-function-example.jscs-test', ['exports'], function (exports) {
@@ -17977,6 +20792,34 @@ define('dummy/tests/unit/mixins/dynamic-properties-test.jshint', ['exports'], fu
     assert.ok(true, 'unit/mixins/dynamic-properties-test.js should pass jshint.');
   });
 });
+define('dummy/tests/unit/mixins/errorable-route-test', ['exports', 'ember', 'ember-flexberry/mixins/errorable-route', 'qunit'], function (exports, _ember, _emberFlexberryMixinsErrorableRoute, _qunit) {
+
+  (0, _qunit.module)('Unit | Mixin | errorable route');
+
+  // Replace this with your real tests.
+  (0, _qunit.test)('it works', function (assert) {
+    var ErrorableRouteObject = _ember['default'].Object.extend(_emberFlexberryMixinsErrorableRoute['default']);
+    var subject = ErrorableRouteObject.create();
+    assert.ok(subject);
+  });
+});
+define('dummy/tests/unit/mixins/errorable-route-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - unit/mixins');
+  test('unit/mixins/errorable-route-test.js should pass jscs', function () {
+    ok(true, 'unit/mixins/errorable-route-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/unit/mixins/errorable-route-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/mixins/errorable-route-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/mixins/errorable-route-test.js should pass jshint.');
+  });
+});
 define('dummy/tests/unit/mixins/flexberry-file-controller-test', ['exports', 'ember', 'ember-flexberry/mixins/flexberry-file-controller', 'qunit'], function (exports, _ember, _emberFlexberryMixinsFlexberryFileController, _qunit) {
 
   (0, _qunit.module)('Unit | Mixin | flexberry file controller');
@@ -18672,7 +21515,7 @@ define('dummy/tests/unit/services/form-load-time-tracker-test.jshint', ['exports
     assert.ok(true, 'unit/services/form-load-time-tracker-test.js should pass jshint.');
   });
 });
-define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app', 'dummy/tests/helpers/destroy-app'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp, _dummyTestsHelpersDestroyApp) {
+define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dummy/tests/helpers/start-app', 'dummy/tests/helpers/destroy-app', 'dummy/config/environment'], function (exports, _ember, _qunit, _dummyTestsHelpersStartApp, _dummyTestsHelpersDestroyApp, _dummyConfigEnvironment) {
 
   var app = undefined;
 
@@ -18687,7 +21530,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('error works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -18716,6 +21559,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), errorAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), errorProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), errorMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -18804,7 +21648,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('warn works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -18833,6 +21677,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), warnAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), warnProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsWarnMessage = savedLogRecord.get('message').indexOf(warnMessage) > -1;
       assert.ok(savedMessageContainsWarnMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -18923,7 +21768,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('log works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -18952,6 +21797,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), logAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), logProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), logMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -19041,7 +21887,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('info works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -19070,6 +21916,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), infoAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), infoProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), infoMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -19159,7 +22006,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('debug works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -19188,6 +22035,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), debugAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), debugProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsDebugMessage = savedLogRecord.get('message').indexOf(debugMessage) > -1;
       assert.ok(savedMessageContainsDebugMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -19278,7 +22126,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('deprecate works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -19307,6 +22155,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), deprecationAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), deprecationProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsDeprecationMessage = savedLogRecord.get('message').indexOf(deprecationMessage) > -1;
       assert.ok(savedMessageContainsDeprecationMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -19397,7 +22246,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('assert works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -19426,6 +22275,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), assertAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), assertProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsAssertMessage = savedLogRecord.get('message').indexOf(assertMessage) > -1;
       assert.ok(savedMessageContainsAssertMessage);
       var formattedMessageContainsAssertMessage = savedLogRecord.get('formattedMessage').indexOf(assertMessage) > -1;
@@ -19516,7 +22366,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('throwing exceptions logs properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -19545,6 +22395,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), errorAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), errorProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), errorMessage);
       var formattedMessageContainsErrorMessage = savedLogRecord.get('formattedMessage').indexOf(errorMessage) > -1;
       assert.ok(formattedMessageContainsErrorMessage);
@@ -19634,7 +22485,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('promise errors logs properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -19668,6 +22519,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), promiseAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), promiseProcessId);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), promiseErrorMessage);
 
       var formattedMessageContainsPromiseErrorMessage = savedLogRecord.get('formattedMessage').indexOf(promiseErrorMessage) > -1;
@@ -20041,23 +22893,6 @@ define('dummy/tests/unit/utils/string-test.jshint', ['exports'], function (expor
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/utils/string-test.js should pass jshint.');
-  });
-});
-define('dummy/tests/views/application.jscs-test', ['exports'], function (exports) {
-  'use strict';
-
-  module('JSCS - views');
-  test('views/application.js should pass jscs', function () {
-    ok(true, 'views/application.js should pass jscs.');
-  });
-});
-define('dummy/tests/views/application.jshint', ['exports'], function (exports) {
-  'use strict';
-
-  QUnit.module('JSHint - views/application.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'views/application.js should pass jshint.');
   });
 });
 /* jshint ignore:start */
