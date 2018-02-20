@@ -3223,7 +3223,7 @@ define('dummy/tests/acceptance/edit-form-validation-test/validation-datepicker-t
 
         // Open datepicker calendar.
         $validationDateField.click();
-        var $validationDateButton = _ember['default'].$('.available');
+        var $validationDateButton = _ember['default'].$('.available:not(.active)');
         $validationDateButton = _ember['default'].$($validationDateButton[18]);
 
         // Select date.
@@ -4414,6 +4414,23 @@ define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-fl
     assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
   });
 });
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-groupedit');
+  test('controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jshint.');
+  });
+});
 define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -4429,6 +4446,23 @@ define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-fl
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - controllers/components-examples/flexberry-groupedit');
+  test('controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jshint.');
   });
 });
 define('dummy/tests/controllers/components-examples/flexberry-groupedit/model-update-example.jscs-test', ['exports'], function (exports) {
@@ -17642,6 +17676,23 @@ define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexber
     assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
   });
 });
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-groupedit');
+  test('routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-edit-readonly-columns-by-configurate-row-example.js should pass jshint.');
+  });
+});
 define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.jscs-test', ['exports'], function (exports) {
   'use strict';
 
@@ -17657,6 +17708,23 @@ define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexber
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-groupedit-with-lookup-with-computed-atribute.js should pass jshint.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - routes/components-examples/flexberry-groupedit');
+  test('routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs', function () {
+    ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jscs.');
+  });
+});
+define('dummy/tests/routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/components-examples/flexberry-groupedit/ember-flexberry-dummy-suggestion-list-readonly-columns-by-configurate-row-example.js should pass jshint.');
   });
 });
 define('dummy/tests/routes/components-examples/flexberry-groupedit/model-update-example.jscs-test', ['exports'], function (exports) {
@@ -20724,6 +20792,34 @@ define('dummy/tests/unit/mixins/dynamic-properties-test.jshint', ['exports'], fu
     assert.ok(true, 'unit/mixins/dynamic-properties-test.js should pass jshint.');
   });
 });
+define('dummy/tests/unit/mixins/errorable-route-test', ['exports', 'ember', 'ember-flexberry/mixins/errorable-route', 'qunit'], function (exports, _ember, _emberFlexberryMixinsErrorableRoute, _qunit) {
+
+  (0, _qunit.module)('Unit | Mixin | errorable route');
+
+  // Replace this with your real tests.
+  (0, _qunit.test)('it works', function (assert) {
+    var ErrorableRouteObject = _ember['default'].Object.extend(_emberFlexberryMixinsErrorableRoute['default']);
+    var subject = ErrorableRouteObject.create();
+    assert.ok(subject);
+  });
+});
+define('dummy/tests/unit/mixins/errorable-route-test.jscs-test', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSCS - unit/mixins');
+  test('unit/mixins/errorable-route-test.js should pass jscs', function () {
+    ok(true, 'unit/mixins/errorable-route-test.js should pass jscs.');
+  });
+});
+define('dummy/tests/unit/mixins/errorable-route-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/mixins/errorable-route-test.js');
+  QUnit.test('should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/mixins/errorable-route-test.js should pass jshint.');
+  });
+});
 define('dummy/tests/unit/mixins/flexberry-file-controller-test', ['exports', 'ember', 'ember-flexberry/mixins/flexberry-file-controller', 'qunit'], function (exports, _ember, _emberFlexberryMixinsFlexberryFileController, _qunit) {
 
   (0, _qunit.module)('Unit | Mixin | flexberry file controller');
@@ -21434,7 +21530,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('error works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -21462,7 +21558,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), errorMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), errorAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), errorProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), errorMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -21551,7 +21648,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('warn works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -21579,7 +21676,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), warnMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), warnAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), warnProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsWarnMessage = savedLogRecord.get('message').indexOf(warnMessage) > -1;
       assert.ok(savedMessageContainsWarnMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -21670,7 +21768,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('log works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -21698,7 +21796,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), logMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), logAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), logProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), logMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -21788,7 +21887,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('info works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -21816,7 +21915,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), infoMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), infoAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), infoProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), infoMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
       assert.ok(formattedMessageIsOk);
@@ -21906,7 +22006,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('debug works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -21934,7 +22034,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), debugMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), debugAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), debugProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsDebugMessage = savedLogRecord.get('message').indexOf(debugMessage) > -1;
       assert.ok(savedMessageContainsDebugMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -22025,7 +22126,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('deprecate works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -22053,7 +22154,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), deprecationMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), deprecationAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), deprecationProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsDeprecationMessage = savedLogRecord.get('message').indexOf(deprecationMessage) > -1;
       assert.ok(savedMessageContainsDeprecationMessage);
       var formattedMessageIsOk = savedLogRecord.get('formattedMessage') === '';
@@ -22144,7 +22246,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('assert works properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -22172,7 +22274,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), assertMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), assertAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), assertProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       var savedMessageContainsAssertMessage = savedLogRecord.get('message').indexOf(assertMessage) > -1;
       assert.ok(savedMessageContainsAssertMessage);
       var formattedMessageContainsAssertMessage = savedLogRecord.get('formattedMessage').indexOf(assertMessage) > -1;
@@ -22263,7 +22366,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('throwing exceptions logs properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -22291,7 +22394,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), errorMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), errorAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), errorProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), errorMessage);
       var formattedMessageContainsErrorMessage = savedLogRecord.get('formattedMessage').indexOf(errorMessage) > -1;
       assert.ok(formattedMessageContainsErrorMessage);
@@ -22381,7 +22485,7 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
 
   (0, _qunit.test)('promise errors logs properly', function (assert) {
     var done = assert.async();
-    assert.expect(9);
+    assert.expect(10);
 
     // Stub save method of i-i-s-caseberry-logging-objects-application-log base model.
     var originalSaveMethod = DS.Model.prototype.save;
@@ -22414,7 +22518,8 @@ define('dummy/tests/unit/services/log-test', ['exports', 'ember', 'qunit', 'dumm
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('machineName')), promiseMachineName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('appDomainName')), promiseAppDomainName);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processId')), promiseProcessId);
-      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), _dummyConfigEnvironment['default'].modulePrefix);
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('processName')), 'EMBER-FLEXBERRY');
+      assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('threadName')), _dummyConfigEnvironment['default'].modulePrefix);
       assert.strictEqual(_ember['default'].$.trim(savedLogRecord.get('message')), promiseErrorMessage);
 
       var formattedMessageContainsPromiseErrorMessage = savedLogRecord.get('formattedMessage').indexOf(promiseErrorMessage) > -1;
