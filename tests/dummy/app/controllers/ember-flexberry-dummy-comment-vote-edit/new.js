@@ -1,4 +1,0 @@
-import EmberFlexberryDummyCommentVoteEditController from '../ember-flexberry-dummy-comment-vote-edit';
-
-var EmberFlexberryDummyCommentVoteEditNewController = EmberFlexberryDummyCommentVoteEditController;
-export default EmberFlexberryDummyCommentVoteEditNewController;

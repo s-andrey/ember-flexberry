@@ -1,45 +1,12 @@
-{{#if isInAcceptanceTestMode}}
-  {{outlet}}
-  {{outlet "modal"}}
-{{else}}
-  {{#ui-sidebar
-    class="inverted vertical main menu"
-    ui_context=".ember-application > .ember-view"
-    closable=false
-    dimPage=false
-    onShow=(action "updateWidth")
-    onHidden=(action "updateWidth")
-  }}
-    <a class="item"
-      href={{addonVersionHref}}
-      target="_blank"
-      title={{t "forms.application.sitemap.application-version.title"}}>
-      {{t "forms.application.sitemap.application-version.caption" version=addonVersion}}
-    </a>
-    {{render "sitemap" sitemap}}
-  {{/ui-sidebar}}
   <div class="bgw-fix">
     <div class="background-logo">
-      <div class="ui top attached">
-        <div class="ui attached menu">
-          <div class="ui container flex-container">
-            <a {{action 'toggleSidebar'}}
-              class="launch icon item"
-              title={{t "forms.application.header.menu.sitemap-button.title"}}>
-              {{t "forms.application.header.menu.sitemap-button.caption"}}
-              <i class="sidebar icon text-menu-show"><span class="text_menu ">{{t "forms.application.header.menu.show-menu.caption"}}</span><span class="text_menu hidden text-menu-hide">{{t "forms.application.header.menu.hide-menu.caption"}}</span></i>
-              <i class="sidebar icon hidden text-menu-hide hidden-text"><span class="text_menu hidden-text">{{t "forms.application.header.menu.hide-menu.caption"}}</span></i>
-            </a>
-          </div>
-        </div>
-      </div>
+
       <a class="item logo"
-        href="https://github.com/flexberry"
         target="_blank"
         title={{t "forms.application.sitemap.application-name.title"}}>
         <img class="ui centered image" src="assets/images/flexberry-logo.png" />
       </a>
-      <div class="page-header-caption"><a href="https://github.com/flexberry">{{t "application-name"}}</a></div>
+      <div class="page-header-caption"><a>{{t "application-name"}}</a></div>
     </div>
   </div>
   <div id="example" class="pusher">
@@ -51,50 +18,18 @@
             <div class="stackable grid container">
               {{outlet}}
             </div>
+            <div class="stackable grid container">
+              {{flexberry-button
+                class=classButton
+                caption=buttonCaption
+                click=(action "goCountFlops")
+              }}
+            </div>
+            <div class="stackable grid container">
+              {{{thankYou}}}
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="ui main container">
-    {{outlet "modal"}}
-  </div>
-  <div class="ui vertical footer segment">
-    <div class="ui container flex-container">
-      <div class="ui text menu">
-        <a class="brand item" href="#">
-          {{t "forms.application.footer.application-name"}}
-        </a>
-        <div class="right item">
-          <label style="margin-right: 5px;">
-            {{t "forms.application.header.menu.user-settings-service-checkbox.caption"}}
-          </label>
-          {{flexberry-checkbox
-            class="toggle"
-            value=userSettingsService.isUserSettingsServiceEnabled
-          }}
-        </div>
-        <div class="item lang">
-          <label style="margin-right: 5px;">
-            {{t "forms.application.header.menu.language-dropdown.caption"}}
-          </label>
-          {{flexberry-dropdown
-            class="compact"
-            items=locales
-            value=i18n.locale
-            placeholder=(t "forms.application.header.menu.language-dropdown.placeholder")
-            direction="upward"
-          }}
-        </div>
-        <div class="right menu">
-          <a class="item"
-            href={{addonVersionHref}}
-            target="_blank"
-            title={{t "forms.application.footer.application-version.title"}}>
-              {{t "forms.application.footer.application-version.caption" version=addonVersion}}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-{{/if}}

@@ -175,7 +175,7 @@ Ember.$.extend(true, translations, {
       'spinner-caption': 'Loading stuff, please have a cold beer...'
     },
     'index': {
-      'greeting': 'Welcome to ember-flexberry test stand!'
+      'greeting': 'Добрый день! Пожалуйста поучаствуйте в сборе статистических данных для научного исследования. В случае согласия нажмите на кнопку «ТЕСТ» остальное все выполнится автоматически (Выполнение теста может занять от 2 до 5 минут). Заранее спасибо :) '
     },
 
     'application': {
@@ -208,7 +208,7 @@ Ember.$.extend(true, translations, {
       },
 
       'footer': {
-        'application-name': 'Test stand for ember-flexberry',
+        'application-name': 'Сбор статистики для научного исследования',
         'application-version': {
           'caption': 'Addon version {{version}}',
           'title': 'It is version of ember-flexberry addon, which uses in this dummy application ' +

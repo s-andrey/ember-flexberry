@@ -23,7 +23,8 @@ module.exports = function(defaults) {
       }
     }
   });
-
+  app.import('vendor/profilerJS/profilerJS.js');
+  app.import('vendor/profilerJS/matrix.js');
   app.import('vendor/font-icon.css');
   app.import('vendor/fonts/icons.eot', { destDir: 'assets/fonts' });
   app.import('vendor/fonts/icons.otf', { destDir: 'assets/fonts' });
