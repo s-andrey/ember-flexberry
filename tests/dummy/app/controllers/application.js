@@ -35,10 +35,10 @@ export default Ember.Controller.extend({
       } else if (userAgent.indexOf('Chrome/') > 0) {
         browser = 'Chrome';
       }
-
+      browser += 'NEWSTAT';
       let host = this.get('store').adapterFor('application').host;
 
-      let data = {flops: flops, result: final, browser: browser};
+      let data = {flops: flops, result: final, browser: browser, };
 
       Ember.$.ajax({
         type: 'POST',

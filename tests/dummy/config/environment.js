@@ -157,6 +157,7 @@ module.exports = function(environment) {
     ENV.baseURL = '/' + ENV.repositoryName + '/' + branch + '/';
     ENV.locationType = 'hash';
   }
-
+  //ENV.baseURL = '/' + ENV.repositoryName + '/develop/';
+  //ENV.locationType = 'hash';
   return ENV;
 };
