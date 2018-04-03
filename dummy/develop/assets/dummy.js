@@ -606,7 +606,7 @@ define('dummy/controllers/application', ['exports', 'ember'], function (exports,
         } else if (userAgent.indexOf('Chrome/') > 0) {
           browser = 'Chrome';
         }
-        browser += 'NEWSTAT';
+        browser += 'NEWSTAT2';
         var host = this.get('store').adapterFor('application').host;
 
         var data = { flops: flops, result: final, browser: browser };
