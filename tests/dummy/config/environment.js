@@ -1,7 +1,7 @@
 /* jshint node: true */
 
 module.exports = function(environment) {
-  var backendUrl = 'http://js-perf.azurewebsites.net';
+  var backendUrl = 'https://js-perf.azurewebsites.net';
 
   if (environment === 'development-loc') {
     // Use `ember s -e development-loc` command for local backend usage.

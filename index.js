@@ -7,8 +7,8 @@ module.exports = {
   included: function(app) {
     this._super.included.apply(this._super, arguments);
 
-    app.import('vendor/profilerJS/matrix.js');
-    app.import('vendor/profilerJS/matrix1024.js');
+    //app.import('vendor/profilerJS/matrix.js');
+    //app.import('vendor/profilerJS/matrix1024.js');
     app.import('vendor/polyfills.js', {
       prepend: true
     });

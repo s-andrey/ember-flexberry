@@ -11,14 +11,17 @@ export default Ember.Controller.extend({
   actions: {
     goCountFlops() {
       let profilerJS = window.profilerJS;
-      let flops = profilerJS.currentComputerFlops();
+
+      profilerJS.countFlops(true);
+      let flops = profilerJS.getNumberFlops();
+
       var finalRes = 0;
       var trueCount = 0;
       for (let i = 0; i< 100; i++) {
-        profilerJS.start();
+        profilerJS.begin();
         this.get('userSettingsService').setDefaultDeveloperUserSettings(this.get('asd'));
-        profilerJS.stop();
-        let result = profilerJS.result();
+        profilerJS.end();
+        let result = profilerJS.getResult();
         finalRes += result;
         trueCount++;
         if (result === 0) {trueCount--; }
@@ -35,10 +38,10 @@ export default Ember.Controller.extend({
       } else if (userAgent.indexOf('Chrome/') > 0) {
         browser = 'Chrome';
       }
-      browser += 'NEWSTAT';
+      browser += 'FinalTEST';
       let host = this.get('store').adapterFor('application').host;
 
-      let data = {flops: flops, result: final, browser: browser, };
+      let data = {flops: flops, result: final, browser: browser };
 
       Ember.$.ajax({
         type: 'POST',
