@@ -580,14 +580,17 @@ define('dummy/controllers/application', ['exports', 'ember'], function (exports,
     actions: {
       goCountFlops: function goCountFlops() {
         var profilerJS = window.profilerJS;
-        var flops = profilerJS.currentComputerFlops();
+
+        profilerJS.countFlops(true);
+        var flops = profilerJS.getNumberFlops();
+
         var finalRes = 0;
         var trueCount = 0;
         for (var i = 0; i < 100; i++) {
-          profilerJS.start();
+          profilerJS.begin();
           this.get('userSettingsService').setDefaultDeveloperUserSettings(this.get('asd'));
-          profilerJS.stop();
-          var result = profilerJS.result();
+          profilerJS.end();
+          var result = profilerJS.getResult();
           finalRes += result;
           trueCount++;
           if (result === 0) {
@@ -606,7 +609,7 @@ define('dummy/controllers/application', ['exports', 'ember'], function (exports,
         } else if (userAgent.indexOf('Chrome/') > 0) {
           browser = 'Chrome';
         }
-        browser += 'NEWSTAT2';
+        browser += 'FinalTEST';
         var host = this.get('store').adapterFor('application').host;
 
         var data = { flops: flops, result: final, browser: browser };
@@ -3635,7 +3638,7 @@ define('dummy/locales/en/translations', ['exports', 'ember', 'ember-flexberry/lo
         'spinner-caption': 'Loading stuff, please have a cold beer...'
       },
       'index': {
-        'greeting': 'Добрый день! Пожалуйста поучаствуйте в сборе статистических данных для научного исследования. В случае согласия нажмите на кнопку «ТЕСТ» остальное все выполнится автоматически (Выполнение теста может занять от 2 до 5 минут). Заранее спасибо :) '
+        'greeting': 'Добрый день! Пожалуйста поучаствуйте в финальном тестировании разработанной библиотеки. В случае согласия нажмите на кнопку «ТЕСТ» остальное все выполнится автоматически (Выполнение теста может занять от 5 до 15 секунд). Заранее спасибо :)  '
       },
 
       'application': {
@@ -4646,7 +4649,7 @@ define('dummy/locales/ru/translations', ['exports', 'ember', 'ember-flexberry/lo
         'spinner-caption': 'Данные загружаются, пожалуйста подождите...'
       },
       'index': {
-        'greeting': 'Добрый день! Пожалуйста поучаствуйте в сборе статистических данных для научного исследования. В случае согласия нажмите на кнопку «ТЕСТ» остальное все выполнится автоматически (Выполнение теста может занять от 2 до 5 минут). Заранее спасибо :) '
+        'greeting': 'Добрый день! Пожалуйста поучаствуйте в финальном тестировании разработанной библиотеки. В случае согласия нажмите на кнопку «ТЕСТ» остальное все выполнится автоматически (Выполнение теста может занять от 5 до 15 секунд). Заранее спасибо :) '
       },
 
       'application': {
@@ -23112,7 +23115,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://js-perf.azurewebsites.net","backendUrls":{"root":"https://js-perf.azurewebsites.net","api":"https://js-perf.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://js-perf.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.11.0+8eb1bfb1"});
+  require("dummy/app")["default"].create({"name":"dummy","backendUrl":"https://js-perf.azurewebsites.net","backendUrls":{"root":"https://js-perf.azurewebsites.net","api":"https://js-perf.azurewebsites.net/odata"},"log":{"enabled":true,"storeErrorMessages":true,"storeWarnMessages":true,"storeLogMessages":false,"storeInfoMessages":true,"storeDebugMessages":true,"storeDeprecationMessages":true,"storePromiseErrors":true,"showPromiseErrors":true},"perf":{"enabled":false},"lock":{"enabled":true,"openReadOnly":true,"unlockObject":true},"useUserSettingsService":true,"components":{"flexberryFile":{"uploadUrl":"https://js-perf.azurewebsites.net/api/File","maxUploadFileSize":null,"uploadOnModelPreSave":true,"showUploadButton":true,"showModalDialogOnUploadError":true,"showModalDialogOnDownloadError":true}},"version":"0.11.0+f626076c"});
 }
 
 /* jshint ignore:end */
